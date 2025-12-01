@@ -22,11 +22,13 @@
   },
   "scripts": {
     "watch": "rollup -c -w",
-    "build": "make",
-    "lint": "make lint",
-    "prepare": "make",
+    "build": "rollup -c",
+    "lint": "eslint src --ext .ts --fix",
+    "prepare": "pnpm run build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "analyze": "size-limit --why",
+    "docs": "typedoc --excludeInternal --excludePrivate --excludeProtected --name 'Proton Link' --includeVersion --readme none --out docs src/index-module.ts",
+    "deploy-site": "cp -r ./examples ./docs/examples/ && gh-pages -d docs"
   },
   "dependencies": {
     "@greymass/eosio": "^0.6.1",

@@ -22,9 +22,9 @@
   },
   "scripts": {
     "watch": "rollup -c -w",
-    "prepare": "make",
-    "build": "make",
-    "lint": "make lint"
+    "prepare": "pnpm run build",
+    "build": "rollup -c",
+    "lint": "eslint src --ext .ts --fix"
   },
   "dependencies": {
     "@proton/js": "^28.1.2",
