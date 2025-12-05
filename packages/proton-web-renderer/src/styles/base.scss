@@ -1,0 +1,50 @@
+@use './mixins.scss' as *;
+
+:host {
+  dialog,
+  dialog[data-theme='light'] {
+    @include light-theme;
+  }
+
+  dialog[data-theme='dark'] {
+    @include dark-theme;
+  }
+
+  dialog {
+    /******************
+        Colors
+    ******************/
+
+    /******************
+        Typography
+    ******************/
+    --text-xs: 0.75rem; /* 12px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1rem; /* 16px */
+    --text-lg: 1.125rem; /* 18px */
+    --text-xl: 1.25rem; /* 20px */
+
+    --text-font:
+      'Inter', 'Circular Std Book', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    /******************
+      Size and Spacing
+    ******************/
+    $spacing: 0.25rem;
+    --space-xs: #{$spacing}; /* 4px */
+    --space-s: #{$spacing * 2}; /* 8px */
+    --space-m: #{$spacing * 3}; /* 12px */
+    --space-l: #{$spacing * 4}; /* 16px */
+    --space-xl: #{$spacing * 5}; /* 20px */
+    --space-2xl: #{$spacing * 6}; /* 24px */
+  }
+}
+
+dialog {
+  font-family: var(--text-font);
+}
+
+* {
+  box-sizing: border-box;
+}

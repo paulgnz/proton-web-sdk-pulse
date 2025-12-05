@@ -1,0 +1,45 @@
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.btn {
+  &--full {
+    width: 100%;
+  }
+
+  &--center {
+    justify-content: center;
+  }
+
+  &--between {
+    justify-content: space-between;
+  }
+
+  &-label {
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.8px;
+  }
+
+  &-sublabel {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.36px;
+    opacity: 0.5;
+  }
+
+  &-label + &-sublabel {
+    margin-top: var(--space-xs);
+  }
+}

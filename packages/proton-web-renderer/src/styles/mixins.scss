@@ -1,0 +1,57 @@
+@mixin light-theme {
+  color-scheme: light;
+  --body-background:
+    linear-gradient(180deg, rgba(20, 44, 87, 0.1) 0%, rgba(23, 36, 60, 0) 100%), #fff;
+
+  --border-color: rgba(0, 0, 0, 0.1);
+
+  --button-background-hover: rgba(0, 0, 0, 0.08);
+
+  --button-primary-border: var(--border-color);
+  --button-primary-border-hover: #000;
+
+  --button-accent-background: #000000;
+  --button-accent-text: #ffffff;
+
+  --countdown-background: 0, 0, 0;
+
+  --tabs-background: #d5d6d9;
+  --tabs-item-background: #161616;
+
+  --list-background: rgba(0, 0, 0, 0.08);
+  --list-border: var(--list-background);
+}
+
+@mixin dark-theme {
+  color-scheme: dark;
+
+  --body-background:
+    linear-gradient(180deg, rgba(20, 44, 87, 0.4) 0%, rgba(23, 36, 60, 0) 100%), #000;
+
+  --border-color: #161616;
+  --button-background-hover: rgba(255, 255, 255, 0.08);
+
+  --button-primary-border: var(--border-color);
+  --button-primary-border-hover: #fff;
+
+  --button-accent-background: #ffffff;
+  --button-accent-text: #000000;
+
+  --countdown-background: 255, 255, 255;
+
+  --tabs-background: #050505;
+  --tabs-item-background: #161616;
+
+  --list-background: rgba(255, 255, 255, 0.02);
+  --list-border: var(--list-background);
+}
+
+@mixin button-reset {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
