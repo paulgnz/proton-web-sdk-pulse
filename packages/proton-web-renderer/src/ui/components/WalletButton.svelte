@@ -17,7 +17,7 @@
   } = $props()
 </script>
 
-<Button {onclick} full>
+<Button {onclick} full appearance="primary">
   {#snippet content()}
     <span class="wallet">
       <span>

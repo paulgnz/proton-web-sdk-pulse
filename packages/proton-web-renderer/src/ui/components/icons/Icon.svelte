@@ -21,7 +21,10 @@
   })
 </script>
 
-<span style="width: {size}; display: grid; place-content: center; color: {color}" class={className}>
+<span
+  style="width: {size}; display: inline-grid; place-content: center; color: {color}"
+  class={className}
+>
   {#if isImg}
     <img src={icons[name]} alt={name} />
   {:else}

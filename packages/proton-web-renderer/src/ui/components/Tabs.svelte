@@ -1,15 +1,14 @@
 <script lang="ts">
-  let current = $state('mobile')
-  const tabs = [
-    {
-      name: 'mobile',
-      label: 'Mobile',
-    },
-    {
-      name: 'desktop',
-      label: 'Desktop',
-    },
-  ]
+  let {
+    tabs,
+    current = $bindable(''),
+  }: {
+    tabs: {
+      name: string
+      label: string
+    }[]
+    current?: string
+  } = $props()
 
   function setTab(value: string) {
     current = value

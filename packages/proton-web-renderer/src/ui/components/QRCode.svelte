@@ -13,7 +13,7 @@
 
 <style lang="scss">
   .qr-code {
-    padding: var(--space-2xl) 0;
+    padding: 0;
     box-sizing: border-box;
     font-family: var(--text-font);
 

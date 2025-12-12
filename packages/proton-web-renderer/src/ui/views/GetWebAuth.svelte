@@ -49,7 +49,7 @@
     <div class="footer">
       <GetApp class="footer-apps" />
 
-      <Button full align="between" href="https://xprnetwork.org/wallet" color="primary">
+      <Button full align="between" href="https://xprnetwork.org/wallet" appearance="primary">
         {#snippet content()}
           <span class="btn-inner">
             <Icon name="web-auth" size="var(--space-xl)" />
@@ -110,15 +110,9 @@
   .footer {
     border-top: 1px solid var(--border-color);
     padding: var(--space-l);
-  }
 
-  :global(.footer-apps) {
-    margin-bottom: var(--space-l);
-  }
-
-  .btn-inner {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-s);
+    :global(.footer-apps) {
+      margin-bottom: var(--space-l);
+    }
   }
 </style>

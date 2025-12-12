@@ -42,4 +42,14 @@
   &-label + &-sublabel {
     margin-top: var(--space-xs);
   }
+
+  &-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+}
+
+.link {
+  color: var(--text-link);
 }

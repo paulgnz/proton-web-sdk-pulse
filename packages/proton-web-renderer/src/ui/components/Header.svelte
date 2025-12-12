@@ -1,18 +1,23 @@
 <script lang="ts">
-  import type {Snippet} from 'svelte'
-  import {active, router} from '../store'
+  import {active, router, app_props} from '../store'
   import Icon from './icons/Icon.svelte'
   import ButtonIcon from './ButtonIcon.svelte'
+  import {type Unsubscriber} from 'svelte/store'
+  import {onDestroy, onMount} from 'svelte'
 
   let {
     title,
-    showLogo = true,
-    showBack = true,
+    hideLogo = false,
+    hideBack = false,
   }: {
-    showLogo?: boolean
-    showBack?: boolean
+    hideBack?: boolean
+    hideLogo?: boolean
     title: string
   } = $props()
+
+  let unsubscribe: Unsubscriber | undefined
+
+  let showBack = $state(false)
 
   function close() {
     active.set(false)
@@ -21,17 +26,31 @@
   function back() {
     router.back()
   }
+
+  onMount(() => {
+    unsubscribe = router.onchange.subscribe((value) => {
+      showBack = !hideBack && value.has_history
+    })
+  })
+
+  onDestroy(() => {
+    if (unsubscribe) {
+      unsubscribe()
+    }
+  })
 </script>
 
 <header class="dialog-header">
   <div class="slot left">
     {#if showBack}
-      <ButtonIcon icon="arrow-back" onclick={() => back()}></ButtonIcon>
+      <ButtonIcon icon="arrow-left" onclick={() => back()}></ButtonIcon>
     {/if}
   </div>
 
   <div class="center">
-    <Icon name="web-auth" class="header-icon" />
+    {#if !hideLogo}
+      <Icon name="web-auth" class="header-icon" />
+    {/if}
     {title}
   </div>
 

@@ -1,4 +1,4 @@
-export function self(fn) {
+export function eventSelf(fn) {
   return function (...args) {
     const event = /** @type {Event} */ args[0]
     // @ts-expect-error this is unknown
@@ -9,7 +9,7 @@ export function self(fn) {
   }
 }
 
-export function once(fn) {
+export function eventOnce(fn) {
   let ran = false
 
   return function (...args) {

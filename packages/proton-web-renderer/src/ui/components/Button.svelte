@@ -1,31 +1,35 @@
 <script lang="ts">
   import type {ClassValue, MouseEventHandler} from 'svelte/elements'
   import type {Snippet} from 'svelte'
-  import type {UIButtonColor} from '../interfaces'
+  import type {UIButtonAppearance} from '../interfaces'
 
   let {
     onclick,
     content,
     class: className,
-    color = 'primary',
+    appearance = 'primary',
     label,
     full,
     align = 'left',
     href,
+    targetSelf,
   }: {
     onclick?: MouseEventHandler<HTMLButtonElement> | null | undefined
     content?: Snippet
     class?: ClassValue
-    color?: UIButtonColor
+    appearance?: UIButtonAppearance
     label?: string
     full?: boolean
     align?: 'left' | 'center' | 'between'
     href?: string
+    targetSelf?: boolean
   } = $props()
 
   let alignClass = $derived.by(() => `btn--${align}`)
   let tag: 'a' | 'button' = $derived.by(() => (href ? 'a' : 'button'))
-  let target: '_blank' | undefined = $derived.by(() => (tag === 'a' ? '_blank' : undefined))
+  let target: '_blank' | undefined = $derived.by(() =>
+    tag === 'a' && !targetSelf ? '_blank' : undefined
+  )
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -36,7 +40,7 @@
   {href}
   {target}
   type="button"
-  data-color={color}
+  data-appearance={appearance}
 >
   {#if content}
     {@render content()}
@@ -62,7 +66,7 @@
     color: inherit;
     text-decoration: none;
 
-    &[data-color='primary'] {
+    &[data-appearance='primary'] {
       border: 1px solid var(--button-primary-border);
 
       &:hover {
@@ -70,7 +74,15 @@
       }
     }
 
-    &[data-color='secondary'] {
+    &[data-appearance='outlined'] {
+      border: 1px solid var(--button-outlined-border);
+
+      &:hover {
+        border-color: var(--button-outlined-border-hover);
+      }
+    }
+
+    &[data-appearance='secondary'] {
       z-index: 1;
       --ui-btn-bg: linear-gradient(
         107.09deg,
@@ -113,9 +125,18 @@
       }
     }
 
-    &[data-color='accent'] {
+    &[data-appearance='accent'] {
       background: var(--button-accent-background);
       color: var(--button-accent-text);
+    }
+
+    &[data-appearance='flat'] {
+      color: var(--button-flat-text);
+      font-size: var(--text-sm);
+      font-style: normal;
+      font-weight: 500;
+      line-height: 100%;
+      letter-spacing: -0.42px;
     }
   }
 </style>

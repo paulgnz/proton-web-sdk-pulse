@@ -22,6 +22,7 @@
 </article>
 
 <style lang="scss">
+  @use '../../styles/mixins.scss';
   article {
     height: 452px;
     min-height: 0;
@@ -32,28 +33,15 @@
   }
 
   section {
+    @include mixins.sexy-scrollbars;
+
     grid-area: content;
     overflow: hidden;
     overflow-y: scroll;
     box-sizing: border-box;
-
-    // Give Chrome some nicer scrollbars
-    scrollbar-gutter: stable both-edges;
-    scrollbar-color: var(--body-background);
-
-    &::-webkit-scrollbar {
-      width: 2px;
-      background-color: var(--body-background);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: var(--body-background);
-    }
   }
 
   footer {
     grid-area: footer;
-
-    border: 1px solid green;
   }
 </style>

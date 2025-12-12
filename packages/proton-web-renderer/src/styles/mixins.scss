@@ -1,5 +1,9 @@
 @mixin light-theme {
   color-scheme: light;
+
+  --text-secondary: #333333;
+  --text-link: #000000;
+
   --body-background:
     linear-gradient(180deg, rgba(20, 44, 87, 0.1) 0%, rgba(23, 36, 60, 0) 100%), #fff;
 
@@ -10,20 +14,28 @@
   --button-primary-border: var(--border-color);
   --button-primary-border-hover: #000;
 
+  --button-outlined-border: #000;
+  --button-outlined-border-hover: var(--border-color);
+
   --button-accent-background: #000000;
   --button-accent-text: #ffffff;
+
+  --button-flat-text: #000;
 
   --countdown-background: 0, 0, 0;
 
   --tabs-background: #d5d6d9;
   --tabs-item-background: #161616;
 
-  --list-background: rgba(0, 0, 0, 0.08);
+  --list-background: rgba(0, 0, 0, 0.02);
   --list-border: var(--list-background);
 }
 
 @mixin dark-theme {
   color-scheme: dark;
+
+  --text-secondary: #c0c0c0;
+  --text-link: #ffffff;
 
   --body-background:
     linear-gradient(180deg, rgba(20, 44, 87, 0.4) 0%, rgba(23, 36, 60, 0) 100%), #000;
@@ -34,8 +46,13 @@
   --button-primary-border: var(--border-color);
   --button-primary-border-hover: #fff;
 
+  --button-outlined-border: #fff;
+  --button-outlined-border-hover: var(--border-color);
+
   --button-accent-background: #ffffff;
   --button-accent-text: #000000;
+
+  --button-flat-text: #c0c0c0;
 
   --countdown-background: 255, 255, 255;
 
@@ -54,4 +71,19 @@
   outline: none;
   cursor: pointer;
   box-sizing: border-box;
+}
+
+@mixin sexy-scrollbars {
+  // Give Chrome some nicer scrollbars
+  scrollbar-gutter: stable both-edges;
+  scrollbar-color: var(--body-background);
+
+  &::-webkit-scrollbar {
+    width: 2px;
+    background-color: var(--body-background);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--body-background);
+  }
 }
