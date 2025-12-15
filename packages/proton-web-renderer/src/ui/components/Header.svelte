@@ -49,7 +49,7 @@
 
   <div class="center">
     {#if !hideLogo}
-      <Icon name="web-auth" class="header-icon" />
+      <Icon name="web-auth" class="header-icon" size="var(--space-xl)" />
     {/if}
     {title}
   </div>

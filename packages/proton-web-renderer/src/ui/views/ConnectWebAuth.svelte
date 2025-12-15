@@ -50,7 +50,7 @@
         <Button align="center" full onclick={() => getWebAuth()} appearance="secondary">
           {#snippet content()}
             <Icon name="web-auth" size="var(--space-2xl)" />
-            <span class="btn-label">Get WebAuth</span>
+            <span class="btn-label">Create Account</span>
           {/snippet}
         </Button>
       </div>
@@ -126,5 +126,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    a:hover {
+      text-decoration: none;
+    }
   }
 </style>

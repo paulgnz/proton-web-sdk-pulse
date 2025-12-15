@@ -68,9 +68,11 @@
 
     &[data-appearance='primary'] {
       border: 1px solid var(--button-primary-border);
+      background-color: transparent;
 
       &:hover {
         border-color: var(--button-primary-border-hover);
+        background-color: var(--button-primary-background-hover);
       }
     }
 
@@ -137,6 +139,10 @@
       font-weight: 500;
       line-height: 100%;
       letter-spacing: -0.42px;
+
+      &:hover {
+        color: var(--button-flat-text-hover);
+      }
     }
   }
 </style>
