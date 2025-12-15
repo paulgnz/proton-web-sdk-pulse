@@ -82,6 +82,10 @@
   scrollbar-gutter: stable both-edges;
   scrollbar-color: var(--body-background);
 
+  @supports (-moz-osx-font-smoothing: grayscale) {
+    scrollbar-width: none;
+  }
+
   &::-webkit-scrollbar {
     width: 2px;
     background-color: var(--body-background);
