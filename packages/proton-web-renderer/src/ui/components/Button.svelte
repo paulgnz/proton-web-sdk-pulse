@@ -70,7 +70,7 @@
       border: 1px solid var(--button-primary-border);
       background-color: transparent;
 
-      &:hover {
+      @include mixins.hover {
         border-color: var(--button-primary-border-hover);
         background-color: var(--button-primary-background-hover);
       }
@@ -79,7 +79,7 @@
     &[data-appearance='outlined'] {
       border: 1px solid var(--button-outlined-border);
 
-      &:hover {
+      @include mixins.hover {
         border-color: var(--button-outlined-border-hover);
       }
     }
@@ -97,7 +97,7 @@
         rgba(32, 191, 85, 0.3) 88.24%
       );
 
-      &:hover {
+      @include mixins.hover {
         --ui-btn-bg: linear-gradient(
           107.09deg,
           #7013c5 11.76%,
@@ -140,7 +140,7 @@
       line-height: 100%;
       letter-spacing: -0.42px;
 
-      &:hover {
+      @include mixins.hover {
         color: var(--button-flat-text-hover);
       }
     }

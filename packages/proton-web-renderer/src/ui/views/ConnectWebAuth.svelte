@@ -126,9 +126,5 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    a:hover {
-      text-decoration: none;
-    }
   }
 </style>

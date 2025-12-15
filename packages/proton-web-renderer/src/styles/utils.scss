@@ -1,3 +1,5 @@
+@use './mixins.scss';
+
 .visually-hidden {
   border: 0;
   clip: rect(0 0 0 0);
@@ -52,4 +54,9 @@
 
 .link {
   color: var(--text-link);
+  text-decoration: underline;
+
+  @include mixins.hover {
+    text-decoration: none;
+  }
 }
