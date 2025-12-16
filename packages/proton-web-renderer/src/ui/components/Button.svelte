@@ -63,7 +63,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-s);
-    color: inherit;
     text-decoration: none;
 
     &[data-appearance='primary'] {

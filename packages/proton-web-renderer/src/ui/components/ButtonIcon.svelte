@@ -45,8 +45,7 @@
       }
     }
 
-    &:hover,
-    &:active {
+    @include mixins.hover {
       background-color: var(--button-background-hover);
     }
   }
