@@ -89,7 +89,7 @@
   dialog {
     font-size: var(--text-base);
     line-height: 1.2;
-    width: min(300px, 100vw - var(--space-m));
+    width: min(328px, 100vw - var(--space-m));
     border: none;
     padding: 0;
     --max-modal-content-height: calc(100dvh);
