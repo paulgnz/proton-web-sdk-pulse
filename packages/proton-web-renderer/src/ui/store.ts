@@ -1,22 +1,16 @@
 import {derived, writable} from 'svelte/store'
 import {
-  ROUTES,
   type UIAppContext,
   type UIErrorRequest,
   type UIProps,
+  type UIQRData,
   type UIRouter,
   type UIRouterState,
+  type UIRouteValue,
   type UITheme,
+  type UIWalletSelectResponse,
+  type WritableWithReset,
 } from './interfaces'
-
-export const appContext = writable<UIAppContext | undefined>()
-
-/** Whether or not the interface is active in the browser */
-export const active = writable<boolean>(false)
-
-export const theme = writable<UITheme>('dark')
-
-export const errorRequest = writable<UIErrorRequest | undefined>(undefined)
 
 const defaultUIProps: UIProps = {
   title: 'Get web auth',
@@ -25,8 +19,20 @@ const defaultUIProps: UIProps = {
 
 export const app_props = writable<UIProps>(defaultUIProps)
 
+export const appContext = writable<UIAppContext | undefined>()
+
+/** Whether or not the interface is active in the browser */
+export const active = writable<boolean>(false)
+
+export const theme = writable<UITheme>('dark')
+
+export const closeAction = writable<(() => void) | undefined>(undefined)
+export const backAction = writable<(() => void) | undefined>(undefined)
+
+export const errorRequest = writable<UIErrorRequest | undefined>(undefined)
+
 const defaultUIRouterState: UIRouterState = {
-  path: ROUTES.WEBAUTH_CONNECT,
+  path: undefined,
   // path: ROUTES.OTHER_ANCHOR_SIGN,
   history: [],
 }
@@ -44,11 +50,21 @@ const initRouter = (): UIRouter => {
       })),
     // Push a new path on to history
     push: (path) =>
-      state.update((current) => ({
-        ...current,
-        path,
-        history: [...current.history, current.path],
-      })),
+      state.update((current) => {
+        let history: UIRouteValue[] = []
+        if (current.path) {
+          history = current.history
+          if (current.path !== path) {
+            history = [...current.history, current.path]
+          }
+        }
+
+        return {
+          ...current,
+          path,
+          history,
+        }
+      }),
     set: state.set,
     subscribe: state.subscribe,
     update: state.update,
@@ -57,6 +73,20 @@ const initRouter = (): UIRouter => {
 }
 
 export const router = initRouter()
+
+export function initWritableWithReset<T>(): WritableWithReset<T> {
+  const {set, subscribe, update} = writable<T | undefined>(undefined)
+  return {
+    reset: () => set(undefined),
+    set,
+    subscribe,
+    update,
+  }
+}
+
+export const walletSelect = initWritableWithReset<UIWalletSelectResponse>()
+
+export const qrRequestData = initWritableWithReset<UIQRData>()
 
 // Reset data in all stores
 export function resetState() {
@@ -72,6 +102,10 @@ export function resetState() {
 
   appContext.set(undefined)
   errorRequest.set(undefined)
+  walletSelect.reset()
+  backAction.set(undefined)
+  closeAction.set(undefined)
+
   // loginPromise.set(undefined)
   // loginResponse.set({...defaultLoginResponse})
 

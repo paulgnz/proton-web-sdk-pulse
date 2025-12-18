@@ -1,3 +1,5 @@
+import type {WebRenderer} from '@proton/web-renderer'
+
 export const SkipToManual = Symbol()
 
 export interface BrowserTransportOptions {
@@ -9,6 +11,8 @@ export interface BrowserTransportOptions {
   walletType?: string
   /** Local storage prefix, defaults to `proton-link`. */
   storagePrefix?: string
+
+  ui?: WebRenderer
 }
 
 export interface footNoteDownloadLinks {

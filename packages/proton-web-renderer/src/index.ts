@@ -1,8 +1,16 @@
-import {mount} from 'svelte'
-import type {UIRenderer, UIRendererOptions} from './types'
-import {active} from './ui/store'
+import {mount, unmount} from 'svelte'
+import type {
+  UILoginPayload,
+  UIRenderer,
+  UIRendererOptions,
+  UIRequestPayload,
+  UISignManuallyPayload,
+} from './types'
+import {active, backAction, closeAction, qrRequestData, router, walletSelect} from './ui/store'
 import {addListener} from './utils'
 import App from './ui/App.svelte'
+import {ROUTES, SUPPORTED_WALLETS} from './ui/constants'
+import type {UIRouteValue} from './ui/interfaces'
 
 export const defaultUIRendererOptions = {
   id: 'proton-web-ui',
@@ -25,7 +33,71 @@ export class WebRenderer implements UIRenderer {
     }
   }
 
-  initialize() {
+  async selectWallet(): Promise<string> {
+    router.push(ROUTES.WEBAUTH_CONNECT)
+    this.show()
+
+    try {
+      return await new Promise<string>((resolve, reject) => {
+        walletSelect.set({
+          resolve,
+          reject,
+        })
+      })
+    } finally {
+      this.close()
+    }
+  }
+
+  login(payload: UILoginPayload): void {
+    let route = ROUTES.WEBAUTH_LOGIN_MOBILE
+    if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
+      route = ROUTES.OTHER_ANCHOR_USE
+    }
+    this.request(route, payload)
+  }
+
+  sign(): void {
+    throw new Error('Method not implemented.')
+  }
+
+  sign_manually(_: UISignManuallyPayload): void {
+    throw new Error('Method not implemented.')
+  }
+
+  showLoading(): void {
+    router.push(ROUTES.PREPARING_REQUEST)
+    this.show()
+  }
+
+  show(): void {
+    active.set(true)
+  }
+
+  close(): void {
+    active.set(false)
+  }
+
+  destroy(): void {
+    unmount(this.app)
+  }
+
+  private request(route: UIRouteValue, payload: UIRequestPayload): void {
+    qrRequestData.set(payload.data)
+
+    if (payload.onBack) {
+      backAction.set(payload.onBack)
+    }
+
+    if (payload.onClose) {
+      closeAction.set(payload.onClose)
+    }
+
+    router.push(route)
+    this.show()
+  }
+
+  private initialize() {
     // Prevent multiple initializations
     if (this.initialized) {
       return
@@ -48,22 +120,6 @@ export class WebRenderer implements UIRenderer {
       })
     }
     this.initialized = true
-  }
-
-  login(): void {
-    throw new Error('Method not implemented.')
-  }
-
-  sign(): void {
-    throw new Error('Method not implemented.')
-  }
-
-  show(): void {
-    active.set(true)
-  }
-
-  close(): void {
-    active.set(false)
   }
 
   private appendDialogElement() {

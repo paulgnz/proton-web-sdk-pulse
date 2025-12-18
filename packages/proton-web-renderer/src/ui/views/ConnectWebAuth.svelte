@@ -3,19 +3,15 @@
   import Icon from '../components/icons/Icon.svelte'
   import Layout from '../components/Layout.svelte'
   import WalletButton from '../components/WalletButton.svelte'
-  import {ROUTES} from '../interfaces'
-  import {router} from '../store'
+  import {ROUTES, SUPPORTED_WALLETS} from '../constants'
+  import {type UIWalletType} from '../interfaces'
+  import {router, walletSelect} from '../store'
 
-  function loginWebAuthMobile() {
-    router.push(ROUTES.WEBAUTH_LOGIN_MOBILE)
-  }
-
-  function loginWebAuthDesktop() {
-    console.log('TODO Implement desktop')
-  }
-
-  function useOtherWallets() {
-    router.push(ROUTES.OTHER_ANCHOR_USE)
+  function selectWallet(walletType: UIWalletType) {
+    if ($walletSelect) {
+      $walletSelect.resolve(walletType)
+      walletSelect.reset()
+    }
   }
 
   function getWebAuth() {
@@ -29,7 +25,7 @@
       <ul class="wallets">
         <li>
           <WalletButton
-            onclick={() => loginWebAuthMobile()}
+            onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
             icon="qr-code"
             label="Mobile App"
             sublabel="Scan QR Code"
@@ -38,7 +34,7 @@
 
         <li>
           <WalletButton
-            onclick={() => loginWebAuthDesktop()}
+            onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_WEB)}
             icon="fingerprint"
             label="Browser wallet"
             sublabel="Authorize device"
@@ -55,25 +51,32 @@
         </Button>
       </div>
 
-      <div class="border-block tos">
-        <span>
-          By connecting, I accept XPR Network's <a
-            href="https://xprnetwork.org/webauth-terms"
-            target="_blank"
-            class="link">Terms of Service</a
-          >
-        </span>
+      <div class="border-block connect-other">
+        <Button
+          align="center"
+          full
+          appearance="flat"
+          onclick={() => selectWallet(SUPPORTED_WALLETS.ANCHOR)}
+        >
+          {#snippet content()}
+            <span>Connect with other wallets</span>
+            <Icon name="arrow-right" />
+          {/snippet}
+        </Button>
       </div>
     </div>
   {/snippet}
 
   {#snippet footer()}
-    <Button align="between" full appearance="flat" onclick={() => useOtherWallets()}>
-      {#snippet content()}
-        <span>Connect with other wallets</span>
-        <Icon name="arrow-right" />
-      {/snippet}
-    </Button>
+    <div class="tos">
+      <span>
+        By connecting, I accept XPR Network's <a
+          href="https://xprnetwork.org/webauth-terms"
+          target="_blank"
+          class="link">Terms of Service</a
+        >
+      </span>
+    </div>
   {/snippet}
 </Layout>
 
@@ -111,6 +114,14 @@
   .new-account {
     padding: var(--space-2xl) var(--space-l);
     box-sizing: border-box;
+  }
+
+  .connect-other {
+    padding: var(--space-l);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .tos {

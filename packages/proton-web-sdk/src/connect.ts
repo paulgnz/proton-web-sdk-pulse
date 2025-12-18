@@ -7,8 +7,10 @@ import {Storage} from './storage'
 import {WALLET_TYPES} from './constants'
 import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions} from './types'
 import {JsonRpc} from '@proton/js'
+import {WebRenderer} from '@proton/web-renderer'
 
 let walletSelector: WalletTypeSelector | undefined
+let renderer: WebRenderer | undefined
 
 export const ConnectWallet = async ({
   linkOptions,
@@ -29,6 +31,8 @@ export const ConnectWallet = async ({
   if (!linkOptions.storage) {
     linkOptions.storage = new Storage(linkOptions.storagePrefix || 'proton-storage')
   }
+
+  renderer = new WebRenderer()
 
   return login({selectorOptions, linkOptions, transportOptions}).finally(() => {
     if (walletSelector) {
@@ -74,16 +78,21 @@ const login = async (
       if (loginOptions.linkOptions.restoreSession) {
         walletType = await loginOptions.linkOptions.storage!.read('wallet-type')
       } else {
-        const enabledWalletTypes = loginOptions.selectorOptions.enabledWalletTypes
-          ? WALLET_TYPES.filter(
-              (wallet) =>
-                loginOptions.selectorOptions.enabledWalletTypes &&
-                loginOptions.selectorOptions.enabledWalletTypes.includes(wallet.key)
-            )
-          : WALLET_TYPES
+        // const a = new Promise((resolve) => {
+        //   renderer?.login()
+        // })
+
+        // await a
+        // const enabledWalletTypes = loginOptions.selectorOptions.enabledWalletTypes
+        //   ? WALLET_TYPES.filter(
+        //       (wallet) =>
+        //         loginOptions.selectorOptions.enabledWalletTypes &&
+        //         loginOptions.selectorOptions.enabledWalletTypes.includes(wallet.key)
+        //     )
+        //   : WALLET_TYPES
 
         try {
-          walletType = await walletSelector.displayWalletSelector(enabledWalletTypes)
+          walletType = await renderer?.selectWallet()
         } catch (e) {
           console.log('CANCEL', e)
           return {
@@ -122,6 +131,7 @@ const login = async (
       transport: new ProtonLinkBrowserTransport({
         ...loginOptions.transportOptions,
         walletType,
+        ui: renderer,
       }) as any,
       walletType,
       chains: [],
@@ -162,7 +172,7 @@ const login = async (
         console.error('restoreSession Error:')
         console.error(e)
 
-        if (backToSelector) {
+        if ((e as Error)['code'] === 'E_WALLET_TYPE') {
           stopListening()
           return null
         } else {

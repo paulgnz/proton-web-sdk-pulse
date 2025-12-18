@@ -1,17 +1,17 @@
 <script lang="ts">
   import {onDestroy, onMount} from 'svelte'
   import Header from './components/Header.svelte'
-  import Layout from './components/Layout.svelte'
   import Modal from './components/Modal.svelte'
-  import {ROUTES, type UITheme} from './interfaces'
-  import {active, router, theme} from './store'
+  import {type UITheme} from './interfaces'
+  import {active, closeAction, router, theme, walletSelect} from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
   import UseAnchorWallet from './views/UseAnchorWallet.svelte'
-  import LoginWebAuthMobile from './views/LoginWebAuthMobile.svelte'
   import SignRequest from './views/SignRequest.svelte'
-  import SignRequestManual from './views/SignRequestManual.svelte'
+  import RequestWithQRCode from './views/RequestWithQRCode.svelte'
   import type {Unsubscriber} from 'svelte/store'
+  import PreparingRequest from './views/PreparingRequest.svelte'
+  import {ROUTES} from './constants'
 
   let title = $state('')
   let hideLogo = $state(false)
@@ -25,7 +25,7 @@
 
   onMount(() => {
     unsubscribeRouter = router.subscribe((current) => {
-      if (current) {
+      if (current.path) {
         if (isOtherRegExp.test(current.path)) {
           hideLogo = true
         } else {
@@ -39,7 +39,11 @@
           title = 'Sign request'
           hideBack = true
         } else {
-          if (current.path === ROUTES.OTHER_ANCHOR_USE) {
+          if (current.path === ROUTES.PREPARING_REQUEST) {
+            title = 'Pending...'
+            hideBack = true
+            hideLogo = true
+          } else if (current.path === ROUTES.OTHER_ANCHOR_USE) {
             title = 'Anchor wallet'
           } else if (current.path === ROUTES.OTHER_ANCHOR_SIGN) {
             title = 'Anchor wallet'
@@ -49,12 +53,24 @@
             title = 'Connect WebAuth'
           }
         }
+      } else {
+        hideLogo = false
+        hideBack = false
       }
     })
 
     unsubscribeActive = active.subscribe((value) => {
       if (!value) {
         hideBack = false
+
+        if ($walletSelect) {
+          $walletSelect.reject(new Error('no wallet selected'))
+          walletSelect.reset()
+        }
+        if ($closeAction) {
+          $closeAction()
+          closeAction.set(undefined)
+        }
       }
     })
   })
@@ -105,17 +121,19 @@
       {:else if $router.path === ROUTES.OTHER_ANCHOR_USE}
         <UseAnchorWallet />
       {:else if $router.path === ROUTES.WEBAUTH_LOGIN_MOBILE}
-        <LoginWebAuthMobile />
+        <RequestWithQRCode />
       {:else if $router.path === ROUTES.WEBAUTH_CONNECT}
         <ConnectWebAuth />
       {:else if $router.path === ROUTES.WEBAUTH_SIGN}
         <SignRequest />
       {:else if $router.path === ROUTES.WEBAUTH_SIGN_MANUAL}
-        <SignRequestManual />
+        <RequestWithQRCode />
       {:else if $router.path === ROUTES.OTHER_ANCHOR_SIGN}
         <SignRequest walletType="anchor" />
       {:else if $router.path === ROUTES.OTHER_ANCHOR_SIGN_MANUAL}
-        <SignRequestManual walletType="anchor" />
+        <RequestWithQRCode walletType="anchor" />
+      {:else if $router.path === ROUTES.PREPARING_REQUEST}
+        <PreparingRequest />
       {/if}
     {/if}
   {/snippet}

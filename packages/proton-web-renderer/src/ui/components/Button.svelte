@@ -87,25 +87,25 @@
       z-index: 1;
       --ui-btn-bg: linear-gradient(
         107.09deg,
-        rgba(112, 19, 197, 0.3) 11.76%,
-        rgba(115, 48, 215, 0.3) 38.53%,
-        rgba(117, 67, 227, 0.3) 50%,
-        rgba(249, 78, 108, 0.3) 61.47%,
-        rgba(252, 146, 55, 0.3) 69.12%,
-        rgba(255, 211, 5, 0.3) 76.77%,
-        rgba(32, 191, 85, 0.3) 88.24%
+        #7013c5 11.76%,
+        #7330d7 38.53%,
+        #7543e3 50%,
+        #f94e6c 61.47%,
+        #fc9237 69.12%,
+        #ffd305 76.77%,
+        #20bf55 88.24%
       );
 
       @include mixins.hover {
         --ui-btn-bg: linear-gradient(
           107.09deg,
-          #7013c5 11.76%,
-          #7330d7 38.53%,
-          #7543e3 50%,
-          #f94e6c 61.47%,
-          #fc9237 69.12%,
-          #ffd305 76.77%,
-          #20bf55 88.24%
+          rgba(112, 19, 197, 0.5) 11.76%,
+          rgba(115, 48, 215, 0.5) 38.53%,
+          rgba(117, 67, 227, 0.5) 50%,
+          rgba(249, 78, 108, 0.5) 61.47%,
+          rgba(252, 146, 55, 0.5) 69.12%,
+          rgba(255, 211, 5, 0.5) 76.77%,
+          rgba(32, 191, 85, 0.5) 88.24%
         );
       }
 
@@ -129,6 +129,10 @@
     &[data-appearance='accent'] {
       background: var(--button-accent-background);
       color: var(--button-accent-text);
+
+      @include mixins.hover {
+        background: var(--button-accent-background-hover);
+      }
     }
 
     &[data-appearance='flat'] {

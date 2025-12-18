@@ -1,31 +1,23 @@
 import type {Readable, Writable} from 'svelte/store'
+import type {ROUTES, SUPPORTED_WALLETS} from './constants'
 
 export type UITheme = 'light' | 'dark'
 
 export type UIButtonAppearance = 'primary' | 'outlined' | 'secondary' | 'accent' | 'flat'
 
-export const enum ROUTES {
-  WEBAUTH_GET = 'webauth-get',
-  WEBAUTH_LOGIN_MOBILE = 'webauth-login-mobile',
-  WEBAUTH_CONNECT = 'webauth-connect',
-  WEBAUTH_SIGN = 'webauth-sign',
-  WEBAUTH_SIGN_MANUAL = 'webauth-manual-sign',
-  OTHER_ANCHOR_USE = 'other-anchor-use',
-  OTHER_ANCHOR_SIGN = 'other-anchor-sign',
-  OTHER_ANCHOR_SIGN_MANUAL = 'other-anchor-manual-sign',
-}
+export type UIRouteValue = (typeof ROUTES)[keyof typeof ROUTES]
 
-export type RouteValue = (typeof ROUTES)[keyof typeof ROUTES]
+export type UIWalletType = (typeof SUPPORTED_WALLETS)[keyof typeof SUPPORTED_WALLETS]
 
 /** The router for the sections of the UI */
 export interface UIRouterState {
-  path: RouteValue
-  history: RouteValue[]
+  path?: UIRouteValue
+  history: UIRouteValue[]
 }
 
 export interface UIRouter extends Writable<UIRouterState> {
   back: () => void
-  push: (path: RouteValue) => void
+  push: (_: UIRouteValue) => void
   onchange: Readable<{has_history: boolean}>
 }
 
@@ -38,6 +30,7 @@ export interface UIProps {
   app_name?: string
   app_logo?: string
   app_logo_rounded?: string
+  wallet_type?: UIWalletType
 }
 
 export interface UIWalletConfig {
@@ -53,4 +46,18 @@ export interface UIErrorRequest {
 export interface UIAppContext {
   wallets: UIWalletConfig[]
   mainWallet?: UIWalletConfig['name']
+}
+
+export type UIWalletSelectResponse = {
+  reject: (error: Error) => void
+  resolve: (response: string) => void
+}
+
+export interface WritableWithReset<T> extends Writable<T | undefined> {
+  reset: () => void
+}
+
+export interface UIQRData {
+  code: string
+  link: string
 }

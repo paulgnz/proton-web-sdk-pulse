@@ -1,3 +1,5 @@
+import type {UIQRData, UIWalletType} from './ui/interfaces'
+
 export type UIPercentageString = `${number}%`
 export type UIPixelsString = `${number}px`
 
@@ -14,9 +16,25 @@ export interface UIRendererOptions {
   logging?: boolean
 }
 
+export interface UIRequestPayload {
+  data: UIQRData
+  wallet_type: UIWalletType | string
+  onClose?: () => void
+  onBack?: () => void
+}
+
+export type UILoginPayload = UIRequestPayload
+export type UISignManuallyPayload = UIRequestPayload
+
 export interface UIRenderer {
-  login(): void
+  selectWallet(): Promise<string>
+  login(_: UILoginPayload): void
   sign(): void
+  sign_manually(_: UISignManuallyPayload): void
+  show(): void
+  close(): void
+  destroy(): void
+  showLoading(): void
 }
 
 export interface DialogArgs {

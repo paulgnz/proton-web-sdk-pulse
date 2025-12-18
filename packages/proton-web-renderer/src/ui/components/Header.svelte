@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {active, router, app_props} from '../store'
+  import {active, router, app_props, backAction} from '../store'
   import Icon from './icons/Icon.svelte'
   import ButtonIcon from './ButtonIcon.svelte'
   import {type Unsubscriber} from 'svelte/store'
@@ -25,11 +25,16 @@
 
   function back() {
     router.back()
+
+    if ($backAction) {
+      $backAction()
+      backAction.set(undefined)
+    }
   }
 
   onMount(() => {
     unsubscribe = router.onchange.subscribe((value) => {
-      showBack = !hideBack && value.has_history
+      showBack = !hideBack && (value.has_history || !!$backAction)
     })
   })
 

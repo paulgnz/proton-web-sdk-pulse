@@ -2,7 +2,7 @@
   import Countdown from '../components/Countdown.svelte'
   import Error from '../components/ErrorRequest.svelte'
   import Layout from '../components/Layout.svelte'
-  import {ROUTES} from '../interfaces'
+  import {ROUTES} from '../constants'
   import {errorRequest, router} from '../store'
 
   let {

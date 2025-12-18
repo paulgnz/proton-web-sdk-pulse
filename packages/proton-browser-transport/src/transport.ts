@@ -1,4 +1,4 @@
-import {Base64u, SessionError} from '@proton/link'
+import {Base64u, SessionError, WalletTypeError} from '@proton/link'
 import type {
   Bytes,
   LinkChannelSession,
@@ -15,6 +15,7 @@ import {type BrowserTransportOptions, type DialogArgs, SkipToManual} from './typ
 import GenerateQrCode from './qrcode'
 import {mount, unmount} from 'svelte'
 import {DIALOG_STATE} from './state.svelte'
+import {WebRenderer} from '@proton/web-renderer'
 
 export class BrowserTransport implements LinkTransport {
   /** Package version. */
@@ -33,123 +34,24 @@ export class BrowserTransport implements LinkTransport {
   private Widget?: any
   private widgetProps = DIALOG_STATE
   private widgetHolder?: Element
+  private ui?: WebRenderer
 
-  constructor(public readonly options: BrowserTransportOptions = {}) {
+  constructor(options: BrowserTransportOptions = {}) {
     this.requestStatus = !(options.requestStatus === false)
     this.requestAccount = options.requestAccount || ''
     this.walletType = options.walletType || 'proton'
     this.storage = new Storage(options.storagePrefix || 'proton-link')
     this.showingManual = false
-  }
 
-  private closeModal() {
-    this.hide()
-    if (this.activeCancel) {
-      this.activeRequest = undefined
-      this.activeCancel('')
-      this.activeCancel = undefined
+    if (options.ui) {
+      this.ui = options.ui
+    } else {
+      this.ui = new WebRenderer()
     }
-  }
-
-  private setupWidget() {
-    this.showingManual = false
-    if (!this.Widget) {
-      if (!this.widgetHolder) {
-        this.widgetHolder = document.createElement('div')
-        document.body.appendChild(this.widgetHolder)
-      }
-
-      if (this.widgetHolder) {
-        this.widgetProps.back = () => {
-          document.dispatchEvent(new CustomEvent('backToSelector'))
-        }
-        this.widgetProps.close = () => {
-          this.closeModal()
-        }
-        this.Widget = mount(DialogWidget, {props: this.widgetProps, target: this.widgetHolder})
-      }
-    }
-  }
-
-  private hide() {
-    if (this.Widget) {
-      unmount(this.Widget)
-      this.Widget = undefined
-    }
-    if (this.widgetHolder) {
-      this.widgetHolder.remove()
-      this.widgetHolder = undefined
-    }
-    this.clearTimers()
-  }
-
-  private showDialog(args: DialogArgs) {
-    this.setupWidget()
-    if (this.Widget) {
-      this.widgetProps.showBackButton = !args.hideBackButton
-      this.widgetProps.walletType = this.walletType
-      this.widgetProps.title = args.title || ''
-      this.widgetProps.subtitle = args.subtitle || ''
-      this.widgetProps.action = args.action || null
-      this.widgetProps.showFootnote = args.showFootnote
-      this.widgetProps.countDown = (args.content && args.content.countDown) || null
-      this.widgetProps.qrData = (args.content && args.content.qrData) || null
-      this.widgetProps.show = true
-    }
-  }
-
-  private displayRequest(
-    request: SigningRequest,
-    title: string,
-    subtitle = '',
-    hideBackButton = false
-  ) {
-    const sameDeviceRequest = request.clone()
-    const returnUrl = generateReturnUrl()
-    sameDeviceRequest.setInfoKey('same_device', true)
-    sameDeviceRequest.setInfoKey('return_path', returnUrl)
-
-    if (this.requestAccount.length > 0) {
-      request.setInfoKey('req_account', this.requestAccount)
-      sameDeviceRequest.setInfoKey('req_account', this.requestAccount)
-    }
-
-    const sameDeviceUri = sameDeviceRequest.encode(true, false)
-    const crossDeviceUri = request.encode(true, false)
-
-    const qrCode = GenerateQrCode(crossDeviceUri)
-    const qrData = {
-      code: qrCode,
-      link: sameDeviceUri,
-    }
-
-    this.showDialog({
-      title,
-      showFootnote: request.isIdentity(),
-      subtitle,
-      hideBackButton,
-      content: {qrData},
-    })
   }
 
   public async showLoading() {
-    this.showDialog({
-      title: 'Pending...',
-      subtitle: 'Preparing request...',
-      hideBackButton: true,
-      type: 'loading',
-    })
-  }
-
-  public onRequest(request: SigningRequest, cancel: (_reason: string | Error) => void) {
-    this.clearTimers()
-    this.activeRequest = request
-    this.activeCancel = cancel
-    try {
-      this.displayRequest(request, 'Scan the QR-Code')
-    } catch (e) {
-      cancel(e as string | Error)
-    }
+    this.ui?.showLoading()
   }
 
   public onSessionRequest(
@@ -218,6 +120,18 @@ export class BrowserTransport implements LinkTransport {
     }
   }
 
+  public onRequest(request: SigningRequest, cancel: (_reason: string | Error) => void) {
+    this.clearTimers()
+    this.activeRequest = request
+    this.activeCancel = cancel
+    try {
+      this.displayRequest(request, {title: 'Scan the QR-Code'})
+    } catch (e) {
+      console.log('cancel', e)
+      cancel(e as string | Error)
+    }
+  }
+
   public sendSessionPayload(payload: Bytes, session: LinkSession): boolean {
     if (!session.metadata.triggerUrl || !session.metadata.sameDevice) {
       // not same device or no trigger url supported
@@ -229,36 +143,6 @@ export class BrowserTransport implements LinkTransport {
     }
     window.location.href = session.metadata.triggerUrl.replace('%s', Base64u.encode(payload.array))
     return true
-  }
-
-  private clearTimers() {
-    if (this.closeTimer) {
-      clearTimeout(this.closeTimer)
-      this.closeTimer = undefined
-    }
-    this.clearCountdown()
-  }
-
-  private clearCountdown() {
-    if (this.countdownTimer) {
-      if (this.Widget) {
-        this.widgetProps.countDown = undefined
-      }
-      clearInterval(this.countdownTimer)
-      this.countdownTimer = undefined
-    }
-  }
-
-  private showRecovery(request: SigningRequest, session: LinkSession) {
-    request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
-    if (session.type === 'channel') {
-      const channelSession = session as Partial<LinkChannelSession>
-      if (channelSession.addLinkInfo) {
-        channelSession.addLinkInfo(request)
-      }
-    }
-    this.displayRequest(request, 'Sign manually', '', true)
-    this.showingManual = true
   }
 
   public async prepare(request: SigningRequest, _?: LinkSession) {
@@ -333,5 +217,172 @@ export class BrowserTransport implements LinkTransport {
 
   public userAgent() {
     return `BrowserTransport/${BrowserTransport.version} ${navigator.userAgent}`
+  }
+
+  private closeModal(error?: string | Error) {
+    if (this.activeCancel) {
+      this.activeRequest = undefined
+      this.activeCancel(error ?? '')
+      this.activeCancel = undefined
+    }
+
+    this.hide()
+  }
+
+  private setupWidget() {
+    this.showingManual = false
+    if (!this.Widget) {
+      if (!this.widgetHolder) {
+        this.widgetHolder = document.createElement('div')
+        document.body.appendChild(this.widgetHolder)
+      }
+
+      if (this.widgetHolder) {
+        this.widgetProps.back = () => {
+          document.dispatchEvent(new CustomEvent('backToSelector'))
+        }
+        this.widgetProps.close = () => {
+          this.closeModal()
+        }
+        this.Widget = mount(DialogWidget, {props: this.widgetProps, target: this.widgetHolder})
+      }
+    }
+  }
+
+  private getCommonCallbacks({noBack}: {noBack?: boolean} = {}) {
+    return {
+      onClose: () => {
+        this.closeModal()
+      },
+      onBack: !noBack
+        ? () => {
+            this.closeModal(new WalletTypeError('Back to selector'))
+          }
+        : undefined,
+    }
+  }
+
+  private hide() {
+    if (this.ui) {
+      this.ui.close()
+    }
+
+    if (this.Widget) {
+      unmount(this.Widget)
+      this.Widget = undefined
+    }
+    if (this.widgetHolder) {
+      this.widgetHolder.remove()
+      this.widgetHolder = undefined
+    }
+    this.clearTimers()
+  }
+
+  private showDialog(args: DialogArgs) {
+    this.setupWidget()
+    if (this.Widget) {
+      this.widgetProps.showBackButton = !args.hideBackButton
+      this.widgetProps.walletType = this.walletType
+      this.widgetProps.title = args.title || ''
+      this.widgetProps.subtitle = args.subtitle || ''
+      this.widgetProps.action = args.action || null
+      this.widgetProps.showFootnote = args.showFootnote
+      this.widgetProps.countDown = (args.content && args.content.countDown) || null
+      this.widgetProps.qrData = (args.content && args.content.qrData) || null
+      this.widgetProps.show = true
+    }
+  }
+
+  private displayRequest(
+    request: SigningRequest,
+    {
+      title,
+      subtitle,
+      hideBackButton,
+      isSignRequest,
+    }: {
+      title?: string
+      subtitle?: string
+      hideBackButton?: boolean
+      isSignRequest?: boolean
+    } = {
+      title: '',
+      subtitle: '',
+      hideBackButton: false,
+    }
+  ) {
+    const sameDeviceRequest = request.clone()
+    const returnUrl = generateReturnUrl()
+    sameDeviceRequest.setInfoKey('same_device', true)
+    sameDeviceRequest.setInfoKey('return_path', returnUrl)
+
+    if (this.requestAccount.length > 0) {
+      request.setInfoKey('req_account', this.requestAccount)
+      sameDeviceRequest.setInfoKey('req_account', this.requestAccount)
+    }
+
+    const sameDeviceUri = sameDeviceRequest.encode(true, false)
+    const crossDeviceUri = request.encode(true, false)
+
+    const qrCode = GenerateQrCode(crossDeviceUri)
+    const qrData = {
+      code: qrCode,
+      link: sameDeviceUri,
+    }
+
+    const data = {
+      data: qrData,
+      wallet_type: this.walletType,
+      ...this.getCommonCallbacks({noBack: hideBackButton}),
+    }
+
+    if (isSignRequest) {
+      this.ui?.sign_manually(data)
+    } else {
+      this.ui?.login(data)
+    }
+
+    // this.showDialog({
+    //   title,
+    //   showFootnote: request.isIdentity(),
+    //   subtitle,
+    //   hideBackButton,
+    //   content: {qrData},
+    // })
+  }
+
+  private clearTimers() {
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer)
+      this.closeTimer = undefined
+    }
+    this.clearCountdown()
+  }
+
+  private clearCountdown() {
+    if (this.countdownTimer) {
+      if (this.Widget) {
+        this.widgetProps.countDown = undefined
+      }
+      clearInterval(this.countdownTimer)
+      this.countdownTimer = undefined
+    }
+  }
+
+  private showRecovery(request: SigningRequest, session: LinkSession) {
+    request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
+    if (session.type === 'channel') {
+      const channelSession = session as Partial<LinkChannelSession>
+      if (channelSession.addLinkInfo) {
+        channelSession.addLinkInfo(request)
+      }
+    }
+    this.displayRequest(request, {
+      title: 'Sign manually',
+      subtitle: '',
+      hideBackButton: true,
+      isSignRequest: true,
+    })
+    this.showingManual = true
   }
 }

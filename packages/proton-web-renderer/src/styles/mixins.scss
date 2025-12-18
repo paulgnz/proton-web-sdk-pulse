@@ -9,16 +9,17 @@
 
   --border-color: rgba(0, 0, 0, 0.1);
 
-  --button-background-hover: rgba(0, 0, 0, 0.08);
+  --button-icon-background-hover: rgba(0, 0, 0, 0.08);
 
   --button-primary-border: var(--border-color);
   --button-primary-border-hover: #000;
   --button-primary-background-hover: #e4e5e8;
 
   --button-outlined-border: #000;
-  --button-outlined-border-hover: var(--border-color);
+  --button-outlined-border-hover: #b9b9b9;
 
   --button-accent-background: #000000;
+  --button-accent-background-hover: #1e1e1e;
   --button-accent-text: #ffffff;
 
   --button-flat-text: #000;
@@ -43,16 +44,18 @@
     linear-gradient(180deg, rgba(20, 44, 87, 0.4) 0%, rgba(23, 36, 60, 0) 100%), #000;
 
   --border-color: #161616;
-  --button-background-hover: rgba(255, 255, 255, 0.08);
 
-  --button-primary-border: var(--border-color);
+  --button-icon-background-hover: rgba(255, 255, 255, 0.08);
+
+  --button-primary-border: #474d56;
   --button-primary-border-hover: #fff;
   --button-primary-background-hover: transparent;
 
   --button-outlined-border: #fff;
-  --button-outlined-border-hover: var(--border-color);
+  --button-outlined-border-hover: #434445;
 
   --button-accent-background: #ffffff;
+  --button-accent-background-hover: #e1e1e1;
   --button-accent-text: #000000;
 
   --button-flat-text: #c0c0c0;
@@ -61,7 +64,7 @@
   --countdown-background: 255, 255, 255;
 
   --tabs-background: #121a26;
-  --tabs-item-background: #1e2530;
+  --tabs-item-background: #323944;
 
   --list-background: rgba(255, 255, 255, 0.02);
   --list-border: var(--list-background);

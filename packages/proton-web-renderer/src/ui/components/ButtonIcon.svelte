@@ -46,7 +46,7 @@
     }
 
     @include mixins.hover {
-      background-color: var(--button-background-hover);
+      background-color: var(--button-icon-background-hover);
     }
   }
 </style>

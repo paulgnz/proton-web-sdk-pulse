@@ -7,7 +7,7 @@ import type {LinkSession} from './link-session'
  * - `E_CANCEL`: The [[LinkTransport]] canceled the request.
  * - `E_IDENTITY`: Identity proof failed to verify.
  */
-export type LinkErrorCode = 'E_DELIVERY' | 'E_TIMEOUT' | 'E_CANCEL' | 'E_IDENTITY'
+export type LinkErrorCode = 'E_DELIVERY' | 'E_TIMEOUT' | 'E_CANCEL' | 'E_IDENTITY' | 'E_WALLET_TYPE'
 
 /**
  * Error that is thrown if a [[LinkTransport]] cancels a request.
@@ -15,6 +15,17 @@ export type LinkErrorCode = 'E_DELIVERY' | 'E_TIMEOUT' | 'E_CANCEL' | 'E_IDENTIT
  */
 export class CancelError extends Error {
     public code = 'E_CANCEL'
+    constructor(reason?: string) {
+        super(`Request cancelled ${reason ? '(' + reason + ')' : ''}`)
+    }
+}
+
+/**
+ * Error that is thrown if a [[LinkTransport]] navigates back to wallet type selection.
+ * @internal
+ */
+export class WalletTypeError extends Error {
+    public code = 'E_WALLET_TYPE'
     constructor(reason?: string) {
         super(`Request cancelled ${reason ? '(' + reason + ')' : ''}`)
     }

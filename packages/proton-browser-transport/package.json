@@ -24,10 +24,12 @@
     "src"
   ],
   "dependencies": {
-    "@proton/link": "workspace:^"
+    "@proton/link": "workspace:^",
+    "@proton/web-renderer": "workspace:^"
   },
   "peerDependencies": {
-    "@proton/link": "workspace:^"
+    "@proton/link": "workspace:^",
+    "@proton/web-renderer": "workspace:^"
   },
   "devDependencies": {
     "@eslint/css": "^0.14.1",

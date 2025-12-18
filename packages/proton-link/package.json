@@ -45,6 +45,7 @@
         "@jafri/asmcrypto.js": "^2.3.2",
         "@proton/js": "^28.1.2",
         "@proton/signing-request": "workspace:^",
+        "@proton/web-renderer": "workspace:^",
         "bson": "^4.6.0",
         "fetch-ponyfill": "^7.1.0",
         "isomorphic-ws": "^4.0.1",
