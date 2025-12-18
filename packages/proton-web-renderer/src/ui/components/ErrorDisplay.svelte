@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type {UIErrorRequest} from '../interfaces'
+  import type {UIError} from '../interfaces'
 
-  let {name, description}: UIErrorRequest = $props()
+  let {name, description}: UIError = $props()
 </script>
 
 <div class="error">

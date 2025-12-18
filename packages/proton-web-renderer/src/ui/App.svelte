@@ -3,19 +3,21 @@
   import Header from './components/Header.svelte'
   import Modal from './components/Modal.svelte'
   import {type UITheme} from './interfaces'
-  import {active, closeAction, router, theme, walletSelect} from './store'
+  import {active, closeAction, error, router, theme, walletSelect} from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
   import UseAnchorWallet from './views/UseAnchorWallet.svelte'
   import SignRequest from './views/SignRequest.svelte'
   import RequestWithQRCode from './views/RequestWithQRCode.svelte'
   import type {Unsubscriber} from 'svelte/store'
-  import PreparingRequest from './views/PreparingRequest.svelte'
   import {ROUTES} from './constants'
+  import GenericError from './views/GenericError.svelte'
 
   let title = $state('')
   let hideLogo = $state(false)
-  let hideBack = $state(false)
+  let hideBackSource = $state(false)
+
+  let hideBack = $derived(!!$error || hideBackSource)
 
   const isOtherRegExp = /^other\-/
   const isSignRegExp = /\-sign$/
@@ -34,14 +36,14 @@
 
         if (isSignManualRegExp.test(current.path)) {
           title = 'Sign manually'
-          hideBack = true
+          hideBackSource = true
         } else if (isSignRegExp.test(current.path)) {
           title = 'Sign request'
-          hideBack = true
+          hideBackSource = true
         } else {
           if (current.path === ROUTES.PREPARING_REQUEST) {
             title = 'Pending...'
-            hideBack = true
+            hideBackSource = true
             hideLogo = true
           } else if (current.path === ROUTES.OTHER_ANCHOR_USE) {
             title = 'Anchor wallet'
@@ -55,13 +57,13 @@
         }
       } else {
         hideLogo = false
-        hideBack = false
+        hideBackSource = false
       }
     })
 
     unsubscribeActive = active.subscribe((value) => {
       if (!value) {
-        hideBack = false
+        hideBackSource = false
 
         if ($walletSelect) {
           $walletSelect.reject(new Error('no wallet selected'))
@@ -114,9 +116,10 @@
     </div>
 
     <Header {title} {hideLogo} {hideBack}></Header>
-
     {#if $active}
-      {#if $router.path === ROUTES.WEBAUTH_GET}
+      {#if $error}
+        <GenericError name={$error.name} description={$error.description} />
+      {:else if $router.path === ROUTES.WEBAUTH_GET}
         <GetWebAuth />
       {:else if $router.path === ROUTES.OTHER_ANCHOR_USE}
         <UseAnchorWallet />
@@ -133,7 +136,7 @@
       {:else if $router.path === ROUTES.OTHER_ANCHOR_SIGN_MANUAL}
         <RequestWithQRCode walletType="anchor" />
       {:else if $router.path === ROUTES.PREPARING_REQUEST}
-        <PreparingRequest />
+        <GenericError name="Preparing request..." />
       {/if}
     {/if}
   {/snippet}

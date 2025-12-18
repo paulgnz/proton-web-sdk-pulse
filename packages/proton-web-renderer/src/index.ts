@@ -1,12 +1,26 @@
 import {mount, unmount} from 'svelte'
 import type {
+  UIErrorPayload,
+  UIErrorRecoverPayload,
   UILoginPayload,
   UIRenderer,
   UIRendererOptions,
   UIRequestPayload,
   UISignManuallyPayload,
+  UISignPayload,
 } from './types'
-import {active, backAction, closeAction, qrRequestData, router, walletSelect} from './ui/store'
+import {
+  active,
+  backAction,
+  closeAction,
+  error,
+  manualAction,
+  qrRequestData,
+  recoverError,
+  router,
+  signRequestData,
+  walletSelect,
+} from './ui/store'
 import {addListener} from './utils'
 import App from './ui/App.svelte'
 import {ROUTES, SUPPORTED_WALLETS} from './ui/constants'
@@ -15,6 +29,8 @@ import type {UIRouteValue} from './ui/interfaces'
 export const defaultUIRendererOptions = {
   id: 'proton-web-ui',
 }
+
+export type {UIRenderer}
 
 export class WebRenderer implements UIRenderer {
   public element: Element | undefined
@@ -57,12 +73,40 @@ export class WebRenderer implements UIRenderer {
     this.request(route, payload)
   }
 
-  sign(): void {
-    throw new Error('Method not implemented.')
+  sign(payload: UISignPayload): void {
+    let route = ROUTES.WEBAUTH_SIGN
+    if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
+      route = ROUTES.OTHER_ANCHOR_SIGN
+    }
+    this.sign_request(route, payload)
   }
 
-  sign_manually(_: UISignManuallyPayload): void {
-    throw new Error('Method not implemented.')
+  sign_manually(payload: UISignManuallyPayload): void {
+    let route = ROUTES.WEBAUTH_SIGN_MANUAL
+    if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
+      route = ROUTES.OTHER_ANCHOR_SIGN_MANUAL
+    }
+    this.request(route, payload)
+  }
+
+  showError(payload: UIErrorPayload): void {
+    error.set(payload.data)
+    this.show()
+  }
+
+  recoverError(payload: UIErrorRecoverPayload): void {
+    let route = ROUTES.WEBAUTH_SIGN
+    if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
+      route = ROUTES.OTHER_ANCHOR_SIGN
+    }
+
+    recoverError.set(payload.data)
+    if (payload.onManual) {
+      manualAction.set(payload.onManual)
+    }
+
+    router.push(route)
+    this.show()
   }
 
   showLoading(): void {
@@ -80,6 +124,25 @@ export class WebRenderer implements UIRenderer {
 
   destroy(): void {
     unmount(this.app)
+  }
+
+  private sign_request(route: UIRouteValue, payload: UISignPayload): void {
+    if (payload.onBack) {
+      backAction.set(payload.onBack)
+    }
+
+    if (payload.onClose) {
+      closeAction.set(payload.onClose)
+    }
+
+    if (payload.onManual) {
+      manualAction.set(payload.onManual)
+    }
+
+    signRequestData.set(payload.data)
+
+    router.push(route)
+    this.show()
   }
 
   private request(route: UIRouteValue, payload: UIRequestPayload): void {

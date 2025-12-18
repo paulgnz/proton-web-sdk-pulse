@@ -1,12 +1,13 @@
 import {derived, writable} from 'svelte/store'
 import {
   type UIAppContext,
-  type UIErrorRequest,
+  type UIError,
   type UIProps,
   type UIQRData,
   type UIRouter,
   type UIRouterState,
   type UIRouteValue,
+  type UISignData,
   type UITheme,
   type UIWalletSelectResponse,
   type WritableWithReset,
@@ -28,8 +29,10 @@ export const theme = writable<UITheme>('dark')
 
 export const closeAction = writable<(() => void) | undefined>(undefined)
 export const backAction = writable<(() => void) | undefined>(undefined)
+export const manualAction = writable<(() => void) | undefined>(undefined)
 
-export const errorRequest = writable<UIErrorRequest | undefined>(undefined)
+export const error = writable<UIError | undefined>(undefined)
+export const recoverError = writable<UIError | undefined>(undefined)
 
 const defaultUIRouterState: UIRouterState = {
   path: undefined,
@@ -88,6 +91,8 @@ export const walletSelect = initWritableWithReset<UIWalletSelectResponse>()
 
 export const qrRequestData = initWritableWithReset<UIQRData>()
 
+export const signRequestData = initWritableWithReset<UISignData>()
+
 // Reset data in all stores
 export function resetState() {
   active.set(false)
@@ -101,10 +106,13 @@ export function resetState() {
   // transactContext.set(undefined)
 
   appContext.set(undefined)
-  errorRequest.set(undefined)
+  error.set(undefined)
   walletSelect.reset()
   backAction.set(undefined)
   closeAction.set(undefined)
+  manualAction.set(undefined)
+  signRequestData.reset()
+  recoverError.set(undefined)
 
   // loginPromise.set(undefined)
   // loginResponse.set({...defaultLoginResponse})

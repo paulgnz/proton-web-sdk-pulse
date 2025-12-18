@@ -1,9 +1,9 @@
 <script lang="ts">
   import Countdown from '../components/Countdown.svelte'
-  import Error from '../components/ErrorRequest.svelte'
+  import ErrorDisplay from '../components/ErrorDisplay.svelte'
   import Layout from '../components/Layout.svelte'
-  import {ROUTES} from '../constants'
-  import {errorRequest, router} from '../store'
+
+  import {manualAction, recoverError, signRequestData} from '../store'
 
   let {
     walletType = 'webauth',
@@ -11,21 +11,26 @@
     walletType?: 'webauth' | 'anchor'
   } = $props()
 
+  const end = $derived.by(() => {
+    const value = $signRequestData?.timeout ?? 60 * 1000 * 2
+    return new Date(Date.now() + value).toISOString()
+  })
+
+  const label = $derived.by(() => {
+    if ($signRequestData?.deviceName) {
+      return $signRequestData.deviceName
+    }
+
+    return walletType === 'anchor' ? 'Anchor Wallet' : 'WebAuth Wallet'
+  })
+
   function signManually(e: MouseEvent) {
     e.preventDefault()
 
-    if (walletType === 'anchor') {
-      router.push(ROUTES.OTHER_ANCHOR_SIGN_MANUAL)
-    } else {
-      router.push(ROUTES.WEBAUTH_SIGN_MANUAL)
+    if ($manualAction) {
+      $manualAction()
+      manualAction.set(undefined)
     }
-  }
-
-  function timeout() {
-    errorRequest.set({
-      name: 'Request Timed Out',
-      description: 'Please resubmit your transaction.',
-    })
   }
 </script>
 
@@ -33,17 +38,13 @@
   {#snippet content()}
     <div class="wrap">
       <div class="core">
-        {#if $errorRequest}
-          <Error name={$errorRequest.name} description={$errorRequest.description} />
+        {#if $recoverError}
+          <ErrorDisplay name={$recoverError.name} description={$recoverError.description} />
         {:else}
           <div class="core__label">
-            {#if walletType === 'anchor'}
-              Please open Anchor Wallet to <br /> review the transaction
-            {:else}
-              Please open WebAuth Wallet to <br /> review the transaction
-            {/if}
+            Please open {label} to <br /> review the transaction
           </div>
-          <Countdown end={new Date(Date.now() + 30_000).toISOString()} ontimeout={timeout} />
+          <Countdown {end} />
         {/if}
       </div>
     </div>

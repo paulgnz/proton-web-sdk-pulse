@@ -16,6 +16,7 @@ import GenerateQrCode from './qrcode'
 import {mount, unmount} from 'svelte'
 import {DIALOG_STATE} from './state.svelte'
 import {WebRenderer} from '@proton/web-renderer'
+import type {UIRenderer} from '@proton/web-renderer'
 
 export class BrowserTransport implements LinkTransport {
   /** Package version. */
@@ -34,7 +35,7 @@ export class BrowserTransport implements LinkTransport {
   private Widget?: any
   private widgetProps = DIALOG_STATE
   private widgetHolder?: Element
-  private ui?: WebRenderer
+  private ui?: UIRenderer
 
   constructor(options: BrowserTransportOptions = {}) {
     this.requestStatus = !(options.requestStatus === false)
@@ -65,6 +66,7 @@ export class BrowserTransport implements LinkTransport {
 
     if (session.type === 'fallback') {
       this.onRequest(request, cancel)
+
       if (session.metadata.sameDevice) {
         // trigger directly on a fallback same-device session
         window.location.href = request.encode()
@@ -77,41 +79,59 @@ export class BrowserTransport implements LinkTransport {
 
     const deviceName = session.metadata.name
 
-    // Countdown timer
-    this.clearTimers()
     const timeout = session.metadata.timeout || 60 * 1000 * 2
-    const start = Date.now()
-    const formatCountDown = (startTime: number) => {
-      const secondsLeft = Math.floor((timeout + startTime - Date.now()) / 1000)
-      const seconds = String(secondsLeft % 60).padStart(2, '0')
-      const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
-      return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
-    }
-    const updateCountdown = (startTime: number) => {
-      if (this.Widget) {
-        this.widgetProps.countDown = formatCountDown(startTime)
-      }
-    }
+    // // Countdown timer
+    // this.clearTimers()
 
-    this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
-    updateCountdown(start)
+    // const start = Date.now()
+    // const formatCountDown = (startTime: number) => {
+    //   const secondsLeft = Math.floor((timeout + startTime - Date.now()) / 1000)
+    //   const seconds = String(secondsLeft % 60).padStart(2, '0')
+    //   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
+    //   return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
+    // }
+    // const updateCountdown = (startTime: number) => {
+    //   if (this.Widget) {
+    //     this.widgetProps.countDown = formatCountDown(startTime)
+    //   }
+    // }
+
+    // this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
+    // updateCountdown(start)
 
     // Content subtitle
-    this.showDialog({
-      title: 'Signing Request',
-      subtitle: `Please open ${deviceName || 'linked wallet'} to review the transaction`,
-      content: {
-        countDown: formatCountDown(start),
+    // this.showDialog({
+    //   title: 'Signing Request',
+    //   subtitle: `Please open ${deviceName || 'linked wallet'} to review the transaction`,
+    //   content: {
+    //     countDown: formatCountDown(start),
+    //   },
+    //   hideBackButton: true,
+    //   action: {
+    //     text: 'Optional: Sign manually using QR code',
+    //     callback: () => {
+    //       this.clearTimers()
+    //       const error = new SessionError('Manual', 'E_TIMEOUT', session)
+    //       error[SkipToManual] = true
+    //       cancel(error)
+    //     },
+    //   },
+    // })
+
+    this.ui?.sign({
+      wallet_type: this.walletType,
+      ...this.getCommonCallbacks({
+        noBack: true,
+      }),
+      data: {
+        timeout,
+        deviceName,
       },
-      hideBackButton: true,
-      action: {
-        text: 'Optional: Sign manually using QR code',
-        callback: () => {
-          this.clearTimers()
-          const error = new SessionError('Manual', 'E_TIMEOUT', session)
-          error[SkipToManual] = true
-          cancel(error)
-        },
+      onManual: () => {
+        this.clearTimers()
+        const error = new SessionError('Manual', 'E_TIMEOUT', session)
+        error[SkipToManual] = true
+        cancel(error)
       },
     })
 
@@ -127,7 +147,7 @@ export class BrowserTransport implements LinkTransport {
     try {
       this.displayRequest(request, {title: 'Scan the QR-Code'})
     } catch (e) {
-      console.log('cancel', e)
+      console.error('cancel', e)
       cancel(e as string | Error)
     }
   }
@@ -174,17 +194,30 @@ export class BrowserTransport implements LinkTransport {
 
     this.clearCountdown()
 
-    this.showDialog({
-      title: 'Unable to reach device',
-      subtitle:
-        error.message ||
-        `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
-      type: 'warning',
-      action: {
-        text: 'Optional: Sign manually using QR code',
-        callback: () => this.showRecovery(request, session),
+    this.ui?.recoverError({
+      wallet_type: this.walletType,
+      data: {
+        name: 'Unable to reach device',
+        description:
+          error.message ||
+          `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
+      },
+      onManual: () => {
+        this.showRecovery(request, session)
       },
     })
+
+    // this.showDialog({
+    //   title: 'Unable to reach device',
+    //   subtitle:
+    //     error.message ||
+    //     `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
+    //   type: 'warning',
+    //   action: {
+    //     text: 'Optional: Sign manually using QR code',
+    //     callback: () => this.showRecovery(request, session),
+    //   },
+    // })
     return true
   }
 
@@ -204,12 +237,20 @@ export class BrowserTransport implements LinkTransport {
     this.clearTimers()
 
     if (this.requestStatus) {
-      this.showDialog({
-        title: 'Transaction Error',
-        subtitle: parseErrorMessage(error),
-        hideBackButton: true,
-        type: 'error',
+      this.ui?.showError({
+        wallet_type: this.walletType,
+        data: {
+          name: 'Transaction Error',
+          description: parseErrorMessage(error),
+        },
       })
+
+      // this.showDialog({
+      //   title: 'Transaction Error',
+      //   subtitle: parseErrorMessage(error),
+      //   hideBackButton: true,
+      //   type: 'error',
+      // })
     } else {
       this.hide()
     }
@@ -296,11 +337,10 @@ export class BrowserTransport implements LinkTransport {
   private displayRequest(
     request: SigningRequest,
     {
-      title,
-      subtitle,
       hideBackButton,
       isSignRequest,
     }: {
+      // TODO Remove title
       title?: string
       subtitle?: string
       hideBackButton?: boolean

@@ -38,7 +38,7 @@ export interface UIWalletConfig {
   label?: string
 }
 
-export interface UIErrorRequest {
+export interface UIError {
   name: string
   description?: string
 }
@@ -60,4 +60,9 @@ export interface WritableWithReset<T> extends Writable<T | undefined> {
 export interface UIQRData {
   code: string
   link: string
+}
+
+export interface UISignData {
+  timeout?: number
+  deviceName?: string
 }

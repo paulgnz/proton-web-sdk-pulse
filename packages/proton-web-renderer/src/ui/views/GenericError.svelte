@@ -1,13 +1,16 @@
 <script lang="ts">
-  import ErrorRequest from '../components/ErrorRequest.svelte'
+  import ErrorDisplay from '../components/ErrorDisplay.svelte'
   import Layout from '../components/Layout.svelte'
+  import type {UIError} from '../interfaces'
+
+  let {name, description}: UIError = $props()
 </script>
 
 <Layout>
   {#snippet content()}
     <div class="wrap">
       <div class="core">
-        <ErrorRequest name="Preparing request..." />
+        <ErrorDisplay {name} {description} />
       </div>
     </div>
   {/snippet}
