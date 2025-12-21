@@ -13,6 +13,7 @@ import {
   active,
   backAction,
   closeAction,
+  disabledWallets,
   error,
   manualAction,
   qrRequestData,
@@ -50,6 +51,9 @@ export class WebRenderer implements UIRenderer {
   }
 
   async selectWallet(): Promise<string> {
+    // TODO Finish here
+    disabledWallets.set(undefined)
+
     router.push(ROUTES.WEBAUTH_CONNECT)
     this.show()
 

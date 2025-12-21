@@ -1,4 +1,4 @@
-import {derived, writable} from 'svelte/store'
+import {derived, writable, type Writable} from 'svelte/store'
 import type {
   UIError,
   UIProps,
@@ -9,6 +9,7 @@ import type {
   UISignData,
   UITheme,
   UIWalletSelectResponse,
+  UIWalletType,
   WritableWithReset,
 } from './interfaces'
 
@@ -31,6 +32,8 @@ export const manualAction = writable<(() => void) | undefined>(undefined)
 
 export const error = writable<UIError | undefined>(undefined)
 export const recoverError = writable<UIError | undefined>(undefined)
+
+export const disabledWallets = writable<Set<UIWalletType> | undefined>(undefined)
 
 const defaultUIRouterState: UIRouterState = {
   path: undefined,
@@ -110,6 +113,7 @@ export function resetState() {
   manualAction.set(undefined)
   signRequestData.reset()
   recoverError.set(undefined)
+  disabledWallets.set(undefined)
 
   // loginPromise.set(undefined)
   // loginResponse.set({...defaultLoginResponse})
