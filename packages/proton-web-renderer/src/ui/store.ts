@@ -1,26 +1,24 @@
 import {derived, writable} from 'svelte/store'
-import {
-  type UIAppContext,
-  type UIError,
-  type UIProps,
-  type UIQRData,
-  type UIRouter,
-  type UIRouterState,
-  type UIRouteValue,
-  type UISignData,
-  type UITheme,
-  type UIWalletSelectResponse,
-  type WritableWithReset,
+import type {
+  UIError,
+  UIProps,
+  UIQRData,
+  UIRouter,
+  UIRouterState,
+  UIRouteValue,
+  UISignData,
+  UITheme,
+  UIWalletSelectResponse,
+  WritableWithReset,
 } from './interfaces'
 
+// TODO Review this
 const defaultUIProps: UIProps = {
   title: 'Get web auth',
   subtitle: 'Status Message',
 }
 
 export const app_props = writable<UIProps>(defaultUIProps)
-
-export const appContext = writable<UIAppContext | undefined>()
 
 /** Whether or not the interface is active in the browser */
 export const active = writable<boolean>(false)
@@ -105,7 +103,6 @@ export function resetState() {
   // cancelablePromises.set([])
   // transactContext.set(undefined)
 
-  appContext.set(undefined)
   error.set(undefined)
   walletSelect.reset()
   backAction.set(undefined)

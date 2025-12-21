@@ -43,11 +43,6 @@ export interface UIError {
   description?: string
 }
 
-export interface UIAppContext {
-  wallets: UIWalletConfig[]
-  mainWallet?: UIWalletConfig['name']
-}
-
 export type UIWalletSelectResponse = {
   reject: (error: Error) => void
   resolve: (response: string) => void

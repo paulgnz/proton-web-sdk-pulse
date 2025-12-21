@@ -134,7 +134,7 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      globals: {'@proton/link': 'ProtonLink'},
+      globals: {'@proton/link': 'ProtonLink', '@proton/web-renderer': 'WebRenderer'},
       banner,
       name: 'ProtonBrowserTransport',
       file: pkg.unpkg,

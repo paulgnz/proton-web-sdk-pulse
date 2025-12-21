@@ -81,7 +81,7 @@ export class WebRenderer implements UIRenderer {
     this.sign_request(route, payload)
   }
 
-  sign_manually(payload: UISignManuallyPayload): void {
+  signManually(payload: UISignManuallyPayload): void {
     let route = ROUTES.WEBAUTH_SIGN_MANUAL
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN_MANUAL

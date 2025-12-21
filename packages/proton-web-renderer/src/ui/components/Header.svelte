@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {active, router, app_props, backAction} from '../store'
+  import {active, router, backAction} from '../store'
   import Icon from './icons/Icon.svelte'
   import ButtonIcon from './ButtonIcon.svelte'
   import {type Unsubscriber} from 'svelte/store'

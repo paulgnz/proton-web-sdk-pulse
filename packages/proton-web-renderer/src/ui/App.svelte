@@ -81,13 +81,13 @@
     theme.set(themeValue)
   }
 
-  function sign() {
-    router.push(ROUTES.WEBAUTH_SIGN)
-  }
+  // function sign() {
+  //   router.push(ROUTES.WEBAUTH_SIGN)
+  // }
 
-  function signAnchor() {
-    router.push(ROUTES.OTHER_ANCHOR_SIGN)
-  }
+  // function signAnchor() {
+  //   router.push(ROUTES.OTHER_ANCHOR_SIGN)
+  // }
 
   onDestroy(() => {
     unsubscribeRouter?.()
@@ -111,11 +111,12 @@
       <button onclick={() => setTheme('light')}>Light</button>
       <div style="display: inline-block; width: 30px"></div>
 
-      <button onclick={() => sign()}>Sign with WebAuth</button>
-      <button onclick={() => signAnchor()}>Sign with Anchor</button>
+      <!-- <button onclick={() => sign()}>Sign with WebAuth</button> -->
+      <!-- <button onclick={() => signAnchor()}>Sign with Anchor</button> -->
     </div>
 
     <Header {title} {hideLogo} {hideBack}></Header>
+
     {#if $active}
       {#if $error}
         <GenericError name={$error.name} description={$error.description} />

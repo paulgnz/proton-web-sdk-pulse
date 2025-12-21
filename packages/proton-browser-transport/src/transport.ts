@@ -7,14 +7,15 @@ import type {
   LinkTransport,
   SigningRequest,
 } from '@proton/link'
-import DialogWidget from './views/Dialog.svelte'
+// import DialogWidget from './views/Dialog.svelte'
 import {Storage} from './storage'
 import {generateReturnUrl, isMobile, parseErrorMessage} from './utils'
-import {type BrowserTransportOptions, type DialogArgs, SkipToManual} from './types'
+import {type BrowserTransportOptions, SkipToManual} from './types'
+// type DialogArgs,
 
 import GenerateQrCode from './qrcode'
-import {mount, unmount} from 'svelte'
-import {DIALOG_STATE} from './state.svelte'
+// import {mount, unmount} from 'svelte'
+// import {DIALOG_STATE} from './state.svelte'
 import {WebRenderer} from '@proton/web-renderer'
 import type {UIRenderer} from '@proton/web-renderer'
 
@@ -29,12 +30,12 @@ export class BrowserTransport implements LinkTransport {
   private activeRequest?: SigningRequest
   // eslint-disable-next-line no-unused-vars
   private activeCancel?: (reason: string | Error) => void
-  private countdownTimer?: NodeJS.Timeout
-  private closeTimer?: NodeJS.Timeout
+  // private countdownTimer?: NodeJS.Timeout
+  // private closeTimer?: NodeJS.Timeout
   private showingManual: boolean
-  private Widget?: any
-  private widgetProps = DIALOG_STATE
-  private widgetHolder?: Element
+  // private Widget?: any
+  // private widgetProps = DIALOG_STATE
+  // private widgetHolder?: Element
   private ui?: UIRenderer
 
   constructor(options: BrowserTransportOptions = {}) {
@@ -128,7 +129,7 @@ export class BrowserTransport implements LinkTransport {
         deviceName,
       },
       onManual: () => {
-        this.clearTimers()
+        // this.clearTimers()
         const error = new SessionError('Manual', 'E_TIMEOUT', session)
         error[SkipToManual] = true
         cancel(error)
@@ -141,13 +142,12 @@ export class BrowserTransport implements LinkTransport {
   }
 
   public onRequest(request: SigningRequest, cancel: (_reason: string | Error) => void) {
-    this.clearTimers()
+    // this.clearTimers()
     this.activeRequest = request
     this.activeCancel = cancel
     try {
       this.displayRequest(request, {title: 'Scan the QR-Code'})
     } catch (e) {
-      console.error('cancel', e)
       cancel(e as string | Error)
     }
   }
@@ -192,7 +192,7 @@ export class BrowserTransport implements LinkTransport {
       return true
     }
 
-    this.clearCountdown()
+    // this.clearCountdown()
 
     this.ui?.recoverError({
       wallet_type: this.walletType,
@@ -223,7 +223,7 @@ export class BrowserTransport implements LinkTransport {
 
   public onSuccess(request: SigningRequest) {
     if (request === this.activeRequest) {
-      this.clearTimers()
+      // this.clearTimers()
       this.hide()
     }
   }
@@ -234,7 +234,7 @@ export class BrowserTransport implements LinkTransport {
       return
     }
 
-    this.clearTimers()
+    // this.clearTimers()
 
     if (this.requestStatus) {
       this.ui?.showError({
@@ -270,25 +270,25 @@ export class BrowserTransport implements LinkTransport {
     this.hide()
   }
 
-  private setupWidget() {
-    this.showingManual = false
-    if (!this.Widget) {
-      if (!this.widgetHolder) {
-        this.widgetHolder = document.createElement('div')
-        document.body.appendChild(this.widgetHolder)
-      }
+  // private setupWidget() {
+  //   this.showingManual = false
+  //   if (!this.Widget) {
+  //     if (!this.widgetHolder) {
+  //       this.widgetHolder = document.createElement('div')
+  //       document.body.appendChild(this.widgetHolder)
+  //     }
 
-      if (this.widgetHolder) {
-        this.widgetProps.back = () => {
-          document.dispatchEvent(new CustomEvent('backToSelector'))
-        }
-        this.widgetProps.close = () => {
-          this.closeModal()
-        }
-        this.Widget = mount(DialogWidget, {props: this.widgetProps, target: this.widgetHolder})
-      }
-    }
-  }
+  //     if (this.widgetHolder) {
+  //       this.widgetProps.back = () => {
+  //         document.dispatchEvent(new CustomEvent('backToSelector'))
+  //       }
+  //       this.widgetProps.close = () => {
+  //         this.closeModal()
+  //       }
+  //       this.Widget = mount(DialogWidget, {props: this.widgetProps, target: this.widgetHolder})
+  //     }
+  //   }
+  // }
 
   private getCommonCallbacks({noBack}: {noBack?: boolean} = {}) {
     return {
@@ -308,31 +308,31 @@ export class BrowserTransport implements LinkTransport {
       this.ui.close()
     }
 
-    if (this.Widget) {
-      unmount(this.Widget)
-      this.Widget = undefined
-    }
-    if (this.widgetHolder) {
-      this.widgetHolder.remove()
-      this.widgetHolder = undefined
-    }
-    this.clearTimers()
+    // if (this.Widget) {
+    //   unmount(this.Widget)
+    //   this.Widget = undefined
+    // }
+    // if (this.widgetHolder) {
+    //   this.widgetHolder.remove()
+    //   this.widgetHolder = undefined
+    // }
+    // this.clearTimers()
   }
 
-  private showDialog(args: DialogArgs) {
-    this.setupWidget()
-    if (this.Widget) {
-      this.widgetProps.showBackButton = !args.hideBackButton
-      this.widgetProps.walletType = this.walletType
-      this.widgetProps.title = args.title || ''
-      this.widgetProps.subtitle = args.subtitle || ''
-      this.widgetProps.action = args.action || null
-      this.widgetProps.showFootnote = args.showFootnote
-      this.widgetProps.countDown = (args.content && args.content.countDown) || null
-      this.widgetProps.qrData = (args.content && args.content.qrData) || null
-      this.widgetProps.show = true
-    }
-  }
+  // private showDialog(args: DialogArgs) {
+  //   this.setupWidget()
+  //   if (this.Widget) {
+  //     this.widgetProps.showBackButton = !args.hideBackButton
+  //     this.widgetProps.walletType = this.walletType
+  //     this.widgetProps.title = args.title || ''
+  //     this.widgetProps.subtitle = args.subtitle || ''
+  //     this.widgetProps.action = args.action || null
+  //     this.widgetProps.showFootnote = args.showFootnote
+  //     this.widgetProps.countDown = (args.content && args.content.countDown) || null
+  //     this.widgetProps.qrData = (args.content && args.content.qrData) || null
+  //     this.widgetProps.show = true
+  //   }
+  // }
 
   private displayRequest(
     request: SigningRequest,
@@ -377,7 +377,7 @@ export class BrowserTransport implements LinkTransport {
     }
 
     if (isSignRequest) {
-      this.ui?.sign_manually(data)
+      this.ui?.signManually(data)
     } else {
       this.ui?.login(data)
     }
@@ -391,23 +391,23 @@ export class BrowserTransport implements LinkTransport {
     // })
   }
 
-  private clearTimers() {
-    if (this.closeTimer) {
-      clearTimeout(this.closeTimer)
-      this.closeTimer = undefined
-    }
-    this.clearCountdown()
-  }
+  // private clearTimers() {
+  //   // if (this.closeTimer) {
+  //   //   clearTimeout(this.closeTimer)
+  //   //   this.closeTimer = undefined
+  //   // }
+  //   // this.clearCountdown()
+  // }
 
-  private clearCountdown() {
-    if (this.countdownTimer) {
-      if (this.Widget) {
-        this.widgetProps.countDown = undefined
-      }
-      clearInterval(this.countdownTimer)
-      this.countdownTimer = undefined
-    }
-  }
+  // private clearCountdown() {
+  //   if (this.countdownTimer) {
+  //     if (this.Widget) {
+  //       this.widgetProps.countDown = undefined
+  //     }
+  //     clearInterval(this.countdownTimer)
+  //     this.countdownTimer = undefined
+  //   }
+  // }
 
   private showRecovery(request: SigningRequest, session: LinkSession) {
     request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')

@@ -45,23 +45,11 @@ export interface UIRenderer {
   selectWallet(): Promise<string>
   login(_: UILoginPayload): void
   sign(_: UISignPayload): void
-  sign_manually(_: UISignManuallyPayload): void
+  signManually(_: UISignManuallyPayload): void
   showError(_: UIErrorPayload): void
   recoverError(_: UIErrorRecoverPayload): void
   show(): void
   close(): void
   destroy(): void
   showLoading(): void
-}
-
-export interface DialogArgs {
-  title: string | HTMLElement
-  manual?: HTMLElement
-  subtitle?: string | HTMLElement
-  type?: string
-  content?: Record<string, any>
-  action?: {text: string; callback: () => void}
-  showFootnote?: boolean
-  hideLogo?: boolean
-  hideBackButton?: boolean
 }
