@@ -2,16 +2,10 @@
   import type {ClassValue} from 'svelte/elements'
 
   let {
-    size = 'medium',
     class: className,
   }: {
     class?: ClassValue
-    size?: 'small' | 'medium'
   } = $props()
-
-  const imgSize = $derived.by(() => (size === 'medium' ? 120 : 95))
-  // Optical compensation for Google Play icon
-  const googleSize = $derived(Math.floor(imgSize / 0.93))
 </script>
 
 <div class={['links', className]}>
@@ -24,7 +18,7 @@
     <img
       src="https://cdn.xprnetwork.org/images/webauth/badges/app_store_badge/public"
       alt="Download on the App Store"
-      width={imgSize}
+      height="32"
     />
   </a>
   <a
@@ -36,7 +30,7 @@
     <img
       src="https://cdn.xprnetwork.org/images/webauth/badges/google_play_badge/public"
       alt="Get it on Google Play"
-      width={googleSize}
+      height="32"
     />
   </a>
 </div>
@@ -45,7 +39,8 @@
   .links {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: var(--space-l);
 
     a {
       font-size: 0;

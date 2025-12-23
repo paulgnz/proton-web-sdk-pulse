@@ -21,7 +21,7 @@
   {#snippet footer()}
     <div class="footer">
       <div class="footer__label">Download the WebAuth Mobile App</div>
-      <GetApp class="footer-apps" size="small" />
+      <GetApp class="footer-apps" />
     </div>
   {/snippet}
 </Layout>

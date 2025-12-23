@@ -64,6 +64,7 @@
     align-items: center;
     gap: var(--space-s);
     text-decoration: none;
+    transition: all 0.1s ease-in;
 
     &[data-appearance='primary'] {
       border: 1px solid var(--button-primary-border);

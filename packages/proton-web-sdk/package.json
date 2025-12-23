@@ -34,7 +34,8 @@
     "@greymass/eosio": "^0.6.1",
     "@proton/browser-transport": "workspace:^",
     "@proton/js": "^28.1.2",
-    "@proton/link": "workspace:^"
+    "@proton/link": "workspace:^",
+    "@proton/web-renderer": "workspace:^"
   },
   "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2",
   "devDependencies": {
