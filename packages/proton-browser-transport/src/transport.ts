@@ -7,15 +7,10 @@ import type {
   LinkTransport,
   SigningRequest,
 } from '@proton/link'
-// import DialogWidget from './views/Dialog.svelte'
 import {Storage} from './storage'
 import {generateReturnUrl, isMobile, parseErrorMessage} from './utils'
 import {type BrowserTransportOptions, SkipToManual} from './types'
-// type DialogArgs,
-
 import GenerateQrCode from './qrcode'
-// import {mount, unmount} from 'svelte'
-// import {DIALOG_STATE} from './state.svelte'
 import {WebRenderer} from '@proton/web-renderer'
 import type {UIRenderer} from '@proton/web-renderer'
 
@@ -30,12 +25,7 @@ export class BrowserTransport implements LinkTransport {
   private activeRequest?: SigningRequest
   // eslint-disable-next-line no-unused-vars
   private activeCancel?: (reason: string | Error) => void
-  // private countdownTimer?: NodeJS.Timeout
-  // private closeTimer?: NodeJS.Timeout
   private showingManual: boolean
-  // private Widget?: any
-  // private widgetProps = DIALOG_STATE
-  // private widgetHolder?: Element
   private ui?: UIRenderer
 
   constructor(options: BrowserTransportOptions = {}) {
@@ -81,43 +71,6 @@ export class BrowserTransport implements LinkTransport {
     const deviceName = session.metadata.name
 
     const timeout = session.metadata.timeout || 60 * 1000 * 2
-    // // Countdown timer
-    // this.clearTimers()
-
-    // const start = Date.now()
-    // const formatCountDown = (startTime: number) => {
-    //   const secondsLeft = Math.floor((timeout + startTime - Date.now()) / 1000)
-    //   const seconds = String(secondsLeft % 60).padStart(2, '0')
-    //   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
-    //   return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
-    // }
-    // const updateCountdown = (startTime: number) => {
-    //   if (this.Widget) {
-    //     this.widgetProps.countDown = formatCountDown(startTime)
-    //   }
-    // }
-
-    // this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
-    // updateCountdown(start)
-
-    // Content subtitle
-    // this.showDialog({
-    //   title: 'Signing Request',
-    //   subtitle: `Please open ${deviceName || 'linked wallet'} to review the transaction`,
-    //   content: {
-    //     countDown: formatCountDown(start),
-    //   },
-    //   hideBackButton: true,
-    //   action: {
-    //     text: 'Optional: Sign manually using QR code',
-    //     callback: () => {
-    //       this.clearTimers()
-    //       const error = new SessionError('Manual', 'E_TIMEOUT', session)
-    //       error[SkipToManual] = true
-    //       cancel(error)
-    //     },
-    //   },
-    // })
 
     this.ui?.sign({
       wallet_type: this.walletType,
@@ -129,7 +82,6 @@ export class BrowserTransport implements LinkTransport {
         deviceName,
       },
       onManual: () => {
-        // this.clearTimers()
         const error = new SessionError('Manual', 'E_TIMEOUT', session)
         error[SkipToManual] = true
         cancel(error)
@@ -142,11 +94,10 @@ export class BrowserTransport implements LinkTransport {
   }
 
   public onRequest(request: SigningRequest, cancel: (_reason: string | Error) => void) {
-    // this.clearTimers()
     this.activeRequest = request
     this.activeCancel = cancel
     try {
-      this.displayRequest(request, {title: 'Scan the QR-Code'})
+      this.displayRequest(request)
     } catch (e) {
       cancel(e as string | Error)
     }
@@ -206,24 +157,11 @@ export class BrowserTransport implements LinkTransport {
         this.showRecovery(request, session)
       },
     })
-
-    // this.showDialog({
-    //   title: 'Unable to reach device',
-    //   subtitle:
-    //     error.message ||
-    //     `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
-    //   type: 'warning',
-    //   action: {
-    //     text: 'Optional: Sign manually using QR code',
-    //     callback: () => this.showRecovery(request, session),
-    //   },
-    // })
     return true
   }
 
   public onSuccess(request: SigningRequest) {
     if (request === this.activeRequest) {
-      // this.clearTimers()
       this.hide()
     }
   }
@@ -234,8 +172,6 @@ export class BrowserTransport implements LinkTransport {
       return
     }
 
-    // this.clearTimers()
-
     if (this.requestStatus) {
       this.ui?.showError({
         wallet_type: this.walletType,
@@ -244,13 +180,6 @@ export class BrowserTransport implements LinkTransport {
           description: parseErrorMessage(error),
         },
       })
-
-      // this.showDialog({
-      //   title: 'Transaction Error',
-      //   subtitle: parseErrorMessage(error),
-      //   hideBackButton: true,
-      //   type: 'error',
-      // })
     } else {
       this.hide()
     }
@@ -270,26 +199,6 @@ export class BrowserTransport implements LinkTransport {
     this.hide()
   }
 
-  // private setupWidget() {
-  //   this.showingManual = false
-  //   if (!this.Widget) {
-  //     if (!this.widgetHolder) {
-  //       this.widgetHolder = document.createElement('div')
-  //       document.body.appendChild(this.widgetHolder)
-  //     }
-
-  //     if (this.widgetHolder) {
-  //       this.widgetProps.back = () => {
-  //         document.dispatchEvent(new CustomEvent('backToSelector'))
-  //       }
-  //       this.widgetProps.close = () => {
-  //         this.closeModal()
-  //       }
-  //       this.Widget = mount(DialogWidget, {props: this.widgetProps, target: this.widgetHolder})
-  //     }
-  //   }
-  // }
-
   private getCommonCallbacks({noBack}: {noBack?: boolean} = {}) {
     return {
       onClose: () => {
@@ -307,32 +216,7 @@ export class BrowserTransport implements LinkTransport {
     if (this.ui) {
       this.ui.close()
     }
-
-    // if (this.Widget) {
-    //   unmount(this.Widget)
-    //   this.Widget = undefined
-    // }
-    // if (this.widgetHolder) {
-    //   this.widgetHolder.remove()
-    //   this.widgetHolder = undefined
-    // }
-    // this.clearTimers()
   }
-
-  // private showDialog(args: DialogArgs) {
-  //   this.setupWidget()
-  //   if (this.Widget) {
-  //     this.widgetProps.showBackButton = !args.hideBackButton
-  //     this.widgetProps.walletType = this.walletType
-  //     this.widgetProps.title = args.title || ''
-  //     this.widgetProps.subtitle = args.subtitle || ''
-  //     this.widgetProps.action = args.action || null
-  //     this.widgetProps.showFootnote = args.showFootnote
-  //     this.widgetProps.countDown = (args.content && args.content.countDown) || null
-  //     this.widgetProps.qrData = (args.content && args.content.qrData) || null
-  //     this.widgetProps.show = true
-  //   }
-  // }
 
   private displayRequest(
     request: SigningRequest,
@@ -340,14 +224,9 @@ export class BrowserTransport implements LinkTransport {
       hideBackButton,
       isSignRequest,
     }: {
-      // TODO Remove title
-      title?: string
-      subtitle?: string
       hideBackButton?: boolean
       isSignRequest?: boolean
     } = {
-      title: '',
-      subtitle: '',
       hideBackButton: false,
     }
   ) {
@@ -381,33 +260,7 @@ export class BrowserTransport implements LinkTransport {
     } else {
       this.ui?.login(data)
     }
-
-    // this.showDialog({
-    //   title,
-    //   showFootnote: request.isIdentity(),
-    //   subtitle,
-    //   hideBackButton,
-    //   content: {qrData},
-    // })
   }
-
-  // private clearTimers() {
-  //   // if (this.closeTimer) {
-  //   //   clearTimeout(this.closeTimer)
-  //   //   this.closeTimer = undefined
-  //   // }
-  //   // this.clearCountdown()
-  // }
-
-  // private clearCountdown() {
-  //   if (this.countdownTimer) {
-  //     if (this.Widget) {
-  //       this.widgetProps.countDown = undefined
-  //     }
-  //     clearInterval(this.countdownTimer)
-  //     this.countdownTimer = undefined
-  //   }
-  // }
 
   private showRecovery(request: SigningRequest, session: LinkSession) {
     request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
@@ -418,8 +271,6 @@ export class BrowserTransport implements LinkTransport {
       }
     }
     this.displayRequest(request, {
-      title: 'Sign manually',
-      subtitle: '',
       hideBackButton: true,
       isSignRequest: true,
     })

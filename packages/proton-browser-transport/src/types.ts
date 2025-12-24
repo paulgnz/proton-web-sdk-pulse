@@ -1,4 +1,4 @@
-import type {WebRenderer} from '@proton/web-renderer'
+import type {UIRenderer} from '@proton/web-renderer'
 
 export const SkipToManual = Symbol()
 
@@ -12,21 +12,5 @@ export interface BrowserTransportOptions {
   /** Local storage prefix, defaults to `proton-link`. */
   storagePrefix?: string
 
-  ui?: WebRenderer
-}
-
-export interface footNoteDownloadLinks {
-  [key: string]: string
-}
-
-export interface DialogArgs {
-  title: string | HTMLElement
-  manual?: HTMLElement
-  subtitle?: string | HTMLElement
-  type?: string
-  content?: Record<string, any>
-  action?: {text: string; callback: () => void}
-  showFootnote?: boolean
-  hideLogo?: boolean
-  hideBackButton?: boolean
+  ui?: UIRenderer
 }

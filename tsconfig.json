@@ -17,6 +17,9 @@
       "@proton/web-sdk": [
         "proton-web-sdk"
       ],
+      "@proton/web-renderer": [
+        "proton-web-renderer"
+      ],
     },
     "downlevelIteration": true,
     "declaration": true,

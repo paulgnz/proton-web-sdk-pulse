@@ -40,7 +40,3 @@ Clone the repository and run `pnpm run build` to checkout all dependencies and b
 ## License
 
 [MIT](./LICENSE.md)
-
----
-
-Made with ☕️ & ❤️ by [Greymass](https://greymass.com), if you find this useful please consider [supporting us](https://greymass.com/support-us).
