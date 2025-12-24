@@ -10,6 +10,10 @@
   "main": "lib/react-native-sdk.js",
   "typings": "lib/types/index.d.ts",
   "type": "module",
+  "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
+  "bugs": {
+    "url": "https://github.com/XPRNetwork/proton-web-sdk/issues"
+  },
   "files": [
     "lib",
     "src"
@@ -43,7 +47,6 @@
   },
   "gitHead": "e15e7e40cc610b4a7ceeaee75909ff6389d8f1e5",
   "devDependencies": {
-
     "@eslint/js": "^9.39.1",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-json": "^6.1.0",

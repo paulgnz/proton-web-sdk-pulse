@@ -2,7 +2,10 @@
     "name": "@proton/signing-request",
     "version": "5.0.0",
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
-    "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
+    "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
+    "bugs": {
+        "url": "https://github.com/XPRNetwork/proton-web-sdk/issues"
+    },
     "license": "MIT",
     "main": "lib/proton-signing-request.js",
     "module": "lib/proton-signing-request.m.js",
