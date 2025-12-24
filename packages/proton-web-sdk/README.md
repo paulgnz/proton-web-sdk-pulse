@@ -30,23 +30,41 @@ const { link, session } = await ProtonWebSDK({
         requestStatus: true,
     },
     selectorOptions: {
-        /* Optional: Name to show in modal, Default 'app' */
-        appName: 'Taskly',
-
-        /* Optional: Logo to show in modal */
-        appLogo: 'https://protondemos.com/static/media/taskly-logo.ad0bfb0f.svg', 
-
-        /* Optional: Custom style options for modal */
-        customStyleOptions: {
-            modalBackgroundColor: '#F4F7FA',
-            logoBackgroundColor: 'white',
-            isLogoRound: true,
-            optionBackgroundColor: 'white',
-            optionFontColor: 'black',
-            primaryFontColor: 'black',
-            secondaryFontColor: '#6B727F',
-            linkColor: '#752EEB'
-        }
+        /* Optional: The list of enabled wallets. All wallets are enabled by default. Possible values: proton, webauth, anchor */
+        enabledWalletTypes: ['proton', 'webauth', 'anchor']
+        
+        /* Optional: The name of the wallet to use. In this case the wallet selector step will be skipped. */
+        walletType: 'proton'
+    },
+    /* Optional: Configuration of UI widget */
+    uiOptions: {
+      /* Optional: The name of the theme to use. Default: dark. Possible values: dark, light or any name of the theme defined in themes options */
+      theme: 'light',
+      /* Optional: The set of themes with options to adjust. It is possible to define some parameters for light or dark theme or define completely new theme with all parameters set */
+      themes: {
+        light: {
+          base: {
+            textColorBase: 'red',
+            textColorLink: 'green',
+          },
+          button: {
+            primary: {
+              backgroundHover: 'red',
+            },
+          },
+        },
+        my: {
+          base: {
+            textColorBase: 'green',
+            textColorLink: 'red',
+          },
+          button: {
+            primary: {
+              backgroundHover: 'blue',
+            },
+          },
+        },
+      },
     }
 })
 

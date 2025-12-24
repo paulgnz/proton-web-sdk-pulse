@@ -1,73 +1,91 @@
+@function create_var($name, $defaults...) {
+  @return '--' + #{$name}+ ': ' + var(--pw-#{$name}, #{$defaults});
+}
+
+@mixin create-var($name, $defaults...) {
+  --#{$name}: var(--pw-#{$name}, #{$defaults});
+}
+
 @mixin light-theme {
   color-scheme: light;
 
-  --text-secondary: #333333;
-  --text-link: #000000;
+  @include create-var('text-color-base', #000000);
+  @include create-var('text-color-secondary', #333333);
+  @include create-var('text-color-link', #000000);
 
-  --body-background:
-    linear-gradient(180deg, rgba(20, 44, 87, 0.1) 0%, rgba(23, 36, 60, 0) 100%), #fff;
+  @include create-var(
+    'body-background',
+    linear-gradient(180deg, rgba(20, 44, 87, 0.1) 0%, rgba(23, 36, 60, 0) 100%),
+    #fff
+  );
 
-  --border-color: rgba(0, 0, 0, 0.1);
+  @include create-var('border-color', rgba(0, 0, 0, 0.1));
 
-  --button-icon-background-hover: rgba(0, 0, 0, 0.08);
+  @include create-var('button-icon-background-hover', rgba(0, 0, 0, 0.08));
 
-  --button-primary-border: #a6a7a9;
-  --button-primary-border-hover: #000;
-  --button-primary-background-hover: #e4e5e8;
+  @include create-var('button-primary-border-color', #a6a7a9);
+  @include create-var('button-primary-border-color-hover', #000);
+  @include create-var('button-primary-background-hover', #e4e5e8);
 
-  --button-outlined-border: #000;
-  --button-outlined-border-hover: #b9b9b9;
+  @include create-var('button-outlined-border-color', #000);
+  @include create-var('button-outlined-border-color-hover', #b9b9b9);
 
-  --button-accent-background: #000000;
-  --button-accent-background-hover: #1e1e1e;
-  --button-accent-text: #ffffff;
+  @include create-var('button-accent-background', #000000);
+  @include create-var('button-accent-background-hover', #1e1e1e);
+  @include create-var('button-accent-text-color', #ffffff);
 
-  --button-flat-text: #000;
-  --button-flat-text-hover: #7f7f7f;
+  @include create-var('button-flat-text-color', #000);
+  @include create-var('button-flat-text-color-hover', #7f7f7f);
 
-  --countdown-background: 0, 0, 0;
+  @include create-var('countdown-background', 0, 0, 0);
 
-  --tabs-background: #d5d6d9;
-  --tabs-item-background: #161616;
+  @include create-var('tabs-background', #d5d6d9);
+  @include create-var('tabs-background-active', #161616);
+  @include create-var('tabs-text-color-active', #ffffff);
 
-  --list-background: rgba(0, 0, 0, 0.02);
-  --list-border: var(--list-background);
+  @include create-var('list-background', rgba(0, 0, 0, 0.02));
+  @include create-var('list-border-color', var(--list-background));
 }
 
 @mixin dark-theme {
   color-scheme: dark;
 
-  --text-secondary: #c0c0c0;
-  --text-link: #ffffff;
+  @include create-var('text-color-base', #ffffff);
+  @include create-var('text-color-secondary', #c0c0c0);
+  @include create-var('text-color-link', #ffffff);
 
-  --body-background:
-    linear-gradient(180deg, rgba(20, 44, 87, 0.4) 0%, rgba(23, 36, 60, 0) 100%), #000;
+  @include create-var(
+    'body-background',
+    linear-gradient(180deg, rgba(20, 44, 87, 0.4) 0%, rgba(23, 36, 60, 0) 100%),
+    #000
+  );
 
-  --border-color: #161616;
+  @include create-var('border-color', #161616);
 
-  --button-icon-background-hover: rgba(255, 255, 255, 0.08);
+  @include create-var('button-icon-background-hover', rgba(255, 255, 255, 0.08));
 
-  --button-primary-border: #474d56;
-  --button-primary-border-hover: #fff;
-  --button-primary-background-hover: transparent;
+  @include create-var('button-primary-border-color', #474d56);
+  @include create-var('button-primary-border-color-hover', #fff);
+  @include create-var('button-primary-background-hover', transparent);
 
-  --button-outlined-border: #fff;
-  --button-outlined-border-hover: #434445;
+  @include create-var('button-outlined-border-color', #fff);
+  @include create-var('button-outlined-border-color-hover', #434445);
 
-  --button-accent-background: #ffffff;
-  --button-accent-background-hover: #e1e1e1;
-  --button-accent-text: #000000;
+  @include create-var('button-accent-background', #ffffff);
+  @include create-var('button-accent-background-hover', #e1e1e1);
+  @include create-var('button-accent-text-color', #000000);
 
-  --button-flat-text: #c0c0c0;
-  --button-flat-text-hover: #ffffff;
+  @include create-var('button-flat-text-color', #c0c0c0);
+  @include create-var('button-flat-text-color-hover', #ffffff);
 
-  --countdown-background: 255, 255, 255;
+  @include create-var('countdown-background', 255, 255, 255);
 
-  --tabs-background: #121a26;
-  --tabs-item-background: #323944;
+  @include create-var('tabs-background', #121a26);
+  @include create-var('tabs-background-active', #323944);
+  @include create-var('tabs-text-color-active', #ffffff);
 
-  --list-background: rgba(255, 255, 255, 0.02);
-  --list-border: var(--list-background);
+  @include create-var('list-background', rgba(255, 255, 255, 0.02));
+  @include create-var('list-border-color', var(--list-background));
 }
 
 @mixin button-reset {

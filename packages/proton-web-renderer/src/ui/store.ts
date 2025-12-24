@@ -13,11 +13,7 @@ import type {
   WritableWithReset,
 } from './interfaces'
 
-// TODO Review this
-const defaultUIProps: UIProps = {
-  title: 'Get web auth',
-  subtitle: 'Status Message',
-}
+const defaultUIProps: UIProps = {}
 
 export const app_props = writable<UIProps>(defaultUIProps)
 
@@ -33,7 +29,7 @@ export const manualAction = writable<(() => void) | undefined>(undefined)
 export const error = writable<UIError | undefined>(undefined)
 export const recoverError = writable<UIError | undefined>(undefined)
 
-export const disabledWallets = writable<Set<UIWalletType> | undefined>(undefined)
+export const enabledWallets = writable<Set<UIWalletType> | undefined>(undefined)
 
 const defaultUIRouterState: UIRouterState = {
   path: undefined,
@@ -101,11 +97,6 @@ export function resetState() {
   router.set({...defaultUIRouterState})
   app_props.set({...defaultUIProps})
 
-  // prompt.reset()
-
-  // cancelablePromises.set([])
-  // transactContext.set(undefined)
-
   error.set(undefined)
   walletSelect.reset()
   backAction.set(undefined)
@@ -113,16 +104,5 @@ export function resetState() {
   manualAction.set(undefined)
   signRequestData.reset()
   recoverError.set(undefined)
-  disabledWallets.set(undefined)
-
-  // loginPromise.set(undefined)
-  // loginResponse.set({...defaultLoginResponse})
-
-  // accountCreationContext.set(undefined)
-  // accountCreationPromise.set(undefined)
-  // accountCreationResponse.set({...defaultAccountCreationResponse})
-
-  // errorDetails.set(undefined)
-  // backAction.set(undefined)
-  // transitionDirection.set(undefined)
+  enabledWallets.set(undefined)
 }

@@ -11,27 +11,29 @@ import type {
 } from './types'
 import {
   active,
+  app_props,
   backAction,
   closeAction,
-  disabledWallets,
+  enabledWallets,
   error,
   manualAction,
   qrRequestData,
   recoverError,
   router,
   signRequestData,
+  theme,
   walletSelect,
 } from './ui/store'
-import {addListener} from './utils'
+import {addListener, flattenObject, toCssVars} from './utils'
 import App from './ui/App.svelte'
-import {ROUTES, SUPPORTED_WALLETS} from './ui/constants'
-import type {UIRouteValue} from './ui/interfaces'
+import {ENABLED_WALLETS, ROUTES, SUPPORTED_WALLETS} from './ui/constants'
+import type {UIRouteValue, UITheme, UIThemeOptions, UIWalletType} from './ui/interfaces'
 
 export const defaultUIRendererOptions = {
   id: 'proton-web-ui',
 }
 
-export type {UIRenderer}
+export type {UIRenderer, UIRendererOptions}
 
 export class WebRenderer implements UIRenderer {
   public element: Element | undefined
@@ -50,9 +52,14 @@ export class WebRenderer implements UIRenderer {
     }
   }
 
-  async selectWallet(): Promise<string> {
-    // TODO Finish here
-    disabledWallets.set(undefined)
+  async selectWallet({
+    enabledWallets: wallets,
+  }: {enabledWallets?: UIWalletType[] | string[]} = {}): Promise<string> {
+    if (!wallets) {
+      wallets = ENABLED_WALLETS
+    }
+
+    enabledWallets.set(new Set(wallets as UIWalletType[]))
 
     router.push(ROUTES.WEBAUTH_CONNECT)
     this.show()
@@ -126,6 +133,10 @@ export class WebRenderer implements UIRenderer {
     active.set(false)
   }
 
+  setTheme(value: UITheme): void {
+    theme.set(value)
+  }
+
   destroy(): void {
     unmount(this.app)
   }
@@ -175,6 +186,8 @@ export class WebRenderer implements UIRenderer {
     this.elementId = options.id || defaultUIRendererOptions.id
     this.element.id = this.elementId
 
+    app_props.set(options)
+
     this.shadow = this.element.attachShadow({mode: 'closed'})
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
@@ -197,9 +210,47 @@ export class WebRenderer implements UIRenderer {
     if (!existing) {
       document.body.append(this.element)
       this.offDOMContentLoaded()
+
       this.app = mount(App, {
         target: this.shadow,
       })
+
+      this.appendStyles()
+    }
+  }
+
+  private appendStyles() {
+    if (this.shadow) {
+      const {options} = this
+      if (options.themes && Object.keys(options.themes).length) {
+        const themes = options.themes
+
+        const rules: string[] = []
+
+        Object.keys(themes).forEach((key) => {
+          const data: UIThemeOptions = themes[key]
+
+          const source = Object.keys(data).reduce((acc, chapter) => {
+            let prefix = chapter
+            if (chapter === 'base') {
+              prefix = ''
+            }
+
+            return Object.assign(acc, flattenObject(data[chapter], prefix))
+          }, {})
+
+          rules.push(`:host dialog[data-theme='${key}'] {
+              ${toCssVars(source, 'pw').join('\n')}
+            }`)
+        })
+
+        if (rules.length > 0) {
+          const sheet = new CSSStyleSheet()
+          sheet.replaceSync(rules.join(' '))
+
+          this.shadow.adoptedStyleSheets = [sheet]
+        }
+      }
     }
   }
 }

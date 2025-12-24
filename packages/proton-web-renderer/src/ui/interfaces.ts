@@ -1,7 +1,7 @@
 import type {Readable, Writable} from 'svelte/store'
 import type {ROUTES, SUPPORTED_WALLETS} from './constants'
 
-export type UITheme = 'light' | 'dark'
+export type UITheme = 'light' | 'dark' | string
 
 export type UIButtonAppearance = 'primary' | 'outlined' | 'secondary' | 'accent' | 'flat'
 
@@ -21,16 +21,57 @@ export interface UIRouter extends Writable<UIRouterState> {
   onchange: Readable<{has_history: boolean}>
 }
 
+export interface UIThemeOptions {
+  base?: {
+    textColorBase?: string
+    textColorSecondary?: string
+    textColorLink?: string
+
+    bodyBackground?: string
+
+    borderColor?: string
+  }
+
+  tabs?: {
+    background?: string
+    backgroundActive?: string
+    textColorActive?: string
+  }
+
+  list?: {
+    background?: string
+    borderColor?: string
+  }
+
+  button?: {
+    icon?: {
+      backgroundHover?: string
+    }
+    primary?: {
+      borderColor?: string
+      borderColorHover?: string
+      backgroundHover?: string
+    }
+    outlined?: {
+      borderColor?: string
+      borderColorHover?: string
+    }
+    accent?: {
+      background?: string
+      backgroundHover?: string
+      textColor?: string
+    }
+    flat?: {
+      textColor?: string
+      textColorHover?: string
+    }
+  }
+}
+
 /** The properties of the UI */
 export interface UIProps {
-  error?: Error
-  title: string // ??? not sure it is required
-  title_hide_logo?: boolean
-  subtitle?: string
-  app_name?: string
-  app_logo?: string
-  app_logo_rounded?: string
-  wallet_type?: UIWalletType
+  theme?: UITheme
+  themes?: Record<UITheme, UIThemeOptions>
 }
 
 export interface UIWalletConfig {

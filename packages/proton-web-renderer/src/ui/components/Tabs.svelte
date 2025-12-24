@@ -82,7 +82,7 @@
         width: var(--width);
         margin-left: calc(var(--active) * var(--width));
         transition: margin-left 300ms;
-        background-color: var(--tabs-item-background);
+        background-color: var(--tabs-background-active);
         z-index: -1;
         border-radius: var(--space-s);
       }
@@ -101,6 +101,7 @@
 
     &.active {
       color: #ffffff;
+      color: var(--tabs-text-color-active);
     }
   }
 </style>

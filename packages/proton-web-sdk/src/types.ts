@@ -1,27 +1,15 @@
 import type {Link, LinkOptions, LinkSession, LinkStorage, LoginResult} from '@proton/link'
 import type {BrowserTransportOptions} from '@proton/browser-transport'
 import type {ProtonWebLink} from './links/protonWeb'
+import type {UIRendererOptions} from '@proton/web-renderer'
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
-export interface CustomStyleOptions {
-  modalBackgroundColor?: string
-  logoBackgroundColor?: string
-  isLogoRound?: boolean
-  optionBackgroundColor?: string
-  optionFontColor?: string
-  primaryFontColor?: string
-  secondaryFontColor?: string
-  linkColor?: string
-}
+export type UIOptions = UIRendererOptions
 
 export interface SelectorOptions {
-  appName?: string
-  appLogo?: string
   walletType?: string
   enabledWalletTypes?: string[]
-  dialogRootNode?: HTMLElement | string
-  customStyleOptions?: CustomStyleOptions
 }
 
 export type LocalLinkOptions = PartialBy<LinkOptions, 'transport' | 'chains' | 'scheme'> & {
@@ -36,6 +24,7 @@ export interface ConnectWalletArgs {
   linkOptions: LocalLinkOptions
   transportOptions?: BrowserTransportOptions
   selectorOptions?: SelectorOptions
+  uiOptions?: UIOptions
 }
 
 export interface ConnectWalletRet {

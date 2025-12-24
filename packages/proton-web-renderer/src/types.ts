@@ -1,4 +1,4 @@
-import type {UIError, UIQRData, UISignData, UIWalletType} from './ui/interfaces'
+import type {UIError, UIProps, UIQRData, UISignData, UITheme, UIWalletType} from './ui/interfaces'
 
 export type UIPercentageString = `${number}%`
 export type UIPixelsString = `${number}px`
@@ -11,9 +11,8 @@ export type UISpace =
   | 'var(--space-xl)'
   | 'var(--space-2xl)'
 
-export interface UIRendererOptions {
+export interface UIRendererOptions extends UIProps {
   id?: string
-  logging?: boolean
 }
 
 interface UIGenericPayload {

@@ -87,7 +87,7 @@
 
       padding: var(--space-m) var(--space-l);
       border-radius: var(--space-l);
-      border: 1px solid var(--list-border);
+      border: 1px solid var(--list-border-color);
       background: var(--list-background);
     }
 

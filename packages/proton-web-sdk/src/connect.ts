@@ -1,21 +1,27 @@
 import ProtonLinkBrowserTransport from '@proton/browser-transport'
 import ProtonLink from '@proton/link'
 import type {LinkOptions, PermissionLevel} from '@proton/link'
-import WalletTypeSelector from './walletTypeSelector'
 import {ProtonWebLink} from './links/protonWeb'
 import {Storage} from './storage'
-import {WALLET_TYPES} from './constants'
-import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions} from './types'
+import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions, UIOptions} from './types'
 import {JsonRpc} from '@proton/js'
 import {WebRenderer} from '@proton/web-renderer'
 
-let walletSelector: WalletTypeSelector | undefined
 let renderer: WebRenderer | undefined
+let uiTheme: UIOptions['theme'] = undefined
+
+export const setUITheme = (value: UIOptions['theme']) => {
+  if (value) {
+    uiTheme = value
+    renderer?.setTheme(value)
+  }
+}
 
 export const ConnectWallet = async ({
   linkOptions,
   transportOptions = {},
   selectorOptions = {},
+  uiOptions = {},
 }: ConnectWalletArgs): Promise<ConnectWalletRet> => {
   // Add RPC
   const rpc = new JsonRpc(linkOptions.endpoints)
@@ -32,14 +38,13 @@ export const ConnectWallet = async ({
     linkOptions.storage = new Storage(linkOptions.storagePrefix || 'proton-storage')
   }
 
-  renderer = new WebRenderer()
+  if (uiTheme) {
+    uiOptions.theme = uiTheme
+  }
 
-  return login({selectorOptions, linkOptions, transportOptions}).finally(() => {
-    if (walletSelector) {
-      walletSelector.destroy()
-      walletSelector = undefined
-    }
-  })
+  renderer = new WebRenderer(uiOptions)
+
+  return login({selectorOptions, linkOptions, transportOptions})
 }
 
 const login = async (
@@ -60,15 +65,6 @@ const login = async (
     let link
     let loginResult
 
-    if (!walletSelector) {
-      walletSelector = new WalletTypeSelector(
-        loginOptions.selectorOptions.appName,
-        loginOptions.selectorOptions.appLogo,
-        loginOptions.selectorOptions.customStyleOptions,
-        loginOptions.selectorOptions.dialogRootNode
-      )
-    }
-
     // Determine wallet type from storage or selector modal
     let walletType: string | null | undefined = loginOptions.selectorOptions
       ? loginOptions.selectorOptions.walletType
@@ -78,23 +74,11 @@ const login = async (
       if (loginOptions.linkOptions.restoreSession) {
         walletType = await loginOptions.linkOptions.storage!.read('wallet-type')
       } else {
-        // const a = new Promise((resolve) => {
-        //   renderer?.login()
-        // })
-
-        // await a
-        // const enabledWalletTypes = loginOptions.selectorOptions.enabledWalletTypes
-        //   ? WALLET_TYPES.filter(
-        //       (wallet) =>
-        //         loginOptions.selectorOptions.enabledWalletTypes &&
-        //         loginOptions.selectorOptions.enabledWalletTypes.includes(wallet.key)
-        //     )
-        //   : WALLET_TYPES
-
         try {
-          walletType = await renderer?.selectWallet()
+          walletType = await renderer?.selectWallet({
+            enabledWallets: loginOptions.selectorOptions.enabledWalletTypes,
+          })
         } catch (e) {
-          console.log('CANCEL', e)
           return {
             error: e,
           }
@@ -146,20 +130,6 @@ const login = async (
 
     // Session from login
     if (!loginOptions.linkOptions.restoreSession) {
-      let backToSelector = false
-      const listenBackToSelector = () => {
-        const callback = () => {
-          backToSelector = true
-        }
-        document.addEventListener('backToSelector', callback)
-
-        return () => {
-          document.removeEventListener('backToSelector', callback)
-        }
-      }
-
-      const stopListening = listenBackToSelector()
-
       try {
         loginResult = await link.login(loginOptions.transportOptions?.requestAccount || '')
         session = loginResult.session as any
@@ -173,7 +143,6 @@ const login = async (
         console.error(e)
 
         if ((e as Error)['code'] === 'E_WALLET_TYPE') {
-          stopListening()
           return null
         } else {
           return {

@@ -1,11 +1,14 @@
 <script lang="ts">
   import Button from '../components/Button.svelte'
+  import ErrorDisplay from '../components/ErrorDisplay.svelte'
   import Icon from '../components/icons/Icon.svelte'
   import Layout from '../components/Layout.svelte'
   import WalletButton from '../components/WalletButton.svelte'
   import {ROUTES, SUPPORTED_WALLETS} from '../constants'
   import {type UIWalletType} from '../interfaces'
-  import {router, walletSelect} from '../store'
+  import {app_props, enabledWallets, router, walletSelect} from '../store'
+
+  const noWallets = $derived($enabledWallets?.size === 0)
 
   function selectWallet(walletType: UIWalletType) {
     if ($walletSelect) {
@@ -21,49 +24,58 @@
 
 <Layout>
   {#snippet content()}
-    <div class="wrap">
-      <ul class="wallets">
-        <li>
-          <WalletButton
-            onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
-            icon="qr-code"
-            label="Mobile App"
-            sublabel="Scan QR Code"
-          />
-        </li>
+    <div class="wrap" class:has-error={noWallets}>
+      {#if noWallets}
+        <ErrorDisplay name="No enabled wallets" description="Enable at least one wallet" />
+      {:else}
+        <ul class="wallets">
+          {#if $enabledWallets?.has(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
+            <li>
+              <WalletButton
+                onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
+                icon="qr-code"
+                label="Mobile App"
+                sublabel="Scan QR Code"
+              />
+            </li>
+          {/if}
+          {#if $enabledWallets?.has(SUPPORTED_WALLETS.WEBAUTH_WEB)}
+            <li>
+              <WalletButton
+                onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_WEB)}
+                icon="fingerprint"
+                label="Browser wallet"
+                sublabel="Authorize device"
+              />
+            </li>
+          {/if}
+        </ul>
 
-        <li>
-          <WalletButton
-            onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_WEB)}
-            icon="fingerprint"
-            label="Browser wallet"
-            sublabel="Authorize device"
-          />
-        </li>
-      </ul>
+        <div class="border-block new-account">
+          <Button align="center" full onclick={() => getWebAuth()} appearance="secondary">
+            {#snippet content()}
+              <Icon name="web-auth" size="var(--space-2xl)" />
+              <span class="btn-label">Create Account</span>
+            {/snippet}
+          </Button>
+        </div>
 
-      <div class="border-block new-account">
-        <Button align="center" full onclick={() => getWebAuth()} appearance="secondary">
-          {#snippet content()}
-            <Icon name="web-auth" size="var(--space-2xl)" />
-            <span class="btn-label">Create Account</span>
-          {/snippet}
-        </Button>
-      </div>
-
-      <div class="border-block connect-other">
-        <Button
-          align="center"
-          full
-          appearance="flat"
-          onclick={() => selectWallet(SUPPORTED_WALLETS.ANCHOR)}
-        >
-          {#snippet content()}
-            <span>Connect with other wallets</span>
-            <Icon name="arrow-right" />
-          {/snippet}
-        </Button>
-      </div>
+        <div class="border-block connect-other">
+          {#if $enabledWallets?.has(SUPPORTED_WALLETS.ANCHOR)}
+            <Button
+              align="center"
+              full
+              appearance="flat"
+              onclick={() => selectWallet(SUPPORTED_WALLETS.ANCHOR)}
+            >
+              {#snippet content()}
+                <span>Connect with other wallets</span>
+                <Icon name="arrow-right" />
+              {/snippet}
+            </Button>
+          {/if}
+        </div>
+      {/if}
     </div>
   {/snippet}
 
@@ -91,6 +103,12 @@
     overflow: hidden;
     display: grid;
     grid-template-rows: fit-content(60%) max-content auto;
+
+    &.has-error {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   .wallets {
@@ -132,7 +150,7 @@
     font-weight: 500;
     line-height: 100%;
     letter-spacing: -0.3px;
-    color: var(--text-secondary);
+    color: var(--text-color-secondary);
     text-align: center;
     display: flex;
     align-items: center;

@@ -4,33 +4,130 @@ A UI layer for usage of [Proton Link](https://github.com/protonprotocol/proton-l
 
 ## Basic usage
 
-A transport is required for Proton Link to communicate with clients. In most examples we use the browser transport with no configuration, like so:
+UI is required for Proton Browser Transport to show widget for user. In most examples we use the browser transport with no configuration, like so:
 
 ```ts
 const transport = new ProtonBrowserTransport()
 const link = new ProtonLink({transport})
 ```
 
-Parameters can be passed to the transport during construction as an object, allowing for the following optional changes:
+The UI will be created internally with default configuration.
+
+To use a customized Renderer it is required to create and instance of Renderer and pass it as argument to the transport
+Parameters can be passed to the renders during construction as an object, allowing for the following optional changes:
 
 ```ts
+const renderer = new WebRenderer({
+  /** The identifier of ShadowDOM node, defaults to proton-web-ui */
+  id: 'custom-renderer'
+
+  /** The name of the theme to use. Default: dark. Possible values: dark, light or any name of the theme defined in themes options */
+  theme: 'light'
+
+  /** The definition of themes. It is possible to adjust the existing themes (light or dark) and define a new one */
+  themes: {
+    /* Theme name */
+    light: {
+      /** Parameters of the theme should be provided here. Check Theme customization section to see all possible options */
+      base: {
+        textColorBase: 'red'
+      }
+    }
+  }
+})
+
 const transport = new ProtonBrowserTransport({
-    /** Whether to display request success and error messages, defaults to true */
-    requestStatus: true,
-    /** Local storage prefix, defaults to `proton-link`. */
-    storagePrefix: 'my-localstorage-prefix',
-    /**
-     * Whether to use Greymass Fuel for low resource accounts, defaults to false.
-     *  Note that this service is not available on all networks, and will automatically
-     *  determine based on chain id if it should be enabled or not.
-     */
-    disableGreymassFuel: false,
-    /** Referral account to use for Greymass Fuel. */
-    fuelReferrer: 'teamgreymass',
+    ui: renderer
 })
 const link = new ProtonLink({transport})
 ```
 
+## Theme customization
+
+It is allowed to change color almost all elements of the widget. It is possible to define only some parameters, default values will be used for others.
+
+```js
+
+  themes: {
+    /* Theme name. It could be light, dark or any other name*/
+    light: {
+      // Base section 
+      base: {
+        // Base text color
+        textColorBase: 'string',
+        // Secondary text color (used for some labels)
+        textColorSecondary: 'string',
+        // Color of text links
+        textColorLink: 'string',
+
+        // Background color (or gradient) for the widget dialog
+        bodyBackground: 'string',
+
+        // Border color for spacers and other similar elements
+        borderColor: 'string',
+      }
+
+      // Tabs. Used, for example, to switch between mobile and desktop authentication types
+      tabs: {
+        // Background color of tabs block
+        background: 'string',
+        // Background color of the active element
+        backgroundActive: 'string',
+        // Text color for active element
+        textColorActive: 'string',
+      }
+
+      // List. Used on Get WebAuth view to style list of features
+      list: {
+        // Background color of the list item
+        background: 'string',
+        // Border color of the list item
+        borderColor: 'string',
+      }
+
+      // Buttons. There are several types of button used in the UI. Each has parameters for configuration
+      button: {
+        // Icon button
+        icon: {
+          // Button is transparent by default. This option defines the background color on hover
+          backgroundHover: 'string',
+        }
+        // Primary button
+        primary: {
+          // Defines a border color in default state
+          borderColor: 'string',
+          // Defines a border color on hover
+          borderColorHover: 'string',
+          // Defines a background color on button hover
+          backgroundHover: 'string',
+        }
+        // Outlined button
+        outlined: {
+          // Defines a border color in default state
+          borderColor: 'string',
+          // Defines a border color on hover
+          borderColorHover: 'string',
+        }
+        // Accent button
+        accent: {
+          // Defines a background color in default state
+          background: 'string',
+          // Defines a background color on button hover
+          backgroundHover: 'string',
+          // Defines a text color for the button
+          textColor: 'string',
+        }
+        // Flat button
+        flat: {
+          // Defines a text color in default state
+          textColor: 'string',
+          // Defines a text color on button hover
+          textColorHover: 'string',
+        }
+      }
+    }
+  }
+```
 ## Developing
 
 You need [node.js](https://nodejs.org/en/) and [pnpm](https://pnpm.io/installation) installed.
@@ -40,7 +137,3 @@ Clone the repository and run `pnpm run build` to checkout all dependencies and b
 ## License
 
 [MIT](./LICENSE.md)
-
----
-
-Made with ☕️ & ❤️ by [Greymass](https://greymass.com), if you find this useful please consider [supporting us](https://greymass.com/support-us).

@@ -67,20 +67,20 @@
     transition: all 0.1s ease-in;
 
     &[data-appearance='primary'] {
-      border: 1px solid var(--button-primary-border);
+      border: 1px solid var(--button-primary-border-color);
       background-color: transparent;
 
       @include mixins.hover {
-        border-color: var(--button-primary-border-hover);
+        border-color: var(--button-primary-border-color-hover);
         background-color: var(--button-primary-background-hover);
       }
     }
 
     &[data-appearance='outlined'] {
-      border: 1px solid var(--button-outlined-border);
+      border: 1px solid var(--button-outlined-border-color);
 
       @include mixins.hover {
-        border-color: var(--button-outlined-border-hover);
+        border-color: var(--button-outlined-border-color-hover);
       }
     }
 
@@ -129,7 +129,7 @@
 
     &[data-appearance='accent'] {
       background: var(--button-accent-background);
-      color: var(--button-accent-text);
+      color: var(--button-accent-text-color);
 
       @include mixins.hover {
         background: var(--button-accent-background-hover);
@@ -137,7 +137,7 @@
     }
 
     &[data-appearance='flat'] {
-      color: var(--button-flat-text);
+      color: var(--button-flat-text-color);
       font-size: var(--text-sm);
       font-style: normal;
       font-weight: 500;
@@ -145,7 +145,7 @@
       letter-spacing: -0.42px;
 
       @include mixins.hover {
-        color: var(--button-flat-text-hover);
+        color: var(--button-flat-text-color-hover);
       }
     }
   }

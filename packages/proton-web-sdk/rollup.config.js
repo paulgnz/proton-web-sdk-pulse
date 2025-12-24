@@ -1,18 +1,16 @@
-import { createRequire } from "module";
+import {createRequire} from 'module'
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
-import svelte from 'rollup-plugin-svelte'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
 import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
-import {sveltePreprocess} from 'svelte-preprocess';
 
-const pkg = createRequire(import.meta.url)("./package.json");
+const pkg = createRequire(import.meta.url)('./package.json')
 
-const production = !process.env.ROLLUP_WATCH;
+const production = !process.env.ROLLUP_WATCH
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -41,16 +39,6 @@ const replaceVersion = replace({
   __ver: pkg.version,
 })
 
-const svelteOnWarn = (warning, handler) => {
-    if (['a11y-click-events-have-key-events', 'a11y-interactive-supports-focus'].includes(warning.code)) return;
-    // let Rollup handle all other warnings normally
-    handler(warning);
-}
-
-const getCssHash = ({ hash, css, filename }) => {
-    return `pbt-${hash(filename + css)}`
-}
-
 export default [
   {
     input: 'src/index.ts',
@@ -59,19 +47,9 @@ export default [
       file: pkg.main,
       format: 'cjs',
       sourcemap: !production,
-      exports: 'default',
+      exports: 'named',
     },
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({ sourceMap: !production }),
-        compilerOptions: {
-          cssHash: getCssHash,
-          // enable run-time checks when not in production
-          dev: !production
-        },
-        emitCss: false,
-        onwarn: svelteOnWarn,
-      }),
       replaceVersion,
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
@@ -80,15 +58,14 @@ export default [
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
       resolve({
         browser: true,
-        dedupe: ['svelte']
       }),
       typescript({
         sourceMap: !production,
         inlineSources: !production,
-        target: 'es6'
-      })
+        target: 'es6',
+      }),
     ],
-    external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+    external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
     onwarn,
   },
   {
@@ -100,16 +77,6 @@ export default [
       sourcemap: !production,
     },
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({ sourceMap: !production }),
-        compilerOptions: {
-          cssHash: getCssHash,
-          // enable run-time checks when not in production
-          dev: !production
-        },
-        emitCss: false,
-        onwarn: svelteOnWarn,
-      }),
       replaceVersion,
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
@@ -118,15 +85,14 @@ export default [
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
       resolve({
         browser: true,
-        dedupe: ['svelte']
       }),
       typescript({
         sourceMap: !production,
         inlineSources: !production,
         target: 'es6',
-      })
+      }),
     ],
-    external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+    external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
     onwarn,
   },
   {
@@ -134,7 +100,7 @@ export default [
     output: {
       banner,
       file: pkg.types,
-      format: 'esm'
+      format: 'esm',
     },
     onwarn,
     plugins: [dts()],
@@ -144,7 +110,7 @@ export default [
     output: {
       banner,
       footer: exportFix,
-      globals: { '@proton/link': 'ProtonLink' },
+      globals: {'@proton/link': 'ProtonLink'},
       name: 'ProtonWebSDK',
       file: pkg.unpkg,
       format: 'iife',
@@ -152,16 +118,6 @@ export default [
       exports: 'named',
     },
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({ sourceMap: !production }),
-        compilerOptions: {
-          cssHash: getCssHash,
-          // enable run-time checks when not in production
-          dev: !production
-        },
-        emitCss: false,
-        onwarn: svelteOnWarn,
-      }),
       replaceVersion,
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
@@ -170,7 +126,6 @@ export default [
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
       resolve({
         browser: true,
-        dedupe: ['svelte']
       }),
       // ,
       json(),
@@ -183,8 +138,8 @@ export default [
       replace({
         preventAssignment: true,
         values: {
-          'process.env.NODE_ENV': JSON.stringify('production')
-        }
+          'process.env.NODE_ENV': JSON.stringify('production'),
+        },
       }),
       terser({
         format: {
@@ -195,7 +150,7 @@ export default [
         },
       }),
     ],
-    external: Object.keys({ ...pkg.peerDependencies }),
+    external: Object.keys({...pkg.peerDependencies}),
     onwarn,
   },
 ]

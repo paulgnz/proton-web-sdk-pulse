@@ -53,7 +53,7 @@
 }
 
 .link {
-  color: var(--text-link);
+  color: var(--text-color-link);
   text-decoration: underline;
 
   @include mixins.hover {

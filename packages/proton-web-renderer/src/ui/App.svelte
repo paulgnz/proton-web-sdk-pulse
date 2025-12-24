@@ -3,7 +3,7 @@
   import Header from './components/Header.svelte'
   import Modal from './components/Modal.svelte'
   import {type UITheme} from './interfaces'
-  import {active, closeAction, error, router, theme, walletSelect} from './store'
+  import {active, app_props, closeAction, error, router, theme, walletSelect} from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
   import UseAnchorWallet from './views/UseAnchorWallet.svelte'
@@ -22,10 +22,16 @@
   const isOtherRegExp = /^other\-/
   const isSignRegExp = /\-sign$/
   const isSignManualRegExp = /\-manual\-sign$/
+  let unsubscribeProps: Unsubscriber | undefined
   let unsubscribeRouter: Unsubscriber | undefined
   let unsubscribeActive: Unsubscriber | undefined
 
   onMount(() => {
+    unsubscribeProps = app_props.subscribe((value) => {
+      if (value.theme) {
+        setTheme(value.theme)
+      }
+    })
     unsubscribeRouter = router.subscribe((current) => {
       if (current.path) {
         if (isOtherRegExp.test(current.path)) {
@@ -90,6 +96,7 @@
   // }
 
   onDestroy(() => {
+    unsubscribeProps?.()
     unsubscribeRouter?.()
     unsubscribeActive?.()
   })

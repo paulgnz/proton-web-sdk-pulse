@@ -1,6 +1,6 @@
 {
   "name": "@proton/web-renderer",
-  "version": "4.4.1",
+  "version": "1.0.0",
   "description": "UI layer for Proton Web SDK",
   "license": "BSD-3-Clause",
   "type": "module",
@@ -22,9 +22,7 @@
     "lib",
     "src"
   ],
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "@eslint/css": "^0.14.1",
     "@eslint/js": "^9.39.1",
