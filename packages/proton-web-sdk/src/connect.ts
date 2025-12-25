@@ -17,6 +17,10 @@ export const setUITheme = (value: UIOptions['theme']) => {
   }
 }
 
+export const runDemo = () => {
+  renderer?.demo()
+}
+
 export const ConnectWallet = async ({
   linkOptions,
   transportOptions = {},

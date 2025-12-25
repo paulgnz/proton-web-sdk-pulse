@@ -3,7 +3,7 @@
   import ErrorDisplay from '../components/ErrorDisplay.svelte'
   import Layout from '../components/Layout.svelte'
 
-  import {manualAction, recoverError, signRequestData} from '../store'
+  import {demoMode, manualAction, recoverError, signRequestData} from '../store'
 
   let {
     walletType = 'webauth',
@@ -31,6 +31,16 @@
       $manualAction()
       manualAction.set(undefined)
     }
+
+    if ($demoMode) {
+      $demoMode.signManually(walletType)
+    }
+  }
+
+  function ontimeout() {
+    if ($demoMode) {
+      $demoMode.timeout(walletType)
+    }
   }
 </script>
 
@@ -44,7 +54,7 @@
           <div class="core__label">
             Please open {label} to <br /> review the transaction
           </div>
-          <Countdown {end} />
+          <Countdown {end} {ontimeout} />
         {/if}
       </div>
     </div>

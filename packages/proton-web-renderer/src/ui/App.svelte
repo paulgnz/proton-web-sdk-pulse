@@ -3,14 +3,23 @@
   import Header from './components/Header.svelte'
   import Modal from './components/Modal.svelte'
   import {type UITheme} from './interfaces'
-  import {active, app_props, closeAction, error, router, theme, walletSelect} from './store'
+  import {
+    active,
+    app_props,
+    closeAction,
+    demoMode,
+    error,
+    router,
+    theme,
+    walletSelect,
+  } from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
   import UseAnchorWallet from './views/UseAnchorWallet.svelte'
   import SignRequest from './views/SignRequest.svelte'
   import RequestWithQRCode from './views/RequestWithQRCode.svelte'
   import type {Unsubscriber} from 'svelte/store'
-  import {ROUTES} from './constants'
+  import {ROUTES, SUPPORTED_WALLETS} from './constants'
   import GenericError from './views/GenericError.svelte'
 
   let title = $state('')
@@ -87,14 +96,6 @@
     theme.set(themeValue)
   }
 
-  // function sign() {
-  //   router.push(ROUTES.WEBAUTH_SIGN)
-  // }
-
-  // function signAnchor() {
-  //   router.push(ROUTES.OTHER_ANCHOR_SIGN)
-  // }
-
   onDestroy(() => {
     unsubscribeProps?.()
     unsubscribeRouter?.()
@@ -113,14 +114,18 @@
 
 <Modal>
   {#snippet content()}
-    <div style="position: fixed; top: 0; left: 0; z-index: 1000">
-      <button onclick={() => setTheme('dark')}>Dark</button>
-      <button onclick={() => setTheme('light')}>Light</button>
-      <div style="display: inline-block; width: 30px"></div>
+    {#if $demoMode}
+      <div class="demo">
+        <button onclick={() => setTheme('dark')}>Dark</button>
+        <button onclick={() => setTheme('light')}>Light</button>
+        <div class="spacer"></div>
 
-      <!-- <button onclick={() => sign()}>Sign with WebAuth</button> -->
-      <!-- <button onclick={() => signAnchor()}>Sign with Anchor</button> -->
-    </div>
+        <button onclick={() => $demoMode.sign(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}>
+          Sign with WebAuth</button
+        >
+        <button onclick={() => $demoMode.sign(SUPPORTED_WALLETS.ANCHOR)}>Sign with Anchor</button>
+      </div>
+    {/if}
 
     <Header {title} {hideLogo} {hideBack}></Header>
 
@@ -149,3 +154,17 @@
     {/if}
   {/snippet}
 </Modal>
+
+<style lang="scss">
+  .demo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
+  .spacer {
+    display: inline-block;
+    width: 30px;
+  }
+</style>

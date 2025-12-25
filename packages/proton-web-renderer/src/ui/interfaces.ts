@@ -85,8 +85,20 @@ export interface UIError {
 }
 
 export type UIWalletSelectResponse = {
-  reject: (error: Error) => void
-  resolve: (response: string) => void
+  reject: (_: Error) => void
+  // eslint-disable-next-line no-unused-vars
+  resolve: (walletType: string) => void
+}
+
+export type UIDemo = {
+  // eslint-disable-next-line no-unused-vars
+  selectWallet: (walletType: string) => void
+  // eslint-disable-next-line no-unused-vars
+  sign: (walletType: string) => void
+  // eslint-disable-next-line no-unused-vars
+  signManually: (walletType: string) => void
+  // eslint-disable-next-line no-unused-vars
+  timeout: (walletType: string) => void
 }
 
 export interface WritableWithReset<T> extends Writable<T | undefined> {

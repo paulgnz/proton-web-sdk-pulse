@@ -1,5 +1,6 @@
-import {derived, writable, type Writable} from 'svelte/store'
+import {derived, writable} from 'svelte/store'
 import type {
+  UIDemo,
   UIError,
   UIProps,
   UIQRData,
@@ -31,9 +32,10 @@ export const recoverError = writable<UIError | undefined>(undefined)
 
 export const enabledWallets = writable<Set<UIWalletType> | undefined>(undefined)
 
+export const demoMode = writable<UIDemo | undefined>(undefined)
+
 const defaultUIRouterState: UIRouterState = {
   path: undefined,
-  // path: ROUTES.OTHER_ANCHOR_SIGN,
   history: [],
 }
 
@@ -93,6 +95,7 @@ export const signRequestData = initWritableWithReset<UISignData>()
 // Reset data in all stores
 export function resetState() {
   active.set(false)
+  demoMode.set(undefined)
 
   router.set({...defaultUIRouterState})
   app_props.set({...defaultUIProps})

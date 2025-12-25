@@ -48,11 +48,7 @@
     }
   })
 
-  // Perform work required to cancel request
   function cancelRequest() {
-    // Cancel any pending promises
-    // $cancelablePromises.map((f) => f('Modal closed', true))
-    // Update state to close the modal
     active.set(false)
   }
 

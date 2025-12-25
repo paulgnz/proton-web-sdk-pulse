@@ -119,7 +119,7 @@ export function parseErrorMessage(error: any) {
   }
 
   if (error.details) {
-    const {code, details, name, what} = error
+    const {details, name, what} = error
     if (name === 'eosio_assert_message_exception') {
       errorMessage = details[0].message.replace('assertion failure with message: ', '')
     } else if (details.length > 0) {

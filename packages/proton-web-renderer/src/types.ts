@@ -1,4 +1,4 @@
-import type {UIError, UIProps, UIQRData, UISignData, UITheme, UIWalletType} from './ui/interfaces'
+import type {UIError, UIProps, UIQRData, UISignData, UIWalletType} from './ui/interfaces'
 
 export type UIPercentageString = `${number}%`
 export type UIPixelsString = `${number}px`
