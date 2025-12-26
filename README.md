@@ -151,18 +151,22 @@ If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.proto
 An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
 
 **transportOptions:**
+
  - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
 ​
     > Typically same as appName
 ​​
 ### Selector Options
 An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+
 **selectorOptions:**
+
   - **enabledWalletTypes** - type stringp[] - optional - The list of enabled wallets. All wallets are enabled by default. Possible values: proton, webauth, anchor.
 ​
- - **walletType** – type string – optional – The name of the wallet to use. In this case the wallet selector step will be skipped.  
-​
+ - **walletType** – type string – optional – The name of the wallet to use. In this case the wallet selector step will be skipped.
+
 **uiOptions:**
+
   - **theme** - type string - optional - The name of the theme applied for the widget
 ​
  - **themes** – type Object – optional – object which can includes options to configure or defined theme of the widget.
