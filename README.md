@@ -50,7 +50,7 @@ const login = async (restoreSession) => {
           dark: {
             base: {
               textColorBase: 'black',
-              textColorSecondary: '#6B727F'
+              textColorSecondary: '#6B727F',
               textColorLink: '#752EEB',
               bodyBackground: '#F4F7FA'
             },
