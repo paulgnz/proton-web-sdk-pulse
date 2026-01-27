@@ -57,6 +57,6 @@
   text-decoration: underline;
 
   @include mixins.hover {
-    text-decoration: none;
+    color: var(--text-color-secondary-link);
   }
 }

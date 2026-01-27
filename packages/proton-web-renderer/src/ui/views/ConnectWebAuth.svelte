@@ -46,7 +46,7 @@
             <li>
               <WalletButton
                 onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_WEB)}
-                icon="fingerprint"
+                icon="browser"
                 label="Browser wallet"
                 sublabel="Authorize device"
               />

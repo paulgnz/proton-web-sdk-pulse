@@ -32,8 +32,8 @@ const QRCode = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/20
 </svg>`
 
 const Browser = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M3 11H21M3 5H21V19H3V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M6 7.25C6.41421 7.25 6.75 7.58579 6.75 8C6.75 8.41421 6.41421 8.75 6 8.75C5.58579 8.75 5.25 8.41421 5.25 8C5.25 7.58579 5.58579 7.25 6 7.25ZM9 7.25C9.41421 7.25 9.75 7.58579 9.75 8C9.75 8.41421 9.41421 8.75 9 8.75C8.58579 8.75 8.25 8.41421 8.25 8C8.25 7.58579 8.58579 7.25 9 7.25ZM12 7.25C12.4142 7.25 12.75 7.58579 12.75 8C12.75 8.41421 12.4142 8.75 12 8.75C11.5858 8.75 11.25 8.41421 11.25 8C11.25 7.58579 11.5858 7.25 12 7.25Z" fill="currentColor" stroke="currentColor" stroke-width="0.5"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M3 4C2.44772 4 2 4.44772 2 5V10H22V5C22 4.44772 21.5523 4 21 4H3ZM6 6C5.44772 6 5 6.44772 5 7C5 7.55228 5.44772 8 6 8C6.55228 8 7 7.55228 7 7C7 6.44772 6.55228 6 6 6ZM8 7C8 6.44772 8.44772 6 9 6C9.55228 6 10 6.44772 10 7C10 7.55228 9.55228 8 9 8C8.44772 8 8 7.55228 8 7ZM12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6Z" fill="currentColor"/>
+  <path d="M2 19V12H22V19C22 19.5523 21.5523 20 21 20H3C2.44772 20 2 19.5523 2 19Z" fill="currentColor"/>
 </svg>`
 
 const Storage = `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

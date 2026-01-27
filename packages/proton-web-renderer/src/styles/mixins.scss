@@ -11,7 +11,8 @@
 
   @include create-var('text-color-base', #000000);
   @include create-var('text-color-secondary', #333333);
-  @include create-var('text-color-link', #000000);
+  @include create-var('text-color-link', #333333);
+  @include create-var('text-color-secondary-link', #000000);
 
   @include create-var(
     'body-background',
@@ -52,7 +53,8 @@
 
   @include create-var('text-color-base', #ffffff);
   @include create-var('text-color-secondary', #c0c0c0);
-  @include create-var('text-color-link', #ffffff);
+  @include create-var('text-color-link', #c0c0c0);
+  @include create-var('text-color-secondary-link', #ffffff);
 
   @include create-var(
     'body-background',

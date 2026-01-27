@@ -101,5 +101,6 @@
     font-size: var(--text-xs);
     line-height: normal;
     letter-spacing: -0.36px;
+    color: var(--text-color-secondary);
   }
 </style>
