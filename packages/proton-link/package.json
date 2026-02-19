@@ -35,7 +35,7 @@
     "dependencies": {
         "@greymass/eosio": "^0.6.1",
         "@jafri/asmcrypto.js": "^2.3.2",
-        "@proton/js": "^28.1.2",
+        "@proton/js": "^29.1.0",
         "@proton/signing-request": "workspace:^",
         "@proton/web-renderer": "workspace:^",
         "bson": "^4.6.0",
