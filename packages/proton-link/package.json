@@ -1,6 +1,6 @@
 {
     "name": "@proton/link",
-    "version": "4.4.1",
+    "version": "4.4.2",
     "description": "Library for authenticating and signing transactions using the Proton Link protocol",
     "license": "BSD-3-Clause",
     "main": "lib/proton-link.js",
@@ -43,7 +43,7 @@
     "dependencies": {
         "@greymass/eosio": "^0.6.1",
         "@jafri/asmcrypto.js": "^2.3.2",
-        "@proton/js": "^28.1.2",
+        "@proton/js": "^29.1.0",
         "@proton/signing-request": "workspace:^",
         "bson": "^4.6.0",
         "fetch-ponyfill": "^7.1.0",
