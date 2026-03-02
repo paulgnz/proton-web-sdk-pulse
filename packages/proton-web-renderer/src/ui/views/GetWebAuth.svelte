@@ -11,24 +11,24 @@
     description: string
   }[] = [
     {
-      icon: 'storage',
-      label: 'Wallet that you control',
-      description: 'Secure Crypto Storage',
+      icon: 'user-key',
+      label: 'Self-Custody Wallet',
+      description: 'Your Keys. Your Crypto.',
+    },
+    {
+      icon: 'fingerprint',
+      label: 'Biometric Transaction Signing',
+      description: 'Face ID, Touch ID, Yubikey',
+    },
+    {
+      icon: 'globe',
+      label: 'Multi-chain Network Support',
+      description: 'XPR, ETH, XRPL, OP, METAL + more',
     },
     {
       icon: 'send',
-      label: 'Send, receive, swap, stake',
-      description: 'Secure Crypto Storage',
-    },
-    {
-      icon: 'trade',
-      label: 'Verify all transactions',
-      description: 'Secure Crypto Storage',
-    },
-    {
-      icon: 'bars',
-      label: 'DeFi',
-      description: 'Secure Crypto Storage',
+      label: 'Fast, Free Transactions',
+      description: 'via XPR Network',
     },
   ]
 </script>
@@ -47,17 +47,16 @@
       {/each}
     </ul>
     <div class="footer">
-      <GetApp class="footer-apps" />
-
       <Button full align="between" href="https://xprnetwork.org/wallet" appearance="primary">
         {#snippet content()}
           <span class="btn-inner">
             <Icon name="web-auth" size="var(--space-xl)" />
-            <span class="btn-label">WebAuth.com</span>
+            <span class="btn-label">Browser Wallet</span>
           </span>
           <Icon name="browser" />
         {/snippet}
       </Button>
+      <GetApp class="footer-apps" />
     </div>
   {/snippet}
 </Layout>
@@ -74,9 +73,12 @@
     flex-direction: column;
     gap: var(--space-s);
 
-    :global(.list__icon),
-    &__description {
+    :global(.list__icon) {
       opacity: 0.3;
+    }
+
+    &__description {
+      opacity: 0.65;
     }
 
     &__item {
@@ -112,7 +114,7 @@
     padding: var(--space-l);
 
     :global(.footer-apps) {
-      margin-bottom: var(--space-l);
+      margin-top: var(--space-l);
     }
   }
 </style>
