@@ -53,7 +53,7 @@
           title = 'Sign manually'
           hideBackSource = true
         } else if (isSignRegExp.test(current.path)) {
-          title = 'Sign request'
+          title = 'Signing request'
           hideBackSource = true
         } else {
           if (current.path === ROUTES.PREPARING_REQUEST) {
