@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AppInfo from '../components/AppInfo.svelte'
   import Button from '../components/Button.svelte'
   import ErrorDisplay from '../components/ErrorDisplay.svelte'
   import Icon from '../components/icons/Icon.svelte'
@@ -31,28 +32,32 @@
       {#if noWallets}
         <ErrorDisplay name="No enabled wallets" description="Enable at least one wallet" />
       {:else}
-        <ul class="wallets">
-          {#if $enabledWallets?.has(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
-            <li>
-              <WalletButton
-                onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
-                icon="qr-code"
-                label="Mobile App"
-                sublabel="Scan QR Code"
-              />
-            </li>
-          {/if}
-          {#if $enabledWallets?.has(SUPPORTED_WALLETS.WEBAUTH_WEB)}
-            <li>
-              <WalletButton
-                onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_WEB)}
-                icon="browser"
-                label="Browser wallet"
-                sublabel="Authorize device"
-              />
-            </li>
-          {/if}
-        </ul>
+        <div>
+          <AppInfo />
+
+          <ul class="wallets">
+            {#if $enabledWallets?.has(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
+              <li>
+                <WalletButton
+                  onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_MOBILE)}
+                  icon="qr-code"
+                  label="Mobile App"
+                  sublabel="Scan QR Code"
+                />
+              </li>
+            {/if}
+            {#if $enabledWallets?.has(SUPPORTED_WALLETS.WEBAUTH_WEB)}
+              <li>
+                <WalletButton
+                  onclick={() => selectWallet(SUPPORTED_WALLETS.WEBAUTH_WEB)}
+                  icon="browser"
+                  label="Browser wallet"
+                  sublabel="Authorize device"
+                />
+              </li>
+            {/if}
+          </ul>
+        </div>
 
         <div class="border-block new-account">
           <Button align="center" full onclick={() => getWebAuth()} appearance="secondary">
@@ -101,9 +106,7 @@
 
   .wrap {
     box-sizing: border-box;
-    height: 100%;
-    min-height: 0;
-    overflow: hidden;
+    min-height: 100%;
     display: grid;
     grid-template-rows: fit-content(60%) max-content auto;
 

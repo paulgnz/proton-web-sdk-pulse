@@ -20,6 +20,10 @@
     #fff
   );
 
+  @include create-var('scroll-background', transparent);
+
+  @include create-var('scroll-thumb-background', #b9b9b9);
+
   @include create-var('border-color', rgba(0, 0, 0, 0.1));
 
   @include create-var('button-icon-background-hover', rgba(0, 0, 0, 0.08));
@@ -62,6 +66,10 @@
     #000
   );
 
+  @include create-var('scroll-background', transparent);
+
+  @include create-var('scroll-thumb-background', #474d56);
+
   @include create-var('border-color', #161616);
 
   @include create-var('button-icon-background-hover', rgba(255, 255, 255, 0.08));
@@ -102,21 +110,29 @@
 }
 
 @mixin sexy-scrollbars {
-  // Give Chrome some nicer scrollbars
-  scrollbar-gutter: stable;
-  scrollbar-color: var(--body-background);
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+  }
 
   @supports (-moz-osx-font-smoothing: grayscale) {
     scrollbar-width: none;
   }
 
-  &::-webkit-scrollbar {
-    width: 2px;
-    background-color: var(--body-background);
-  }
+  @supports selector(::-webkit-scrollbar) {
+    scrollbar-gutter: stable;
 
-  &::-webkit-scrollbar-thumb {
-    background: var(--body-background);
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--scroll-background);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--scroll-thumb-background);
+      border-radius: 3px;
+    }
   }
 }
 

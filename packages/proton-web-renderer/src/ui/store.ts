@@ -1,5 +1,6 @@
 import {derived, writable} from 'svelte/store'
 import type {
+  UIAppInfo,
   UIDemo,
   UIError,
   UIProps,
@@ -22,6 +23,8 @@ export const app_props = writable<UIProps>(defaultUIProps)
 export const active = writable<boolean>(false)
 
 export const theme = writable<UITheme>('dark')
+
+export const appInfo = writable<UIAppInfo>({})
 
 export const closeAction = writable<(() => void) | undefined>(undefined)
 export const backAction = writable<(() => void) | undefined>(undefined)

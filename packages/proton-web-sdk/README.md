@@ -1,76 +1,76 @@
 # Proton Web SDK
 
-Installation
+# Proton Web SDK
+## Overview
+**Proton** is a cryptocurrency public blockchain designed for consumer applications and seamless P2P payments which aims at maximizing payment acceptance speed by using identity verification mechanism.  
+  
+**Proton Web SDK** – is one of the packages that gives developers the ability to create web applications to interact with Proton wallets. This SDK will facilitate the process of communication between the web application and the Proton wallet. This package allows to send requests to the wallet for user authentication and signatures.
+​
+## Installation
+​​
+**npm** 
 ```
 npm i @proton/web-sdk
+``` 
+**yarn** 
+```
 yarn add @proton/web-sdk
+``` 
+## Usage
+### Import:
+
+ES6
+
+```js
+import ProtonWebSDK from '@proton/web-sdk'
+```  
+
+CommonJS
+
+```js
+const ProtonWebSDK = require('@proton/web-sdk')
 ```
 
-Usage
-```javascript
-import ProtonWebSDK from '@proton/web-sdk'
+### Initialization:
 
-// Constants
-const appIdentifier = 'taskly'
+```js 
+import ProtonWebSDK from '@proton/web-sdk';
 
-// Login
 const { link, session } = await ProtonWebSDK({
-    linkOptions: {
-        /* RPC endpoints */
-        endpoints: ['https://proton.greymass.com'],
-
-        /* Recommended: false if first time connecting, true if trying to reconnect */
-        restoreSession: false
-    },
-    transportOptions: {
-        /* Recommended: Your proton account */
-        requestAccount: appIdentifier,
-
-        /* Optional: Display request success and error messages, Default true */
-        requestStatus: true,
-    },
-    selectorOptions: {
-        /* Optional: The list of enabled wallets. All wallets are enabled by default. Possible values: proton, webauth, anchor */
-        enabledWalletTypes: ['proton', 'webauth', 'anchor']
-        
-        /* Optional: The name of the wallet to use. In this case the wallet selector step will be skipped. */
-        walletType: 'proton'
-    },
-    /* Optional: Configuration of UI widget */
-    uiOptions: {
-      /* Optional: The name of the theme to use. Default: dark. Possible values: dark, light or any name of the theme defined in themes options */
-      theme: 'light',
-      /* Optional: The set of themes with options to adjust. It is possible to define some parameters for light or dark theme or define completely new theme with all parameters set */
-      themes: {
-        light: {
-          base: {
-            textColorBase: 'red',
-            textColorLink: 'green',
-          },
-          button: {
-            primary: {
-              backgroundHover: 'red',
-            },
-          },
+  linkOptions: {
+    endpoints,
+    chainId,
+    restoreSession,
+  },
+  transportOptions: {
+    requestAccount: appIdentifier
+  },
+  uiOptions: {
+    theme: 'light',
+    themes: {
+      dark: {
+        base: {
+          textColorBase: 'black',
+          textColorSecondary: '#6B727F',
+          textColorLink: '#752EEB',
+          bodyBackground: '#F4F7FA'
         },
-        my: {
-          base: {
-            textColorBase: 'green',
-            textColorLink: 'red',
-          },
-          button: {
-            primary: {
-              backgroundHover: 'blue',
-            },
+        button: {
+          primary: {
+            backgroundHover: 'black',
           },
         },
       },
-    }
-})
+    },
+  }
+});
+​​
+// Restore on refresh
+login(true);
 
 // Actor and permission
-console.log(session.auth.actor) // e.g. "metal"
-console.log(session.auth.permission) // e.g. "active"
+console.log(session.auth.actor); // e.g. "metal"
+console.log(session.auth.permission); // e.g. "active"
 
 // Send Transaction
 const result = await session.transact({
@@ -100,3 +100,88 @@ await link.removeSession(appIdentifier, session.auth)
 link = undefined
 session = undefined
 ```
+## Options
+​
+The ```ProtonWebSDK``` Class takes three main types of option objects:
+ - ```linkOptions```
+ - ```transportOptions```  
+ - ```selectorOptions```
+ - ```uiOptions```
+​
+### Link Options
+A required object which includes all options for communication customization.
+
+**linkOptions:**
+ - **endpoints** – type array – required – an array of endpoints that an SDK will address to.
+​
+    > Only one endpoint is required. If more are provided, the SDK will use them as failover targets.
+
+    > The SDK is able to automatically differentiate Mainnet and Testnet from the url
+
+
+ - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpc from the endpoint provided.
+​
+ - **storage** – type LinkStorage – optional – if not specified, the new Storage is automatically created. In order to customize Storage, you should provide a custom LinkStorage interface with type specifications inside.
+​
+ - **storagePrefix** – type string – optional – a custom SDK storage prefix which is prepended to the name of localStorage keys. If not specified, automatically prepends ‘proton-storage’ string.
+​
+ - **restoreSession** – type Boolean – optional – if contains ```true``` value, prevents modal from popping up and makes SDK look for saved session value in the Storage. If not specified, automatically contains ```false``` value.
+​
+##### Example
+If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
+​
+### Transport Options
+An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
+
+**transportOptions:**
+
+ - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
+​
+    > Typically same as appName
+​​
+### Selector Options
+
+An optional object which includes options for the wallet selection.
+
+**selectorOptions:**
+
+  - **enabledWalletTypes** - type stringp[] - optional - The list of enabled wallets. All wallets are enabled by default. Possible values: proton, webauth, anchor.
+​
+ - **walletType** – type string – optional – The name of the wallet to use. In this case the wallet selector step will be skipped.
+
+### UI Options
+
+An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+
+**uiOptions:**
+
+  - **theme** - type string - optional - The name of the theme applied for the widget
+​
+ - **themes** – type Object – optional – object which can includes options to configure or defined theme of the widget.
+Check the `@proton/web-renderer` package for more info.  
+
+## Breaking changes
+After the upgrade to version 5+ some adjustments for the code required.
+`selectorOptions` object changed. 
+
+No more `appName`, `appLogo`. 
+These options now moved to `uiOptions` -> `appInfo`.
+Old:
+```
+appName: 'Taskly',
+appLogo: 'https://...'
+```
+New:
+```
+uiOptions: {
+  appInfo: {
+    name: 'Taskly',
+    logo: 'https://...'
+  }
+}
+```
+
+`customStyleOptions` converted into `uiOption`. Check `@proton/web-renderer` for more info.
+
+`isLogoRound` boolean option from `customStyleOptions` converted into `logoRounded` boolean option in `appInfo`.
+

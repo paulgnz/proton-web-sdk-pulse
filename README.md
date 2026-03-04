@@ -34,6 +34,9 @@ const ProtonWebSDK = require('@proton/web-sdk')
 ```js 
 import ProtonWebSDK from '@proton/web-sdk';
 
+let link;
+let session;
+
 const login = async (restoreSession) => {
     const { link: localLink, session: localSession } = await ProtonWebSDK({
       linkOptions: {
@@ -157,7 +160,8 @@ An object which contains all needed data for the client communication. If not sp
     > Typically same as appName
 ​​
 ### Selector Options
-An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+
+An optional object which includes options for the wallet selection.
 
 **selectorOptions:**
 
@@ -165,12 +169,16 @@ An object which includes style options for the wallet selection. If not specifie
 ​
  - **walletType** – type string – optional – The name of the wallet to use. In this case the wallet selector step will be skipped.
 
+### UI Options
+
+An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+
 **uiOptions:**
 
   - **theme** - type string - optional - The name of the theme applied for the widget
 ​
  - **themes** – type Object – optional – object which can includes options to configure or defined theme of the widget.
-Check the ```proton-web-renderer``` directory for more info.  
+Check the `proton-web-renderer` folder for more info.  
 
 ## Contributors
 ​

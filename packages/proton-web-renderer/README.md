@@ -47,6 +47,14 @@ const link = new ProtonLink({transport})
 It is allowed to change color almost all elements of the widget. It is possible to define only some parameters, default values will be used for others.
 
 ```js
+  appInfo: {
+    // Application name. It will be displayed on wallet type selector screen. Optional.
+    name: 'Taskly',
+    // Application logo. It will be displayed on wallet type selector screen. Optional.
+    logo: 'https://c2c54d36-0d4b-4f81-9fd2-004e7cb42dd1.mdnplay.dev/shared-assets/images/examples/plumeria.jpg',
+    // If set to true, then logo will be displayed inside a circle. Optional
+    logoRounded: true,
+  },
 
   themes: {
     /* Theme name. It could be light, dark or any other name*/

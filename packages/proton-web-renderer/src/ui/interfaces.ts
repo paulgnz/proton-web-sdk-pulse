@@ -9,6 +9,12 @@ export type UIRouteValue = (typeof ROUTES)[keyof typeof ROUTES]
 
 export type UIWalletType = (typeof SUPPORTED_WALLETS)[keyof typeof SUPPORTED_WALLETS]
 
+export interface UIAppInfo {
+  name?: string
+  logo?: string
+  logoRounded?: boolean
+}
+
 /** The router for the sections of the UI */
 export interface UIRouterState {
   path?: UIRouteValue
@@ -72,6 +78,7 @@ export interface UIThemeOptions {
 export interface UIProps {
   theme?: UITheme
   themes?: Record<UITheme, UIThemeOptions>
+  appInfo?: UIAppInfo
 }
 
 export interface UIWalletConfig {

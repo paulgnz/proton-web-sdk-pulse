@@ -12,6 +12,7 @@
     router,
     theme,
     walletSelect,
+    appInfo,
   } from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
@@ -39,6 +40,9 @@
     unsubscribeProps = app_props.subscribe((value) => {
       if (value.theme) {
         setTheme(value.theme)
+      }
+      if (value.appInfo) {
+        appInfo.set(value.appInfo)
       }
     })
     unsubscribeRouter = router.subscribe((current) => {
