@@ -178,10 +178,14 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
         const info = LinkInfo.from({
             expiration: new Date(Date.now() + this.timeout),
         })
-        if (this.link.transport.onSessionRequest) {
-            this.link.transport.onSessionRequest(this, request, cancel)
-        }
         const controller = new AbortController()
+        if (this.link.transport.onSessionRequest) {
+            this.link.transport.onSessionRequest(this, request, (reason) => {
+                controller.abort()
+                cancel(reason)
+            })
+        }
+
         let reachedTimeout = false
 
         const timer = setTimeout(() => {
@@ -208,7 +212,7 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
                 'X-Buoy-Wait': (this.timeout / 1000).toFixed(0),
             },
             mode: 'no-cors',
-            body: payload.array,
+            body: payload.array as BodyInit,
             signal: controller.signal,
         })
             .then((response) => {
@@ -224,7 +228,7 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
                 }
             })
             .catch((error) => {
-                if (!reachedTimeout) {
+                if (!reachedTimeout && !controller.signal.aborted) {
                     clearTimeout(timer)
                     cancel(
                         new SessionError(
