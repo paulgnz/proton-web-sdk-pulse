@@ -216,6 +216,7 @@ export class BrowserTransport implements LinkTransport {
     if (this.ui) {
       this.ui.close()
     }
+    this.showingManual = false
   }
 
   private displayRequest(
