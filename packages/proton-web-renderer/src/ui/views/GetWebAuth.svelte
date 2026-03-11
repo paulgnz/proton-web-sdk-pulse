@@ -36,7 +36,7 @@
 <Layout>
   {#snippet content()}
     <ul class="list">
-      {#each benefits as item}
+      {#each benefits as item (item.label)}
         <li class="list__item">
           <Icon name={item.icon} class="list__icon" />
           <div>

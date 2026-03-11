@@ -32,10 +32,18 @@ export interface UIThemeOptions {
     textColorBase?: string
     textColorSecondary?: string
     textColorLink?: string
+    textColorSecondaryLink?: string
 
     bodyBackground?: string
 
+    scrollBackground?: string
+    scrollThumbBackground?: string
+
+    logoBackgroundColor?: string
+
     borderColor?: string
+
+    countdownBackground?: string
   }
 
   tabs?: {

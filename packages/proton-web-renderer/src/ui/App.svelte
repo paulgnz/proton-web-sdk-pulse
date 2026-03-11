@@ -6,13 +6,13 @@
   import {
     active,
     app_props,
+    appInfo,
     closeAction,
     demoMode,
     error,
     router,
     theme,
     walletSelect,
-    appInfo,
   } from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
@@ -20,7 +20,7 @@
   import SignRequest from './views/SignRequest.svelte'
   import RequestWithQRCode from './views/RequestWithQRCode.svelte'
   import type {Unsubscriber} from 'svelte/store'
-  import {ROUTES, SUPPORTED_WALLETS} from './constants'
+  import {DEMO_IMG, ROUTES, SUPPORTED_WALLETS} from './constants'
   import GenericError from './views/GenericError.svelte'
 
   let title = $state('')
@@ -100,6 +100,46 @@
     theme.set(themeValue)
   }
 
+  function setLogo(e: Event) {
+    const target = e.target as HTMLSelectElement
+    const value = target.value
+    let logo = ''
+    let logoRounded = false
+    if (value) {
+      logo = DEMO_IMG
+
+      if (value === 'logo_rounded') {
+        logoRounded = true
+      }
+    }
+
+    appInfo.update((value) => {
+      return {
+        ...value,
+        logo,
+        logoRounded,
+      }
+    })
+  }
+
+  function setName(e: Event) {
+    const target = e.target as HTMLSelectElement
+    const value = target.value
+    let name = ''
+    if (value === 'name') {
+      name = 'Taskly'
+    } else if (value === 'name_long') {
+      name = 'Taskly Is a Very Very Long Application Name'
+    }
+
+    appInfo.update((value) => {
+      return {
+        ...value,
+        name,
+      }
+    })
+  }
+
   onDestroy(() => {
     unsubscribeProps?.()
     unsubscribeRouter?.()
@@ -128,6 +168,18 @@
           Sign with WebAuth</button
         >
         <button onclick={() => $demoMode.sign(SUPPORTED_WALLETS.ANCHOR)}>Sign with Anchor</button>
+
+        <select onchange={(e) => setLogo(e)}>
+          <option value="">No logo</option>
+          <option value="logo">Show logo</option>
+          <option value="logo_rounded">Show rounded logo</option>
+        </select>
+
+        <select onchange={(e) => setName(e)}>
+          <option value="">No name</option>
+          <option value="name">Show name</option>
+          <option value="name_long">Show long name</option>
+        </select>
       </div>
     {/if}
 

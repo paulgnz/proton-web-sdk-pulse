@@ -24,7 +24,11 @@
 
   @include create-var('scroll-thumb-background', #b9b9b9);
 
+  @include create-var('logo-background-color', #343434);
+
   @include create-var('border-color', rgba(0, 0, 0, 0.1));
+
+  @include create-var('countdown-background', 0, 0, 0);
 
   @include create-var('button-icon-background-hover', rgba(0, 0, 0, 0.08));
 
@@ -41,8 +45,6 @@
 
   @include create-var('button-flat-text-color', #000);
   @include create-var('button-flat-text-color-hover', #7f7f7f);
-
-  @include create-var('countdown-background', 0, 0, 0);
 
   @include create-var('tabs-background', #d5d6d9);
   @include create-var('tabs-background-active', #161616);
@@ -70,7 +72,11 @@
 
   @include create-var('scroll-thumb-background', #474d56);
 
+  @include create-var('logo-background-color', #343434);
+
   @include create-var('border-color', #161616);
+
+  @include create-var('countdown-background', 255, 255, 255);
 
   @include create-var('button-icon-background-hover', rgba(255, 255, 255, 0.08));
 
@@ -87,8 +93,6 @@
 
   @include create-var('button-flat-text-color', #c0c0c0);
   @include create-var('button-flat-text-color-hover', #ffffff);
-
-  @include create-var('countdown-background', 255, 255, 255);
 
   @include create-var('tabs-background', #121a26);
   @include create-var('tabs-background-active', #323944);
