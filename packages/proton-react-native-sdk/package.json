@@ -5,7 +5,7 @@
   "unpkg": "lib/react-native-sdk.bundle.js",
   "types": "lib/types/index.d.ts",
   "source": "src/index.ts",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "license": "MIT",
   "main": "lib/react-native-sdk.js",
   "typings": "lib/types/index.d.ts",
@@ -27,7 +27,7 @@
     "lint": "make lint"
   },
   "dependencies": {
-    "@proton/js": "^28.1.2",
+    "@proton/js": "^29.1.0",
     "@proton/link": "workspace:^",
     "@proton/signing-request": "workspace:^",
     "@react-native-async-storage/async-storage": "^1.24.0",

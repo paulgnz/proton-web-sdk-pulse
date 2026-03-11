@@ -1,6 +1,6 @@
 {
   "name": "@proton/web-sdk",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "license": "MIT",
   "author": "metallicus",
   "publishConfig": {
@@ -31,7 +31,7 @@
   "dependencies": {
     "@greymass/eosio": "^0.6.1",
     "@proton/browser-transport": "workspace:^",
-    "@proton/js": "^28.1.2",
+    "@proton/js": "^29.1.0",
     "@proton/link": "workspace:^"
   },
   "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2",
