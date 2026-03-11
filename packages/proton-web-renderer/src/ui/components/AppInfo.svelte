@@ -16,7 +16,7 @@
     {/if}
 
     {#if appName}
-      <div class="app-info__name">{appName}</div>
+      <div class="app-info__name" title={appName}>{appName}</div>
     {/if}
   </div>
 {/if}
