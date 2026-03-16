@@ -160,6 +160,19 @@ An object which includes style options for the wallet selection. If not specifie
  - **themes** – type Object – optional – object which can includes options to configure or defined theme of the widget.
 Check the `@proton/web-renderer` package for more info.  
 
+## Methods
+By default the package exports the Proton Web SDK class. But there are several extra functions exported:
+
+  - `setUITheme` - the function allows to switch themes for the widget. It accepts the name of the theme as argument. By default there are 2 themes: `light` and `dark`. But it is possible to pass any name of the theme defined in the `uiOptions` `themes` object.
+
+    ```js
+    setUITheme('light');
+    ```
+  - `runUIDemo` - the function starts a demo of the widget without the real authentication or sign process started. This could be useful to work on new theme implementation or theme adjustments. It is possible to see all available views of the app and see how they look in different themes.
+    ```js
+    runUIDemo();
+    ```
+
 ## Breaking changes
 After the upgrade to version 5+ some adjustments for the code required.
 `selectorOptions` object changed. 

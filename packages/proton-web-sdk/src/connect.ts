@@ -17,7 +17,7 @@ export const setUITheme = (value: UIOptions['theme']) => {
   }
 }
 
-export const runDemo = () => {
+export const runUIDemo = () => {
   renderer?.demo()
 }
 
