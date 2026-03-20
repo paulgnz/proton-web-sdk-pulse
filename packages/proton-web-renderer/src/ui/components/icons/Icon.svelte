@@ -28,7 +28,7 @@
   {#if isImg}
     <img src={icons[name]} alt={name} />
   {:else}
-    {@html icons[name]}
+    {icons[name]}
   {/if}
 </span>
 

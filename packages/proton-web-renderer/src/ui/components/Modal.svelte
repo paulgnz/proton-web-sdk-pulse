@@ -32,7 +32,6 @@
       dialog,
       'mousedown',
       eventSelf((e: MouseEvent) => {
-        console.log('mousedown')
         backdropClose(e)
       }),
       {capture: true, passive: false}
