@@ -32,7 +32,7 @@
       {#if noWallets}
         <ErrorDisplay name="No enabled wallets" description="Enable at least one wallet" />
       {:else}
-        <div>
+        <div class="content">
           <AppInfo />
 
           <ul class="wallets">
@@ -117,6 +117,11 @@
     }
   }
 
+  .content {
+    max-width: 100%;
+    min-width: 0;
+  }
+
   .wallets {
     padding: var(--space-l);
     list-style: none;
@@ -132,19 +137,19 @@
   }
 
   .border-block {
+    box-sizing: border-box;
     border-top: 1px solid var(--border-color);
   }
 
   .new-account {
-    padding: var(--space-2xl) var(--space-l);
+    padding: var(--space-l);
     box-sizing: border-box;
   }
 
   .connect-other {
-    padding: var(--space-l);
     box-sizing: border-box;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
   }
 

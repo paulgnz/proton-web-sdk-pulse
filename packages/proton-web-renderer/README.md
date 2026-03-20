@@ -71,8 +71,20 @@ It is allowed to change color almost all elements of the widget. It is possible 
         // Background color (or gradient) for the widget dialog
         bodyBackground: 'string',
 
+        // Webkit scrollbar track color
+        scrollBackground: 'string',
+        
+        // Webkit scrollbar thumb color
+        scrollThumbBackground: 'string',
+
+        // Background for logo image
+        logoBackgroundColor: 'string',
+
         // Border color for spacers and other similar elements
         borderColor: 'string',
+
+        // Countdown background color
+        countdownBackground: 'string'
       }
 
       // Tabs. Used, for example, to switch between mobile and desktop authentication types

@@ -8,7 +8,7 @@
 			<div
 				class="flex justify-between items-center border-b border-gray-200 py-6 md:justify-start md:space-x-10"
 			>
-				<div class="hidden sm:block flex justify-start">
+				<div class="sm:block flex justify-start">
 					<div>
 						<span class="sr-only">Proton</span>
 						<svg

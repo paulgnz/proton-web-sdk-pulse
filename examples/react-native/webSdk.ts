@@ -66,12 +66,15 @@ class ProtonSDK {
 
   logout = async () => {
     if (this.link && this.session) {
-      await this.link.removeSession(this.requestAccount, this.session.auth);
-      
+      await this.link.removeSession(
+        this.requestAccount,
+        this.session.auth,
+        this.chainId as any,
+      );
+
       this.link = null;
       this.session = undefined;
     }
-    
   };
 }
 

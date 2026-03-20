@@ -6,6 +6,6 @@ export type {Link, LinkSession, TransactResult} from '@proton/link'
 //Allowing Type Definitions to be used by other modules
 export * from './types'
 
-export {setUITheme, runDemo} from './connect'
+export {setUITheme, runUIDemo} from './connect'
 
 export default ConnectWallet

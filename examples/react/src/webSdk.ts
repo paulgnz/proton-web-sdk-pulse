@@ -1,16 +1,22 @@
-import ProtonWebSDK from '@proton/web-sdk';
-import type { ProtonWebLink, LinkSession, TransactResult, Link } from '@proton/web-sdk';
-import { Serialize, JsonRpc } from '@proton/js';
-import type { RpcInterfaces } from '@proton/js';
+import ProtonWebSDK from "@proton/web-sdk";
+import type {
+  ProtonWebLink,
+  LinkSession,
+  TransactResult,
+  Link,
+} from "@proton/web-sdk";
+import { Serialize, JsonRpc } from "@proton/js";
+import type { RpcInterfaces } from "@proton/js";
 
 export let link: ProtonWebLink | Link | undefined;
 export let session: LinkSession | undefined;
 
-const REQUEST_ACCOUNT = 'taskly'
-const CHAIN_ID = '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0'
-const ENDPOINTS = ['https://proton.greymass.com']
+const REQUEST_ACCOUNT = "taskly";
+const CHAIN_ID =
+  "384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0";
+const ENDPOINTS = ["https://proton.greymass.com"];
 
-const rpc = new JsonRpc(ENDPOINTS)
+const rpc = new JsonRpc(ENDPOINTS);
 
 export const createLink = async ({
   restoreSession = false,
@@ -27,8 +33,10 @@ export const createLink = async ({
       requestAccount: REQUEST_ACCOUNT,
       requestStatus: false,
     },
-    selectorOptions: {
-      appName: 'Taskly',
+    uiOptions: {
+      appInfo: {
+        name: "Taskly",
+      },
     },
   });
   link = localLink;
@@ -44,7 +52,7 @@ export const login = async (): Promise<LinkSession | undefined> => {
 
 export const transact = async (
   actions: Serialize.Action[],
-  broadcast: boolean
+  broadcast: boolean,
 ): Promise<TransactResult> => {
   if (session) {
     return session.transact(
@@ -53,10 +61,10 @@ export const transact = async (
           actions,
         } as never,
       },
-      { broadcast }
+      { broadcast },
     );
   } else {
-    throw new Error('No Session');
+    throw new Error("No Session");
   }
 };
 
@@ -78,62 +86,75 @@ export const reconnect = async (): Promise<LinkSession | undefined> => {
   }
 };
 
-export const transfer = async ({ to, amount }: { to: string, amount: string }) => {
+export const transfer = async ({
+  to,
+  amount,
+}: {
+  to: string;
+  amount: string;
+}) => {
   if (!session) {
-    throw new Error('No Session');
+    throw new Error("No Session");
   }
 
-  return await session.transact({
-    actions: [{
-      /**
-       * The token contract, precision and symbol for tokens can be seen at protonscan.io/tokens
-       */
+  return await session.transact(
+    {
+      actions: [
+        {
+          /**
+           * The token contract, precision and symbol for tokens can be seen at protonscan.io/tokens
+           */
 
-      // Token contract
-      account: "eosio.token",
+          // Token contract
+          account: "eosio.token",
 
-      // Action name
-      name: "transfer",
-      
-      // Action parameters
-      data: {
-        // Sender
-        from: session.auth.actor,
+          // Action name
+          name: "transfer",
 
-        // Receiver
-        to: to,
+          // Action parameters
+          data: {
+            // Sender
+            from: session.auth.actor,
 
-        // 4 is precision, XPR is symbol
-        quantity: `${(+amount).toFixed(4)} XPR`,
+            // Receiver
+            to: to,
 
-        // Optional memo
-        memo: ""
-      },
-      authorization: [session.auth]
-    }]
-  }, {
-    broadcast: true
-  })
-}
+            // 4 is precision, XPR is symbol
+            quantity: `${(+amount).toFixed(4)} XPR`,
 
-export async function getProtonAvatar (account: string): Promise<RpcInterfaces.UserInfo | undefined> {
+            // Optional memo
+            memo: "",
+          },
+          authorization: [session.auth],
+        },
+      ],
+    },
+    {
+      broadcast: true,
+    },
+  );
+};
+
+export async function getProtonAvatar(
+  account: string,
+): Promise<RpcInterfaces.UserInfo | undefined> {
   try {
     const result = await rpc.get_table_rows({
-      code: 'eosio.proton',
-      scope: 'eosio.proton',
-      table: 'usersinfo',
-      key_type: 'i64',
+      code: "eosio.proton",
+      scope: "eosio.proton",
+      table: "usersinfo",
+      key_type: "i64",
       lower_bound: account,
       index_position: 1,
-      limit: 1
-    })
+      limit: 1,
+    });
 
     if (result.rows.length > 0 && result.rows[0].acc === account) {
-      return result.rows[0]
+      return result.rows[0];
     }
   } catch (e) {
-    console.error('getProtonAvatar error', e)
+    console.error("getProtonAvatar error", e);
   }
 
-  return undefined
+  return undefined;
 }

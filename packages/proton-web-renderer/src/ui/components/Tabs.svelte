@@ -17,7 +17,7 @@
 
 <div class="tabs">
   <div class="tabs-inner">
-    {#each tabs as tab}
+    {#each tabs as tab (tab.name)}
       <button class="tab" class:active={tab.name === current} onclick={() => setTab(tab.name)}
         >{tab.label}</button
       >
