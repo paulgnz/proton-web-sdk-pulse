@@ -39,8 +39,10 @@ export class WebSdkService {
         requestAccount: REQUEST_ACCOUNT,
         requestStatus: false,
       },
-      selectorOptions: {
-        appName: 'Taskly',
+      uiOptions: {
+        appInfo: {
+          name: 'Taskly',
+        },
       },
     });
     this.link = localLink;
@@ -58,7 +60,7 @@ export class WebSdkService {
 
   async transact(
     actions: Serialize.Action[],
-    broadcast: boolean
+    broadcast: boolean,
   ): Promise<TransactResult> {
     if (this.session) {
       return this.session.transact(
@@ -67,7 +69,7 @@ export class WebSdkService {
             actions,
           } as never,
         },
-        { broadcast }
+        { broadcast },
       );
     } else {
       throw new Error('No Session');
@@ -79,7 +81,7 @@ export class WebSdkService {
       await this.link.removeSession(
         REQUEST_ACCOUNT,
         this.session.auth,
-        CHAIN_ID
+        CHAIN_ID,
       );
     }
     this.session = undefined;
@@ -137,12 +139,12 @@ export class WebSdkService {
       },
       {
         broadcast: true,
-      }
+      },
     );
   }
 
   async getProtonAvatar(
-    account: string
+    account: string,
   ): Promise<RpcInterfaces.UserInfo | undefined> {
     try {
       const result = await this.rpc.get_table_rows({
@@ -165,4 +167,3 @@ export class WebSdkService {
     return undefined;
   }
 }
-
