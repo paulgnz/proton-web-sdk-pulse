@@ -32,7 +32,6 @@
       dialog,
       'mousedown',
       eventSelf((e: MouseEvent) => {
-        console.log('mousedown')
         backdropClose(e)
       }),
       {capture: true, passive: false}
@@ -86,13 +85,13 @@
     font-size: var(--text-base);
     line-height: 1.2;
     width: min(328px, 100vw - var(--space-m));
-    border: none;
     padding: 0;
     --max-modal-content-height: calc(100dvh);
     max-height: var(--max-modal-content-height);
     background: var(--body-background);
     border-radius: var(--space-l);
     outline: none;
+    border: 1px solid var(--border-color);
 
     &::backdrop {
       background: rgba(0, 0, 0, 0.75);

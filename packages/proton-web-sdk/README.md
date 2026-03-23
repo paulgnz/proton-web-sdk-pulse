@@ -154,6 +154,10 @@ An optional object which includes options for the wallet selection.
 An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
 
 **uiOptions:**
+  - **appInfo** - optional object with application info. It will be displayed on wallet type selector screen. It has following parameters:
+    - **name** - type string - optional - application name. 
+    - **logo** - type string - optional - application logo.
+    - **logoRounded** - type boolean - optional - if set to true, then logo will be displayed inside a circle.
 
   - **theme** - type string - optional - The name of the theme applied for the widget
 ​
@@ -169,6 +173,7 @@ By default the package exports the Proton Web SDK class. But there are several e
     setUITheme('light');
     ```
   - `runUIDemo` - the function starts a demo of the widget without the real authentication or sign process started. This could be useful to work on new theme implementation or theme adjustments. It is possible to see all available views of the app and see how they look in different themes.
+  It accepts object with `uiOptions` as an optional argument to provide theme and other parameters to demo.
     ```js
     runUIDemo();
     ```

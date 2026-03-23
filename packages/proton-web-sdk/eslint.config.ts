@@ -22,7 +22,7 @@ export default defineConfig([
   {
     rules: {
       'prettier/prettier': 'warn',
-      'no-console': 'warn',
+      'no-console': ['warn', {allow: ['warn', 'error']}],
 
       'sort-imports': [
         'warn',

@@ -88,6 +88,9 @@
           $walletSelect.reject(new Error('no wallet selected'))
           walletSelect.reset()
         }
+        if ($demoMode) {
+          $demoMode.close()
+        }
         if ($closeAction) {
           $closeAction()
           closeAction.set(undefined)

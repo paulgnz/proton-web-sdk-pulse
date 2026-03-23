@@ -141,7 +141,7 @@ export class WebRenderer implements UIRenderer {
     active.set(false)
   }
 
-  demo(): void {
+  async demo(): Promise<void> {
     const qrRequestData: UIQRData = {
       code: DEMO_IMG,
       link: 'proton-dev:example',
@@ -149,44 +149,50 @@ export class WebRenderer implements UIRenderer {
     const signData: UISignData = {
       timeout: 60 * 1_000,
     }
-    demoMode.set({
-      selectWallet: (wallet_type) => {
-        this.login({
-          data: qrRequestData,
-          wallet_type,
-        })
-      },
-      sign: (wallet_type) => {
-        this.sign({
-          data: signData,
-          wallet_type,
-        })
-      },
-      signManually: (wallet_type) => {
-        this.signManually({
-          data: qrRequestData,
-          wallet_type,
-        })
-      },
-      timeout: (wallet_type) => {
-        this.recoverError({
-          data: {
-            name: 'Unable to reach device',
-            description: 'Unable to deliver the request to the linked wallet',
-          },
-          onManual: () => {
-            this.signManually({
-              data: qrRequestData,
-              wallet_type,
-            })
-          },
-          wallet_type,
-        })
-      },
+
+    return await new Promise((resolve) => {
+      demoMode.set({
+        selectWallet: (wallet_type) => {
+          this.login({
+            data: qrRequestData,
+            wallet_type,
+          })
+        },
+        close: () => {
+          resolve()
+        },
+        sign: (wallet_type) => {
+          this.sign({
+            data: signData,
+            wallet_type,
+          })
+        },
+        signManually: (wallet_type) => {
+          this.signManually({
+            data: qrRequestData,
+            wallet_type,
+          })
+        },
+        timeout: (wallet_type) => {
+          this.recoverError({
+            data: {
+              name: 'Unable to reach device',
+              description: 'Unable to deliver the request to the linked wallet',
+            },
+            onManual: () => {
+              this.signManually({
+                data: qrRequestData,
+                wallet_type,
+              })
+            },
+            wallet_type,
+          })
+        },
+      })
+      enabledWallets.set(new Set(ENABLED_WALLETS))
+      router.push(ROUTES.WEBAUTH_CONNECT)
+      this.show()
     })
-    enabledWallets.set(new Set(ENABLED_WALLETS))
-    router.push(ROUTES.WEBAUTH_CONNECT)
-    this.show()
   }
 
   setTheme(value: UITheme): void {
@@ -195,6 +201,8 @@ export class WebRenderer implements UIRenderer {
 
   destroy(): void {
     unmount(this.app)
+    this.element?.remove()
+    this.offDOMContentLoaded()
   }
 
   private sign_request(route: UIRouteValue, payload: UISignPayload): void {
