@@ -156,12 +156,11 @@ const login = async (
         })
         loginOptions.linkOptions.storage!.write('user-auth', stringAuth)
       } catch (e) {
-        console.error('restoreSession Error:')
-        console.error(e)
-
         if ((e as Error)['code'] === 'E_WALLET_TYPE') {
           return null
         } else {
+          console.error('restoreSession Error:')
+          console.error(e)
           return {
             error: e,
           }
