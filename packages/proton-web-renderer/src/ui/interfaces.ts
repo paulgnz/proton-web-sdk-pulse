@@ -108,6 +108,8 @@ export type UIWalletSelectResponse = {
 export type UIDemo = {
   // eslint-disable-next-line no-unused-vars
   selectWallet: (walletType: string) => void
+
+  close: () => void
   // eslint-disable-next-line no-unused-vars
   sign: (walletType: string) => void
   // eslint-disable-next-line no-unused-vars
