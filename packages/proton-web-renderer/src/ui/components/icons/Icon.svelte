@@ -16,20 +16,14 @@
     class?: ClassValue
   } = $props()
 
-  const isImg = $derived.by(() => {
-    return /^data\:image/.test(icons[name])
-  })
+  let IconCmp = $derived.by(() => icons[name])
 </script>
 
 <span
   style="width: {size}; display: inline-grid; place-content: center; color: {color}"
   class={className}
 >
-  {#if isImg}
-    <img src={icons[name]} alt={name} />
-  {:else}
-    {icons[name]}
-  {/if}
+  <IconCmp />
 </span>
 
 <style lang="scss">
