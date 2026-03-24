@@ -62,8 +62,6 @@
 </Layout>
 
 <style lang="scss">
-  @use '../../styles/utils.scss';
-
   .list {
     list-style: none;
     padding: var(--space-2xl) var(--space-l);

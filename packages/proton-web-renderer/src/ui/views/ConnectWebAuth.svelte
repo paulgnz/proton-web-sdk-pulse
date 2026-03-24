@@ -102,7 +102,6 @@
 
 <style lang="scss">
   @use '../../styles/mixins.scss';
-  @use '../../styles/utils.scss';
 
   .wrap {
     box-sizing: border-box;

@@ -18,14 +18,11 @@ export const setUITheme = (value: UIOptions['theme']) => {
 }
 
 export const runUIDemo = async ({uiOptions}: Pick<ConnectWalletArgs, 'uiOptions'> = {}) => {
-  renderer = new WebRenderer(uiOptions)
+  const demoRenderer = new WebRenderer({id: 'demo-widget', ...uiOptions})
   try {
-    if (renderer) {
-      await renderer.demo()
-    }
+    await demoRenderer.demo()
   } finally {
-    renderer?.destroy()
-    renderer = undefined
+    demoRenderer?.destroy()
   }
 }
 
@@ -54,14 +51,11 @@ export const ConnectWallet = async ({
     uiOptions.theme = uiTheme
   }
 
-  renderer = new WebRenderer(uiOptions)
-
-  try {
-    return await login({selectorOptions, linkOptions, transportOptions})
-  } finally {
-    renderer?.destroy()
-    renderer = undefined
+  if (!renderer) {
+    renderer = new WebRenderer(uiOptions)
   }
+
+  return await login({selectorOptions, linkOptions, transportOptions})
 }
 
 const login = async (

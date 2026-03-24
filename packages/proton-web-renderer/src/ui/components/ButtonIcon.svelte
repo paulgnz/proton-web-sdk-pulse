@@ -20,7 +20,6 @@
 
 <style lang="scss">
   @use '../../styles/mixins.scss';
-  @use '../../styles/utils.scss';
 
   button {
     @include mixins.button-reset;
