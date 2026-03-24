@@ -46,8 +46,6 @@
 </Layout>
 
 <style lang="scss">
-  @use '../../styles/utils.scss';
-
   .wrap {
     height: 100%;
     min-height: 0;

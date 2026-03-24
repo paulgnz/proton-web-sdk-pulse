@@ -51,7 +51,6 @@
 
 <style lang="scss">
   @use '../../styles/mixins.scss';
-  @use '../../styles/utils.scss';
 
   .btn {
     @include mixins.button-reset;

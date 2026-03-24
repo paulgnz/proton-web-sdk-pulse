@@ -81,6 +81,10 @@
   @use '../../styles/base';
   @use '../../styles/utils';
 
+  :global {
+    @include utils.use-utils;
+  }
+
   dialog {
     font-size: var(--text-base);
     line-height: 1.2;

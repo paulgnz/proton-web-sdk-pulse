@@ -69,7 +69,6 @@
 
 <style lang="scss">
   @use '../../styles/mixins.scss';
-  @use '../../styles/utils.scss';
 
   .wrap {
     height: 100%;
