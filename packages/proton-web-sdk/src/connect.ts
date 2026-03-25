@@ -4,7 +4,7 @@ import type {LinkOptions, PermissionLevel} from '@proton/link'
 import {ProtonWebLink} from './links/protonWeb'
 import {Storage} from './storage'
 import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions, UIOptions} from './types'
-import {JsonRpc} from '@proton/js'
+import {JsonRpc, JsonRpcPulseVM} from '@proton/js'
 import {WebRenderer} from '@proton/web-renderer'
 
 let renderer: WebRenderer | undefined
@@ -33,7 +33,8 @@ export const ConnectWallet = async ({
   uiOptions = {},
 }: ConnectWalletArgs): Promise<ConnectWalletRet> => {
   // Add RPC
-  const rpc = new JsonRpc(linkOptions.endpoints)
+  const rpcClass = linkOptions.usePulseVM ? JsonRpcPulseVM : JsonRpc
+  const rpc = new rpcClass(linkOptions.endpoints)
   linkOptions.client = rpc
 
   // Add Chain ID
@@ -113,11 +114,22 @@ const login = async (
     }
 
     // Set scheme
-    let scheme = 'proton'
-    if (walletType === 'anchor') {
-      scheme = 'esr'
-    } else if (chain === 'proton-test') {
-      scheme = 'proton-dev'
+    let scheme: string | undefined = undefined
+
+    if (loginOptions.linkOptions.scheme) {
+      scheme = loginOptions.linkOptions.scheme
+    } else if (loginOptions.linkOptions.usePulseVM) {
+      scheme = 'achain'
+    }
+
+    if (!scheme) {
+      if (walletType === 'anchor') {
+        scheme = 'esr'
+      } else if (chain === 'proton-test') {
+        scheme = 'proton-dev'
+      } else {
+        scheme = 'proton'
+      }
     }
 
     const options = {

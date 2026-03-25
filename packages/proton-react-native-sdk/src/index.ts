@@ -2,7 +2,7 @@ import './registerGlobals'
 import ReactNativeTransport, {ReactNativeTransportOptions} from './transport'
 
 import ProtonLink, {LinkOptions, LinkSession, LinkStorage, PermissionLevel} from '@proton/link'
-import {JsonRpc} from '@proton/js'
+import {JsonRpc, type JsonRpcApi, JsonRpcPulseVM} from '@proton/js'
 
 import Storage from './storage'
 
@@ -11,7 +11,7 @@ type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 interface ConnectWalletArgs {
   linkOptions: PartialBy<LinkOptions, 'transport' | 'chains' | 'scheme'> & {
     endpoints: string[]
-    rpc?: JsonRpc
+    rpc?: JsonRpcApi
     storage?: LinkStorage
     storagePrefix?: string
     restoreSession?: boolean
@@ -21,7 +21,9 @@ interface ConnectWalletArgs {
 
 const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs) => {
   // Add RPC
-  linkOptions.client = linkOptions.rpc || new JsonRpc(linkOptions.endpoints)
+  const rpcClass = linkOptions.usePulseVM ? JsonRpcPulseVM : JsonRpc
+
+  linkOptions.client = linkOptions.rpc || new rpcClass(linkOptions.endpoints)
 
   // Add chain ID if not present
   if (!linkOptions.chainId) {
@@ -46,10 +48,19 @@ const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs)
 
   let session, loginResult
 
-  if (linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd') {
-    linkOptions.scheme = 'proton-dev'
-  } else {
-    linkOptions.scheme = 'proton'
+  // Set scheme
+  if (!linkOptions.scheme) {
+    if (linkOptions.usePulseVM) {
+      linkOptions.scheme = 'achain'
+    } else {
+      if (
+        linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
+      ) {
+        linkOptions.scheme = 'proton-dev'
+      } else {
+        linkOptions.scheme = 'proton'
+      }
+    }
   }
 
   const transport = new ReactNativeTransport({

@@ -1,6 +1,6 @@
 {
   "name": "@proton/web-sdk",
-  "version": "5.0.0-rc-4",
+  "version": "5.0.0-rc-5",
   "license": "MIT",
   "author": "metallicus",
   "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
@@ -37,7 +37,7 @@
   "dependencies": {
     "@greymass/eosio": "^0.6.1",
     "@proton/browser-transport": "workspace:^",
-    "@proton/js": "^29.1.0",
+    "@proton/js": "^30.0.0",
     "@proton/link": "workspace:^",
     "@proton/web-renderer": "workspace:^"
   },

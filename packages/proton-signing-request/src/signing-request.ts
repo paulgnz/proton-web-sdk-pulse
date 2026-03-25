@@ -288,7 +288,7 @@ export interface SigningRequestEncodingOptions {
     /** Optional signature provider, will be used to create a request signature if provided. */
     signatureProvider?: SignatureProvider
     /** Custom Scheme . */
-    scheme: 'esr' | 'proton' | 'proton-dev'
+    scheme: 'esr' | 'proton' | 'proton-dev' | 'achain'
 }
 
 export type AbiMap = Map<string, ABI>

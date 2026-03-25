@@ -17,7 +17,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
-    "@proton/js": "^29.1.0",
+    "@proton/js": "^30.0.0",
     "@proton/web-sdk": "workspace:^",
     "@tailwindcss/postcss": "^4.1.8",
     "postcss": "^8.5.4",

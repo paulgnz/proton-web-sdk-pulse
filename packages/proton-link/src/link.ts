@@ -43,7 +43,7 @@ import {LinkTransport} from './link-transport'
 import {LinkCreate} from './link-types'
 import {BuoyCallbackService, LinkCallback, LinkCallbackService} from './link-callback'
 import {sessionMetadata} from './utils'
-import {JsonRpc, RpcInterfaces} from '@proton/js'
+import {JsonRpc, type JsonRpcApi, JsonRpcPulseVM, type RpcInterfaces} from '@proton/js'
 
 /**
  * Payload accepted by the [[Link.transact]] method.
@@ -133,15 +133,20 @@ export class LinkChain implements AbiProvider {
     /** EOSIO ChainID for which requests are valid. */
     public chainId: ChainId
     /** API client instance used to communicate with the chain. */
-    public client: JsonRpc
+    public client: JsonRpcApi
 
     private abiCache = new Map<string, ABIDef>()
     private pendingAbis = new Map<string, Promise<RpcInterfaces.GetAbiResult>>()
 
     /** @internal */
-    constructor(chainId: ChainIdType, clientOrUrl: JsonRpc | string) {
+    constructor(
+        chainId: ChainIdType,
+        clientOrUrl: JsonRpcApi | string,
+        {usePulseVM}: {usePulseVM?: boolean} = {}
+    ) {
         this.chainId = ChainId.from(chainId)
-        this.client = typeof clientOrUrl === 'string' ? new JsonRpc(clientOrUrl) : clientOrUrl
+        const rpcClass = usePulseVM ? JsonRpcPulseVM : JsonRpc
+        this.client = typeof clientOrUrl === 'string' ? new rpcClass(clientOrUrl) : clientOrUrl
     }
 
     /**
@@ -218,7 +223,9 @@ export class Link {
         }
         let chains: LinkChainConfig[] = options.chains || []
         if (options.chainId && options.client) {
-            chains = [{chainId: options.chainId, nodeUrl: options.client}]
+            chains = [
+                {chainId: options.chainId, nodeUrl: options.client, usePulseVM: options.usePulseVM},
+            ]
         }
         if (chains.length === 0) {
             throw new TypeError('options.chains is required')
