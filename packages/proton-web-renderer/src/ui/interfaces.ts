@@ -42,6 +42,7 @@ export interface UIThemeOptions {
     logoBackgroundColor?: string
 
     borderColor?: string
+    windowBorderColor?: string
 
     countdownBackground?: string
   }

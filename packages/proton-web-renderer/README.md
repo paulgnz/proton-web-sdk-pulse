@@ -82,6 +82,9 @@ It is allowed to change color almost all elements of the widget. It is possible 
 
         // Border color for spacers and other similar elements
         borderColor: 'string',
+        
+        // Border color of the widget's popup
+        windowBorderColor: 'string',
 
         // Countdown background color
         countdownBackground: 'string'

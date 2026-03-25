@@ -27,6 +27,7 @@
   @include create-var('logo-background-color', #343434);
 
   @include create-var('border-color', rgba(0, 0, 0, 0.1));
+  @include create-var('window-border-color', rgba(0, 0, 0, 0.1));
 
   @include create-var('countdown-background', 0, 0, 0);
 
@@ -75,6 +76,7 @@
   @include create-var('logo-background-color', #343434);
 
   @include create-var('border-color', #161616);
+  @include create-var('window-border-color', #282c32);
 
   @include create-var('countdown-background', 255, 255, 255);
 

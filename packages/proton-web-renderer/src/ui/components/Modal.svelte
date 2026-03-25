@@ -95,7 +95,7 @@
     background: var(--body-background);
     border-radius: var(--space-l);
     outline: none;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--window-border-color);
 
     &::backdrop {
       background: rgba(0, 0, 0, 0.75);
