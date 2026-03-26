@@ -148,7 +148,13 @@ A required object which includes all options for communication customization.
  - **restoreSession** – type Boolean – optional – if contains ```true``` value, prevents modal from popping up and makes SDK look for saved session value in the Storage. If not specified, automatically contains ```false``` value.
 ​
 ##### Example
-If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
+If you add [https://rpc.api.testnet.metalx.com](https://rpc.api.testnet.metalx.com) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
+
+```js
+linkOptions: {
+  endpoints: ['https://rpc.api.testnet.metalx.com']
+}
+```
 ​
 ### Transport Options
 An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.

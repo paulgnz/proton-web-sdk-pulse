@@ -128,8 +128,6 @@
     overflow: auto;
     box-sizing: border-box;
 
-    @include mixins.sexy-scrollbars;
-
     display: flex;
     flex-direction: column;
     gap: var(--space-s);
