@@ -177,8 +177,8 @@ export class ProtonWebLink {
 
   async onEvent(e: MessageEvent) {
     if (
-      e.origin.indexOf('https://webauth.com') !== -1 &&
-      e.origin.indexOf('https://testnet.webauth.com') !== -1
+      e.origin.indexOf('https://webauth.com') === -1 &&
+      e.origin.indexOf('https://testnet.webauth.com') === -1
     ) {
       return
     }

@@ -24,7 +24,7 @@
 
   @include create-var('scroll-thumb-background', #b9b9b9);
 
-  @include create-var('logo-background-color', #343434);
+  @include create-var('logo-background-color', transparent);
 
   @include create-var('border-color', rgba(0, 0, 0, 0.1));
   @include create-var('window-border-color', rgba(0, 0, 0, 0.1));
@@ -73,7 +73,7 @@
 
   @include create-var('scroll-thumb-background', #474d56);
 
-  @include create-var('logo-background-color', #343434);
+  @include create-var('logo-background-color', transparent);
 
   @include create-var('border-color', #161616);
   @include create-var('window-border-color', #282c32);
@@ -126,6 +126,8 @@
 
   @supports selector(::-webkit-scrollbar) {
     scrollbar-gutter: stable;
+    scrollbar-width: auto;
+    scrollbar-color: auto;
 
     &::-webkit-scrollbar {
       width: 3px;
