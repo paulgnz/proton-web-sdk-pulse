@@ -5,7 +5,7 @@
   "unpkg": "lib/react-native-sdk.bundle.js",
   "types": "lib/types/index.d.ts",
   "source": "src/index.ts",
-  "version": "5.0.0-rc-1",
+  "version": "5.0.0-rc-2",
   "license": "MIT",
   "main": "lib/react-native-sdk.js",
   "typings": "lib/types/index.d.ts",
@@ -34,14 +34,12 @@
     "@proton/js": "^29.1.0",
     "@proton/link": "workspace:^",
     "@proton/signing-request": "workspace:^",
-    "@react-native-async-storage/async-storage": "^1.24.0",
     "buffer": "^6.0.3",
-    "react-native": "^0.70.0",
-    "react-native-get-random-values": "^1.11.0",
     "text-encoding-shim": "^1.0.5"
   },
   "peerDependencies": {
     "react": "^18.0.0",
+    "react-native": ">=0.70.0",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "react-native-get-random-values": "^1.11.0"
   },
