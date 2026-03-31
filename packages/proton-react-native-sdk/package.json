@@ -34,14 +34,12 @@
     "@proton/js": "^30.0.0",
     "@proton/link": "workspace:^",
     "@proton/signing-request": "workspace:^",
-    "@react-native-async-storage/async-storage": "^1.24.0",
     "buffer": "^6.0.3",
-    "react-native": "^0.70.0",
-    "react-native-get-random-values": "^1.11.0",
     "text-encoding-shim": "^1.0.5"
   },
   "peerDependencies": {
     "react": "^18.0.0",
+    "react-native": ">=0.70.0",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "react-native-get-random-values": "^1.11.0"
   },
@@ -52,7 +50,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-replace": "^6.0.2",
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.1.2",
     "@types/node": "^16.4.0",
     "@types/react-native": "^0.70.0",

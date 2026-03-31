@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {HeaderComponent } from './components/header/header.component'
+import { HeaderComponent } from './components/header/header.component';
 import { TransferComponent } from './components/transfer/transfer.component';
 
 @Component({
@@ -9,5 +9,5 @@ import { TransferComponent } from './components/transfer/transfer.component';
   standalone: true,
 })
 export class AppComponent {
-  title = 'Proton Angular App';
+  readonly title = 'Proton Angular App';
 }
