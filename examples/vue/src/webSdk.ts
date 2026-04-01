@@ -1,16 +1,30 @@
 import ProtonWebSDK, { setUITheme, runUIDemo } from '@proton/web-sdk'
 import type { ProtonWebLink, LinkSession, TransactResult, Link } from '@proton/web-sdk'
-import { Serialize, JsonRpc } from '@proton/js'
+import { Serialize, JsonRpc, JsonRpcPulseVM } from '@proton/js'
 import type { RpcInterfaces } from '@proton/js'
 
 export let link: ProtonWebLink | Link | undefined
 export let session: LinkSession | undefined
 
+const USE_PULSE_VM = !!import.meta.env.VITE_USE_PULSE_VM
 const REQUEST_ACCOUNT = 'taskly'
-const CHAIN_ID = '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0'
-const ENDPOINTS = ['https://proton.greymass.com']
+const CHAIN_ID = USE_PULSE_VM
+  ? 'bef02258ee702d2d8df016ce2f2cbcf6bfa986dcd8c8641acd9068b8f9c4c7ef'
+  : '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
+const ENDPOINTS = USE_PULSE_VM
+  ? [
+      'https://pulsevm-devnet-01.metalblockchain.org/ext/bc/2T6FphmDo8szR3UERGsDsXaQPb52xUn2djnAt7S6LECbHDhc5L/rpc',
+    ]
+  : [
+      'https://rpc.api.testnet.metalx.com',
+      'https://proton-testnet1.eoscafeblock.com',
+      'https://test.proton.eosusa.io',
+    ]
 
-const rpc = new JsonRpc(ENDPOINTS)
+const SCHEME = USE_PULSE_VM ? 'achain' : undefined
+const TOKEN_CONTRACT = USE_PULSE_VM ? 'pulse.token' : 'eosio.token'
+const rpcClass = USE_PULSE_VM ? JsonRpcPulseVM : JsonRpc
+const rpc = new rpcClass(ENDPOINTS)
 
 export const createLink = async ({
   restoreSession = false,
@@ -22,6 +36,8 @@ export const createLink = async ({
       endpoints: ENDPOINTS,
       chainId: CHAIN_ID,
       restoreSession,
+      scheme: SCHEME,
+      usePulseVM: USE_PULSE_VM,
     },
     transportOptions: {
       requestAccount: REQUEST_ACCOUNT,
@@ -95,7 +111,7 @@ export const transfer = async ({ to, amount }: { to: string; amount: string }) =
              */
 
             // Token contract
-            account: 'eosio.token',
+            account: TOKEN_CONTRACT,
 
             // Action name
             name: 'transfer',
@@ -133,8 +149,8 @@ export async function getProtonAvatar(
 ): Promise<RpcInterfaces.UserInfo | undefined> {
   try {
     const result = await rpc.get_table_rows({
-      code: 'eosio.proton',
-      scope: 'eosio.proton',
+      code: TOKEN_CONTRACT,
+      scope: TOKEN_CONTRACT,
       table: 'usersinfo',
       key_type: 'i64',
       lower_bound: account,
