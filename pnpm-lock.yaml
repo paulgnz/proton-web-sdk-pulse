@@ -36,8 +36,8 @@ importers:
         specifier: ^21.2.0
         version: 21.2.6(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(@angular/platform-browser@21.2.6(@angular/common@21.2.6(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.6(@angular/compiler@21.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/web-sdk':
         specifier: workspace:^
         version: link:../../packages/proton-web-sdk
@@ -82,8 +82,8 @@ importers:
   examples/react:
     dependencies:
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/web-sdk':
         specifier: workspace:^
         version: link:../../packages/proton-web-sdk
@@ -183,8 +183,8 @@ importers:
   examples/svelte:
     dependencies:
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/web-sdk':
         specifier: workspace:^
         version: link:../../packages/proton-web-sdk
@@ -247,8 +247,8 @@ importers:
   examples/vue:
     dependencies:
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/web-sdk':
         specifier: workspace:^
         version: link:../../packages/proton-web-sdk
@@ -402,8 +402,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/signing-request':
         specifier: workspace:^
         version: link:../proton-signing-request
@@ -523,8 +523,8 @@ importers:
   packages/proton-react-native-sdk:
     dependencies:
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/link':
         specifier: workspace:^
         version: link:../proton-link
@@ -837,8 +837,8 @@ importers:
         specifier: workspace:^
         version: link:../proton-browser-transport
       '@proton/js':
-        specifier: ^29.1.0
-        version: 29.1.0
+        specifier: ^30.1.0
+        version: 30.1.0
       '@proton/link':
         specifier: workspace:^
         version: link:../proton-link
@@ -1889,8 +1889,8 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
-  '@bloks/constants@28.11.4':
-    resolution: {integrity: sha512-qbRHAj/E9ubeShqFslYTsHPvtkUe02CSPDh8GwrFi7fISYK1wu96v2urelIysxRw0l3xZQO/qEgcOuVswg101w==}
+  '@bloks/constants@28.12.0':
+    resolution: {integrity: sha512-cWm72Blogr0t3g8l7Z94P66wFXCOm7an0UbHWmfOd8ciZCQb6OSuvQKJPcWwwzIyeeviKjvSsy0b9Sx17ZQvaw==}
 
   '@bramus/specificity@2.4.2':
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
@@ -3114,8 +3114,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@proton/js@29.1.0':
-    resolution: {integrity: sha512-6MS6abcMkeXMZPV/9o4L/V6L8cIJSY6MpLL28H1+4PFU9f9EXSFnaq26Tb4kDwF6AqDonsZE656rt21LEMgY/A==}
+  '@proton/js@30.1.0':
+    resolution: {integrity: sha512-+8qcTRS4vdlfvlKZIO6Xcu08zLO9m/GIl0i/fIAQsASM7hDYAOamz+Def8lZVrFA4+mGufewfxxujMx0ophMRg==}
 
   '@react-native-async-storage/async-storage@1.24.0':
     resolution: {integrity: sha512-W4/vbwUOYOjco0x3toB8QCr7EjIP6nE9G7o8PMguvvjYT5Awg09lyV4enACRx4s++PPulBiBSjL0KTFx2u0Z/g==}
@@ -10204,7 +10204,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@bloks/constants@28.11.4': {}
+  '@bloks/constants@28.12.0': {}
 
   '@bramus/specificity@2.4.2':
     dependencies:
@@ -11527,9 +11527,9 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@proton/js@29.1.0':
+  '@proton/js@30.1.0':
     dependencies:
-      '@bloks/constants': 28.11.4
+      '@bloks/constants': 28.12.0
       '@peculiar/webcrypto': 1.5.0
       abortcontroller-polyfill: 1.7.8
       base64url: 3.0.1
