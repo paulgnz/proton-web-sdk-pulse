@@ -2,8 +2,13 @@
   "$schema": "https://turborepo.org/schema.json",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "lib/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        "lib/**"
+      ]
     },
     "lint": {
       "outputs": []
@@ -11,8 +16,13 @@
     "dev": {
       "cache": false
     },
+    "watch": {
+      "cache": false
+    },
     "deployprod": {
-      "dependsOn": ["build"]
+      "dependsOn": [
+        "build"
+      ]
     }
   }
 }

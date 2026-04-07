@@ -1,10 +1,7 @@
 import js from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
-import css from '@eslint/css'
 import {defineConfig, globalIgnores} from 'eslint/config'
-import svelte from 'eslint-plugin-svelte'
-import svelteparser from 'svelte-eslint-parser'
 import prettier from 'eslint-plugin-prettier/recommended'
 
 export default defineConfig([
@@ -16,29 +13,16 @@ export default defineConfig([
     languageOptions: {
       globals: {...globals.browser, ...globals.node, NodeJS: true},
       parserOptions: {
-        extraFileExtensions: ['.svelte'],
         tsconfigRootDir: __dirname,
       },
     },
   },
   tseslint.configs.recommended,
-  svelte.configs.recommended,
   prettier,
-  svelte.configs.prettier,
-  {
-    files: ['**/*.svelte', '**/*.svelte.ts'],
-    languageOptions: {
-      parser: svelteparser,
-      parserOptions: {
-        parser: tseslint.parser,
-        extraFileExtensions: ['.svelte'],
-      },
-    },
-  },
   {
     rules: {
       'prettier/prettier': 'warn',
-      'no-console': 'warn',
+      'no-console': ['warn', {allow: ['warn', 'error']}],
 
       'sort-imports': [
         'warn',
@@ -67,7 +51,4 @@ export default defineConfig([
       ],
     },
   },
-  {files: ['**/*.css'], plugins: {css}, language: 'css/css', extends: ['css/recommended']},
-
-  // {files: ['**/*.json'], plugins: {json}, language: 'json/json', extends: ['json/recommended']},
 ])

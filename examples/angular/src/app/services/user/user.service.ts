@@ -1,17 +1,18 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { RpcInterfaces } from '@proton/js';
 
 import { WebSdkService } from '../web-sdk/web-sdk.service';
 import { from, map, of, ReplaySubject, shareReplay, switchMap } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  readonly actor$ = new ReplaySubject<string>(1);
-  readonly permission$ = new ReplaySubject<string>(1);
+  readonly actor = signal('');
+  readonly permission = signal('');
 
-  readonly accountData$ = this.actor$.pipe(
+  readonly accountData$ = toObservable(this.actor).pipe(
     switchMap((actor) => {
       if (actor) {
         return from(this.sdk.getProtonAvatar(actor));
@@ -49,8 +50,8 @@ export class UserService {
     }
 
     if (this.sdk.session?.auth) {
-      this.actor$.next(this.sdk.session.auth.actor.toString());
-      this.permission$.next(this.sdk.session.auth.permission.toString());
+      this.actor.set(this.sdk.session.auth.actor.toString());
+      this.permission.set(this.sdk.session.auth.permission.toString());
     }
   }
 
@@ -81,7 +82,7 @@ export class UserService {
   }
 
   private clear() {
-    this.actor$.next('');
-    this.permission$.next('');
+    this.actor.set('');
+    this.permission.set('');
   }
 }

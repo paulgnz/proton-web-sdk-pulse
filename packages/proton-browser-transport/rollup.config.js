@@ -1,14 +1,12 @@
 import {createRequire} from 'module'
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
-import svelte from 'rollup-plugin-svelte'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
 import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
-import {sveltePreprocess} from 'svelte-preprocess'
 
 const pkg = createRequire(import.meta.url)('./package.json')
 
@@ -30,19 +28,6 @@ const replaceVersion = replace({
   __ver: `${pkg.version}`,
 })
 
-const svelteOnWarn = (warning, handler) => {
-  if (
-    ['a11y-click-events-have-key-events', 'a11y-interactive-supports-focus'].includes(warning.code)
-  )
-    return
-  // let Rollup handle all other warnings normally
-  handler(warning)
-}
-
-const getCssHash = ({hash, css, filename}) => {
-  return `pbt-${hash(filename + css)}`
-}
-
 export default [
   {
     input: 'src/index.ts',
@@ -54,16 +39,6 @@ export default [
       exports: 'default',
     },
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({sourceMap: !production}),
-        compilerOptions: {
-          cssHash: getCssHash,
-          // enable run-time checks when not in production
-          dev: !production,
-        },
-        emitCss: false,
-        onwarn: svelteOnWarn,
-      }),
       replaceVersion,
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
@@ -72,7 +47,6 @@ export default [
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
       resolve({
         browser: true,
-        dedupe: ['svelte'],
       }),
       typescript({
         sourceMap: !production,
@@ -92,16 +66,6 @@ export default [
       sourcemap: !production,
     },
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({sourceMap: !production}),
-        compilerOptions: {
-          cssHash: getCssHash,
-          // enable run-time checks when not in production
-          dev: !production,
-        },
-        emitCss: false,
-        onwarn: svelteOnWarn,
-      }),
       replaceVersion,
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
@@ -110,7 +74,6 @@ export default [
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
       resolve({
         browser: true,
-        dedupe: ['svelte'],
       }),
       typescript({
         sourceMap: !production,
@@ -134,7 +97,7 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      globals: {'@proton/link': 'ProtonLink'},
+      globals: {'@proton/link': 'ProtonLink', '@proton/web-renderer': 'WebRenderer'},
       banner,
       name: 'ProtonBrowserTransport',
       file: pkg.unpkg,
@@ -142,16 +105,6 @@ export default [
       sourcemap: !production,
     },
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({sourceMap: !production}),
-        compilerOptions: {
-          cssHash: getCssHash,
-          // enable run-time checks when not in production
-          dev: !production,
-        },
-        emitCss: false,
-        onwarn: svelteOnWarn,
-      }),
       replaceVersion,
       // If you have external dependencies installed from
       // npm, you'll most likely need these plugins. In
@@ -160,7 +113,6 @@ export default [
       // https://github.com/rollup/plugins/tree/master/packages/commonjs
       resolve({
         browser: true,
-        dedupe: ['svelte'],
       }),
       json(),
       commonjs(),

@@ -6,10 +6,10 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     actor: '',
     permission: '',
-    accountData: undefined as RpcInterfaces.UserInfo | undefined
+    accountData: undefined as RpcInterfaces.UserInfo | undefined,
   }),
   actions: {
-    async login () {
+    async login() {
       this.clear()
       await SDK.login()
 
@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async reconnect () {
+    async reconnect() {
       this.clear()
 
       await SDK.reconnect()
@@ -33,18 +33,18 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async logout () {
+    async logout() {
       await SDK.logout()
       this.clear()
     },
 
-    async transfer ({ to, amount }: { to: string; amount: string; }) {
+    async transfer({ to, amount }: { to: string; amount: string }) {
       await SDK.transfer({ to, amount })
     },
 
     clear() {
       this.actor = ''
       this.permission = ''
-    }
+    },
   },
 })

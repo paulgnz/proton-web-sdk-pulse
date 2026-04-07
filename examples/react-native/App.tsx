@@ -8,44 +8,42 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
 import {
   Button,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
 
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
+import React, {useState} from 'react';
+
 import {sdk} from './webSdk';
 
-const App = () => {
+export default function App() {
   const [auth, setAuth] = useState({});
 
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+     <View>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+      style='auto'
+        // style={isDarkMode ? 'light' : 'dark'}
+        // barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        // backgroundColor={backgroundStyle.backgroundColor}
       />
+      
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
+        // style={backgroundStyle} 
+      >
+      {/* <Header />   */}
         <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
+          // style={{
+          //   backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          // }}
+          >
           <Text style={styles.welcome}>Proton SDK example</Text>
           <Text style={styles.instructions}>Auth: {JSON.stringify(auth)}</Text>
 
@@ -78,7 +76,7 @@ const App = () => {
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -95,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+

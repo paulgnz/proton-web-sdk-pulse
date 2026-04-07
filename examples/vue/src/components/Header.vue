@@ -1,11 +1,13 @@
 <template>
   <div class="relative bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="flex justify-between items-center border-b border-gray-200 py-6 md:justify-start md:space-x-10">
+      <div
+        class="flex justify-between items-center border-b border-gray-200 py-6 md:justify-start md:space-x-10"
+      >
         <div class="hidden sm:block flex justify-start">
           <router-link to="/">
             <span class="sr-only">Proton</span>
-            <img class="w-auto h-8 sm:h-10" src="@/assets/logo.svg" alt="">
+            <img class="w-auto h-8 sm:h-10" src="@/assets/logo.svg" alt="" />
           </router-link>
         </div>
 
@@ -16,7 +18,9 @@
         </nav>
 
         <div class="flex items-center justify-end space-x-8 md:flex-1 lg:w-0">
-          <Avatar/>
+          <button @click="setTheme">My theme</button>
+          <button @click="runDemo">Demo</button>
+          <Avatar />
         </div>
       </div>
     </div>
@@ -25,4 +29,13 @@
 
 <script setup lang="ts">
 import Avatar from '@/components/Avatar.vue'
+import SDK from '@/webSdk'
+
+const setTheme = () => {
+  SDK.setTheme()
+}
+
+const runDemo = () => {
+  SDK.runDemo()
+}
 </script>

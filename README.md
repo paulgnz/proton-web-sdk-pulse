@@ -34,6 +34,9 @@ const ProtonWebSDK = require('@proton/web-sdk')
 ```js 
 import ProtonWebSDK from '@proton/web-sdk';
 
+let link;
+let session;
+
 const login = async (restoreSession) => {
     const { link: localLink, session: localSession } = await ProtonWebSDK({
       linkOptions: {
@@ -44,19 +47,23 @@ const login = async (restoreSession) => {
       transportOptions: {
         requestAccount: appIdentifier
       },
-      selectorOptions: {
-        appName: "Tasklyy",
-        appLogo: "https://taskly.protonchain.com/static/media/taskly-logo.ad0bfb0f.svg",
-        customStyleOptions: {
-            modalBackgroundColor: "#F4F7FA",
-            logoBackgroundColor: "white",
-            isLogoRound: true,
-            optionBackgroundColor: "white",
-            optionFontColor: "black",
-            primaryFontColor: "black",
-            secondaryFontColor: "#6B727F",
-            linkColor: "#752EEB"
-        }
+      uiOptions: {
+        theme: 'light',
+        themes: {
+          dark: {
+            base: {
+              textColorBase: 'black',
+              textColorSecondary: '#6B727F',
+              textColorLink: '#752EEB',
+              bodyBackground: '#F4F7FA'
+            },
+            button: {
+              primary: {
+                backgroundHover: 'black',
+              },
+            },
+          },
+        },
       }
     })
 ​
@@ -119,6 +126,7 @@ The ```ProtonWebSDK``` Class takes three main types of option objects:
  - ```linkOptions```
  - ```transportOptions```  
  - ```selectorOptions```
+ - ```uiOptions```
 ​
 ### Link Options
 A required object which includes all options for communication customization.
@@ -140,47 +148,43 @@ A required object which includes all options for communication customization.
  - **restoreSession** – type Boolean – optional – if contains ```true``` value, prevents modal from popping up and makes SDK look for saved session value in the Storage. If not specified, automatically contains ```false``` value.
 ​
 ##### Example
-If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
+If you add [https://rpc.api.testnet.metalx.com](https://rpc.api.testnet.metalx.com) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
+
+```js
+linkOptions: {
+  endpoints: ['https://rpc.api.testnet.metalx.com']
+}
+```
 ​
 ### Transport Options
 An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
 
 **transportOptions:**
+
  - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
 ​
-
     > Typically same as appName
-​
- - **backButton** – type Boolean – optional – this field specifies the need of displaying the “back” button in the wallet type selection screen of the modal window. By default - set to ```true```, if set to ```false``` no “back” button will be displayed.
-​
+​​
 ### Selector Options
-An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+
+An optional object which includes options for the wallet selection.
+
 **selectorOptions:**
- - **appName** – type string – optional – text which is displayed in the modal window and the name of the app displayed in transaction
-​
- - **appLogo** – type string – optional – image is displayed in the modal window.
 
-  - **dialogRootNode** - type string | HTMLElement - optional - The Webauth modal parent html node. Can be a valid css selector or a HTMLElement. If not provided the default parent is the ``document.body``
+  - **enabledWalletTypes** - type stringp[] - optional - The list of enabled wallets. All wallets are enabled by default. Possible values: proton, webauth, anchor.
 ​
- - **customStyleOptions** – type Object – optional – object which can include all styles needed for the wallet selection modal window.  
-The ```CustomStyleOptions``` interface located in the ```proton-web-sdk``` directory should be changed in order to customize it.  
-​
-#### Styling Options Definition of basic styling
-​
-Basic interface contains several fields which can be overridden by the styles provided by the developer. All  color  types  are  acceptable. 
+ - **walletType** – type string – optional – The name of the wallet to use. In this case the wallet selector step will be skipped.
 
-##### customStyleOptions:
-```
-modalBackgroundColor: _string_,
-logoBackgroundColor: _string_,
-isLogoRound: _boolean_,
-optionBackgroundColor: _string_,
-optionFontColor: _string_,
-primaryFontColor: _string_,
-secondaryFontColor: _string_,
-linkColor: _string_,
-```
+### UI Options
 
+An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+
+**uiOptions:**
+
+  - **theme** - type string - optional - The name of the theme applied for the widget
+​
+ - **themes** – type Object – optional – object which can includes options to configure or defined theme of the widget.
+Check the `proton-web-renderer` folder for more info.  
 
 ## Contributors
 ​

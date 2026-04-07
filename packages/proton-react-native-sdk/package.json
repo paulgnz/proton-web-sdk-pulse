@@ -5,11 +5,15 @@
   "unpkg": "lib/react-native-sdk.bundle.js",
   "types": "lib/types/index.d.ts",
   "source": "src/index.ts",
-  "version": "4.4.2",
+  "version": "5.0.0",
   "license": "MIT",
   "main": "lib/react-native-sdk.js",
   "typings": "lib/types/index.d.ts",
   "type": "module",
+  "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
+  "bugs": {
+    "url": "https://github.com/XPRNetwork/proton-web-sdk/issues"
+  },
   "files": [
     "lib",
     "src"
@@ -22,34 +26,31 @@
   },
   "scripts": {
     "watch": "rollup -c -w",
-    "prepare": "make",
-    "build": "make",
-    "lint": "make lint"
+    "prepare": "pnpm run build",
+    "build": "rollup -c",
+    "lint": "eslint src --ext .ts --fix"
   },
   "dependencies": {
-    "@proton/js": "^29.1.0",
+    "@proton/js": "^30.1.0",
     "@proton/link": "workspace:^",
     "@proton/signing-request": "workspace:^",
-    "@react-native-async-storage/async-storage": "^1.24.0",
     "buffer": "^6.0.3",
-    "react-native": "^0.70.0",
-    "react-native-get-random-values": "^1.11.0",
     "text-encoding-shim": "^1.0.5"
   },
   "peerDependencies": {
     "react": "^18.0.0",
+    "react-native": ">=0.70.0",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "react-native-get-random-values": "^1.11.0"
   },
   "gitHead": "e15e7e40cc610b4a7ceeaee75909ff6389d8f1e5",
   "devDependencies": {
-
     "@eslint/js": "^9.39.1",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-replace": "^6.0.2",
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.1.2",
     "@types/node": "^16.4.0",
     "@types/react-native": "^0.70.0",

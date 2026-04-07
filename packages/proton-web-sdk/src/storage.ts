@@ -1,6 +1,7 @@
 import type {LinkStorage} from '@proton/link'
 
 export class Storage implements LinkStorage {
+  // eslint-disable-next-line no-unused-vars
   constructor(readonly keyPrefix: string) {}
 
   async write(key: string, data: string): Promise<void> {

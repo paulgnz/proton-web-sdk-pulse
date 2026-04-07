@@ -1,4 +1,4 @@
-import {Base64u, SessionError} from '@proton/link'
+import {Base64u, SessionError, WalletTypeError} from '@proton/link'
 import type {
   Bytes,
   LinkChannelSession,
@@ -7,14 +7,12 @@ import type {
   LinkTransport,
   SigningRequest,
 } from '@proton/link'
-import DialogWidget from './views/Dialog.svelte'
 import {Storage} from './storage'
 import {generateReturnUrl, isMobile, parseErrorMessage} from './utils'
-import {type BrowserTransportOptions, type DialogArgs, SkipToManual} from './types'
-
+import {type BrowserTransportOptions, SkipToManual} from './types'
 import GenerateQrCode from './qrcode'
-import {mount, unmount} from 'svelte'
-import {DIALOG_STATE} from './state.svelte'
+import {WebRenderer} from '@proton/web-renderer'
+import type {UIRenderer} from '@proton/web-renderer'
 
 export class BrowserTransport implements LinkTransport {
   /** Package version. */
@@ -27,129 +25,25 @@ export class BrowserTransport implements LinkTransport {
   private activeRequest?: SigningRequest
   // eslint-disable-next-line no-unused-vars
   private activeCancel?: (reason: string | Error) => void
-  private countdownTimer?: NodeJS.Timeout
-  private closeTimer?: NodeJS.Timeout
   private showingManual: boolean
-  private Widget?: any
-  private widgetProps = DIALOG_STATE
-  private widgetHolder?: Element
+  private ui?: UIRenderer
 
-  constructor(public readonly options: BrowserTransportOptions = {}) {
+  constructor(options: BrowserTransportOptions = {}) {
     this.requestStatus = !(options.requestStatus === false)
     this.requestAccount = options.requestAccount || ''
     this.walletType = options.walletType || 'proton'
     this.storage = new Storage(options.storagePrefix || 'proton-link')
     this.showingManual = false
-  }
 
-  private closeModal() {
-    this.hide()
-    if (this.activeCancel) {
-      this.activeRequest = undefined
-      this.activeCancel('')
-      this.activeCancel = undefined
+    if (options.ui) {
+      this.ui = options.ui
+    } else {
+      this.ui = new WebRenderer()
     }
-  }
-
-  private setupWidget() {
-    this.showingManual = false
-    if (!this.Widget) {
-      if (!this.widgetHolder) {
-        this.widgetHolder = document.createElement('div')
-        document.body.appendChild(this.widgetHolder)
-      }
-
-      if (this.widgetHolder) {
-        this.widgetProps.back = () => {
-          document.dispatchEvent(new CustomEvent('backToSelector'))
-        }
-        this.widgetProps.close = () => {
-          this.closeModal()
-        }
-        this.Widget = mount(DialogWidget, {props: this.widgetProps, target: this.widgetHolder})
-      }
-    }
-  }
-
-  private hide() {
-    if (this.Widget) {
-      unmount(this.Widget)
-      this.Widget = undefined
-    }
-    if (this.widgetHolder) {
-      this.widgetHolder.remove()
-      this.widgetHolder = undefined
-    }
-    this.clearTimers()
-  }
-
-  private showDialog(args: DialogArgs) {
-    this.setupWidget()
-    if (this.Widget) {
-      this.widgetProps.showBackButton = !args.hideBackButton
-      this.widgetProps.walletType = this.walletType
-      this.widgetProps.title = args.title || ''
-      this.widgetProps.subtitle = args.subtitle || ''
-      this.widgetProps.action = args.action || null
-      this.widgetProps.showFootnote = args.showFootnote
-      this.widgetProps.countDown = (args.content && args.content.countDown) || null
-      this.widgetProps.qrData = (args.content && args.content.qrData) || null
-      this.widgetProps.show = true
-    }
-  }
-
-  private displayRequest(
-    request: SigningRequest,
-    title: string,
-    subtitle = '',
-    hideBackButton = false
-  ) {
-    const sameDeviceRequest = request.clone()
-    const returnUrl = generateReturnUrl()
-    sameDeviceRequest.setInfoKey('same_device', true)
-    sameDeviceRequest.setInfoKey('return_path', returnUrl)
-
-    if (this.requestAccount.length > 0) {
-      request.setInfoKey('req_account', this.requestAccount)
-      sameDeviceRequest.setInfoKey('req_account', this.requestAccount)
-    }
-
-    const sameDeviceUri = sameDeviceRequest.encode(true, false)
-    const crossDeviceUri = request.encode(true, false)
-
-    const qrCode = GenerateQrCode(crossDeviceUri)
-    const qrData = {
-      code: qrCode,
-      link: sameDeviceUri,
-    }
-
-    this.showDialog({
-      title,
-      showFootnote: request.isIdentity(),
-      subtitle,
-      hideBackButton,
-      content: {qrData},
-    })
   }
 
   public async showLoading() {
-    this.showDialog({
-      title: 'Pending...',
-      subtitle: 'Preparing request...',
-      hideBackButton: true,
-      type: 'loading',
-    })
-  }
-
-  public onRequest(request: SigningRequest, cancel: (_reason: string | Error) => void) {
-    this.clearTimers()
-    this.activeRequest = request
-    this.activeCancel = cancel
-    try {
-      this.displayRequest(request, 'Scan the QR-Code')
-    } catch (e) {
-      cancel(e as string | Error)
-    }
+    this.ui?.showLoading()
   }
 
   public onSessionRequest(
@@ -163,6 +57,7 @@ export class BrowserTransport implements LinkTransport {
 
     if (session.type === 'fallback') {
       this.onRequest(request, cancel)
+
       if (session.metadata.sameDevice) {
         // trigger directly on a fallback same-device session
         window.location.href = request.encode()
@@ -175,46 +70,36 @@ export class BrowserTransport implements LinkTransport {
 
     const deviceName = session.metadata.name
 
-    // Countdown timer
-    this.clearTimers()
     const timeout = session.metadata.timeout || 60 * 1000 * 2
-    const start = Date.now()
-    const formatCountDown = (startTime: number) => {
-      const secondsLeft = Math.floor((timeout + startTime - Date.now()) / 1000)
-      const seconds = String(secondsLeft % 60).padStart(2, '0')
-      const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
-      return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
-    }
-    const updateCountdown = (startTime: number) => {
-      if (this.Widget) {
-        this.widgetProps.countDown = formatCountDown(startTime)
-      }
-    }
 
-    this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
-    updateCountdown(start)
-
-    // Content subtitle
-    this.showDialog({
-      title: 'Signing Request',
-      subtitle: `Please open ${deviceName || 'linked wallet'} to review the transaction`,
-      content: {
-        countDown: formatCountDown(start),
+    this.ui?.sign({
+      wallet_type: this.walletType,
+      ...this.getCommonCallbacks({
+        noBack: true,
+      }),
+      data: {
+        timeout,
+        deviceName,
       },
-      hideBackButton: true,
-      action: {
-        text: 'Optional: Sign manually using QR code',
-        callback: () => {
-          this.clearTimers()
-          const error = new SessionError('Manual', 'E_TIMEOUT', session)
-          error[SkipToManual] = true
-          cancel(error)
-        },
+      onManual: () => {
+        const error = new SessionError('Manual', 'E_TIMEOUT', session)
+        error[SkipToManual] = true
+        cancel(error)
       },
     })
 
     if (session.metadata.sameDevice && isMobile()) {
       window.location.href = `${request.getScheme()}://link`
+    }
+  }
+
+  public onRequest(request: SigningRequest, cancel: (_reason: string | Error) => void) {
+    this.activeRequest = request
+    this.activeCancel = cancel
+    try {
+      this.displayRequest(request)
+    } catch (e) {
+      cancel(e as string | Error)
     }
   }
 
@@ -229,36 +114,6 @@ export class BrowserTransport implements LinkTransport {
     }
     window.location.href = session.metadata.triggerUrl.replace('%s', Base64u.encode(payload.array))
     return true
-  }
-
-  private clearTimers() {
-    if (this.closeTimer) {
-      clearTimeout(this.closeTimer)
-      this.closeTimer = undefined
-    }
-    this.clearCountdown()
-  }
-
-  private clearCountdown() {
-    if (this.countdownTimer) {
-      if (this.Widget) {
-        this.widgetProps.countDown = undefined
-      }
-      clearInterval(this.countdownTimer)
-      this.countdownTimer = undefined
-    }
-  }
-
-  private showRecovery(request: SigningRequest, session: LinkSession) {
-    request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
-    if (session.type === 'channel') {
-      const channelSession = session as Partial<LinkChannelSession>
-      if (channelSession.addLinkInfo) {
-        channelSession.addLinkInfo(request)
-      }
-    }
-    this.displayRequest(request, 'Sign manually', '', true)
-    this.showingManual = true
   }
 
   public async prepare(request: SigningRequest, _?: LinkSession) {
@@ -288,17 +143,18 @@ export class BrowserTransport implements LinkTransport {
       return true
     }
 
-    this.clearCountdown()
+    // this.clearCountdown()
 
-    this.showDialog({
-      title: 'Unable to reach device',
-      subtitle:
-        error.message ||
-        `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
-      type: 'warning',
-      action: {
-        text: 'Optional: Sign manually using QR code',
-        callback: () => this.showRecovery(request, session),
+    this.ui?.recoverError({
+      wallet_type: this.walletType,
+      data: {
+        name: 'Unable to reach device',
+        description:
+          error.message ||
+          `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
+      },
+      onManual: () => {
+        this.showRecovery(request, session)
       },
     })
     return true
@@ -306,7 +162,6 @@ export class BrowserTransport implements LinkTransport {
 
   public onSuccess(request: SigningRequest) {
     if (request === this.activeRequest) {
-      this.clearTimers()
       this.hide()
     }
   }
@@ -317,14 +172,13 @@ export class BrowserTransport implements LinkTransport {
       return
     }
 
-    this.clearTimers()
-
     if (this.requestStatus) {
-      this.showDialog({
-        title: 'Transaction Error',
-        subtitle: parseErrorMessage(error),
-        hideBackButton: true,
-        type: 'error',
+      this.ui?.showError({
+        wallet_type: this.walletType,
+        data: {
+          name: 'Transaction Error',
+          description: parseErrorMessage(error),
+        },
       })
     } else {
       this.hide()
@@ -333,5 +187,94 @@ export class BrowserTransport implements LinkTransport {
 
   public userAgent() {
     return `BrowserTransport/${BrowserTransport.version} ${navigator.userAgent}`
+  }
+
+  private closeModal(error?: string | Error) {
+    if (this.activeCancel) {
+      this.activeRequest = undefined
+      this.activeCancel(error ?? '')
+      this.activeCancel = undefined
+    }
+
+    this.hide()
+  }
+
+  private getCommonCallbacks({noBack}: {noBack?: boolean} = {}) {
+    return {
+      onClose: () => {
+        this.closeModal()
+      },
+      onBack: !noBack
+        ? () => {
+            this.closeModal(new WalletTypeError('Back to selector'))
+          }
+        : undefined,
+    }
+  }
+
+  private hide() {
+    if (this.ui) {
+      this.ui.close()
+    }
+    this.showingManual = false
+  }
+
+  private displayRequest(
+    request: SigningRequest,
+    {
+      hideBackButton,
+      isSignRequest,
+    }: {
+      hideBackButton?: boolean
+      isSignRequest?: boolean
+    } = {
+      hideBackButton: false,
+    }
+  ) {
+    const sameDeviceRequest = request.clone()
+    const returnUrl = generateReturnUrl()
+    sameDeviceRequest.setInfoKey('same_device', true)
+    sameDeviceRequest.setInfoKey('return_path', returnUrl)
+
+    if (this.requestAccount.length > 0) {
+      request.setInfoKey('req_account', this.requestAccount)
+      sameDeviceRequest.setInfoKey('req_account', this.requestAccount)
+    }
+
+    const sameDeviceUri = sameDeviceRequest.encode(true, false)
+    const crossDeviceUri = request.encode(true, false)
+
+    const qrCode = GenerateQrCode(crossDeviceUri)
+    const qrData = {
+      code: qrCode,
+      link: sameDeviceUri,
+    }
+
+    const data = {
+      data: qrData,
+      wallet_type: this.walletType,
+      ...this.getCommonCallbacks({noBack: hideBackButton}),
+    }
+
+    if (isSignRequest) {
+      this.ui?.signManually(data)
+    } else {
+      this.ui?.login(data)
+    }
+  }
+
+  private showRecovery(request: SigningRequest, session: LinkSession) {
+    request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
+    if (session.type === 'channel') {
+      const channelSession = session as Partial<LinkChannelSession>
+      if (channelSession.addLinkInfo) {
+        channelSession.addLinkInfo(request)
+      }
+    }
+    this.displayRequest(request, {
+      hideBackButton: true,
+      isSignRequest: true,
+    })
+    this.showingManual = true
   }
 }

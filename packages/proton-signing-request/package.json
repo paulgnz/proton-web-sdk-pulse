@@ -1,8 +1,11 @@
 {
     "name": "@proton/signing-request",
-    "version": "4.4.1",
+    "version": "5.0.0",
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
-    "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
+    "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
+    "bugs": {
+        "url": "https://github.com/XPRNetwork/proton-web-sdk/issues"
+    },
     "license": "MIT",
     "main": "lib/proton-signing-request.js",
     "module": "lib/proton-signing-request.m.js",
@@ -19,9 +22,10 @@
     },
     "scripts": {
         "watch": "rollup -c -w",
-        "prepare": "make",
-        "build": "make",
-        "lint": "make lint"
+        "prepare": "pnpm run build",
+        "build": "rollup -c",
+        "lint": "eslint src --ext .ts --fix",
+        "ci-test": "nyc --reporter=text mocha -u tdd -r ts-node/register --extension ts test/*.ts -R list"
     },
     "dependencies": {
         "@greymass/eosio": "^0.6.1"
@@ -37,7 +41,7 @@
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-replace": "^6.0.2",
-        "@rollup/plugin-terser": "^0.4.4",
+        "@rollup/plugin-terser": "^1.0.0",
         "@rollup/plugin-typescript": "^12.1.2",
         "@types/bn.js": "^5.1.0",
         "@types/mocha": "^9.1.1",
@@ -50,9 +54,9 @@
         "eslint-plugin-prettier": "^5.5.4",
         "globals": "^16.5.0",
         "jiti": "^2.6.1",
-        "mocha": "^9.2.2",
+        "mocha": "^11.7.5",
         "node-fetch": "^2.6.0",
-        "nyc": "^15.1.0",
+        "nyc": "^18.0.0",
         "prettier": "^3.5.3",
         "rollup": "^4.40.0",
         "rollup-plugin-dts": "^6.2.1",

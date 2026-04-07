@@ -1,5 +1,3 @@
-import type {footNoteDownloadLinks} from './types'
-
 /**
  * The UserAgent for IPad has changed since IOS 13.
  * Now it looks the same as for MacOS, so there is no `IPad` keyword anymore.
@@ -121,7 +119,7 @@ export function parseErrorMessage(error: any) {
   }
 
   if (error.details) {
-    const {code, details, name, what} = error
+    const {details, name, what} = error
     if (name === 'eosio_assert_message_exception') {
       errorMessage = details[0].message.replace('assertion failure with message: ', '')
     } else if (details.length > 0) {
@@ -134,13 +132,4 @@ export function parseErrorMessage(error: any) {
   }
 
   return errorMessage
-}
-
-const footnoteLinks: footNoteDownloadLinks = {
-  proton: 'https://xprnetwork.org/wallet',
-  anchor: 'https://greymass.com/en/anchor/',
-}
-
-export function getFootnoteLink(walletType: string): string {
-  return footnoteLinks[walletType] || ''
 }
