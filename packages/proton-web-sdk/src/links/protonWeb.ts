@@ -5,7 +5,7 @@ import type {
   TransactArgs,
   TransactOptions,
 } from '@proton/link'
-import {JsonRpc} from '@proton/js'
+import {JsonRpc, type JsonRpcApi, JsonRpcPulseVM} from '@proton/js'
 
 const OPEN_SETTINGS = 'menubar=1,resizable=1,width=400,height=600'
 
@@ -41,7 +41,7 @@ export class ProtonWebLink {
   deferredLogin: Deferred | undefined
   scheme: string
   storage: LinkStorage | null | undefined
-  client: JsonRpc | undefined
+  client: JsonRpcApi | undefined
   testUrl: string | undefined
   transport: LinkTransport
   chainId: string
@@ -55,8 +55,9 @@ export class ProtonWebLink {
   }
 
   constructor(options: LinkOptions & {testUrl?: string}) {
+    const rpcClass = options.usePulseVM ? JsonRpcPulseVM : JsonRpc
     this.scheme = options.scheme
-    this.client = typeof options.client === 'string' ? new JsonRpc(options.client) : options.client
+    this.client = typeof options.client === 'string' ? new rpcClass(options.client) : options.client
     this.storage = options.storage
     this.testUrl = options.testUrl
     this.transport = options.transport
