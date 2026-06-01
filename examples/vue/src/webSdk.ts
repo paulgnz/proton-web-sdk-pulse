@@ -13,7 +13,7 @@ const CHAIN_ID = USE_PULSE_VM
   : '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
 const ENDPOINTS = USE_PULSE_VM
   ? [
-      'https://pulsevm-devnet-01.metalblockchain.org/ext/bc/2T6FphmDo8szR3UERGsDsXaQPb52xUn2djnAt7S6LECbHDhc5L/rpc',
+      'https://a-chain-alpine.metalblockchain.org/ext/bc/6v9NieZiX3e8eQz3CyJMtXB6YzV2RtnxcRyLAmSgFWWk5Qs6y/rpc',
     ]
   : [
       'https://rpc.api.testnet.metalx.com',

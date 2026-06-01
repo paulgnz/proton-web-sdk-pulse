@@ -213,3 +213,11 @@ pnpm run build
 ```
 pnpm run publish-packages
 ```
+
+## Push tags to the repo
+The changes are tagged automatically during `publish-packages` command run. But all these tags are created in the local repo.
+It is required to push these tags to the repo:
+
+To do it you can use the following command: `git push origin --tags`
+Or the usual push of changes can be used with specific flag: `git push --follow-tags`
+
