@@ -138,8 +138,9 @@ A required object which includes all options for communication customization.
 
     > The SDK is able to automatically differentiate Mainnet and Testnet from the url
 
+ - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpcApi from the endpoint provided.
 
- - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpc from the endpoint provided.
+  - **usePulseVM** - type boolean - optional - a flag to mark network as using PulseVM. Enables another implementation of JsonRpcApi
 ​
  - **storage** – type LinkStorage – optional – if not specified, the new Storage is automatically created. In order to customize Storage, you should provide a custom LinkStorage interface with type specifications inside.
 ​
@@ -212,3 +213,11 @@ pnpm run build
 ```
 pnpm run publish-packages
 ```
+
+## Push tags to the repo
+The changes are tagged automatically during `publish-packages` command run. But all these tags are created in the local repo.
+It is required to push these tags to the repo:
+
+To do it you can use the following command: `git push origin --tags`
+Or the usual push of changes can be used with specific flag: `git push --follow-tags`
+

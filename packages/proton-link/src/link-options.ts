@@ -1,9 +1,8 @@
-import type {APIClient} from '@greymass/eosio'
 import type {ChainIdType, SigningRequestEncodingOptions} from '@proton/signing-request'
 import type {LinkStorage} from './link-storage'
 import type {LinkTransport} from './link-transport'
 import type {LinkCallbackService} from './link-callback'
-import {JsonRpc} from '@proton/js'
+import type {JsonRpcApi} from '@proton/js'
 
 /**
  * Type describing a EOSIO chain.
@@ -16,7 +15,12 @@ export interface LinkChainConfig {
     /**
      * URL to EOSIO node to communicate with (or a @greymass/eosio APIClient instance).
      */
-    nodeUrl: string | JsonRpc
+    nodeUrl: string | JsonRpcApi
+
+    /**
+     * Flag to mark network as using PulseVM. Enables another implementation of JsonRpcApi
+     */
+    usePulseVM?: boolean
 }
 
 /**
@@ -53,7 +57,13 @@ export interface LinkOptions {
      * URL to EOSIO node to communicate with or a `@greymass/eosio` APIClient instance.
      * @deprecated Use [[chains]] instead.
      */
-    client?: string | JsonRpc
+    client?: string | JsonRpcApi
+
+    /**
+     * Flag to mark network as using PulseVM. Enables another implementation of JsonRpcApi
+     */
+    usePulseVM?: boolean
+
     /**
      * URL to callback forwarder service or an object implementing [[LinkCallbackService]].
      * See [buoy-nodejs](https://github.com/greymass/buoy-nodejs) and (buoy-golang)[https://github.com/greymass/buoy-golang]
