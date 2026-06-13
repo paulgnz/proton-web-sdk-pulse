@@ -56,6 +56,16 @@
                 />
               </li>
             {/if}
+            {#if $enabledWallets?.has(SUPPORTED_WALLETS.PULSEVM_DESKTOP)}
+              <li>
+                <WalletButton
+                  onclick={() => selectWallet(SUPPORTED_WALLETS.PULSEVM_DESKTOP)}
+                  icon="browser"
+                  label="PulseVM Wallet"
+                  sublabel="Desktop app · Touch ID"
+                />
+              </li>
+            {/if}
           </ul>
         </div>
 

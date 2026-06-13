@@ -20,12 +20,16 @@ export const enum SUPPORTED_WALLETS {
   WEBAUTH_MOBILE = 'proton',
   WEBAUTH_WEB = 'webauth',
   ANCHOR = 'anchor',
+  // Pulse Edition: the native PulseVM desktop wallet, which signs over the
+  // `pulsevm://` URL scheme (packed-trx + callback) rather than ESR.
+  PULSEVM_DESKTOP = 'pulsevm',
 }
 
 export const ENABLED_WALLETS = [
   SUPPORTED_WALLETS.WEBAUTH_MOBILE,
   SUPPORTED_WALLETS.WEBAUTH_WEB,
   SUPPORTED_WALLETS.ANCHOR,
+  SUPPORTED_WALLETS.PULSEVM_DESKTOP,
 ]
 
 export const DEMO_IMG =

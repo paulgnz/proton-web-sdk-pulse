@@ -2,6 +2,7 @@ import ProtonLinkBrowserTransport from '@proton/browser-transport'
 import ProtonLink from '@proton/link'
 import type {LinkOptions, PermissionLevel} from '@proton/link'
 import {ProtonWebLink} from './links/protonWeb'
+import {loginPulseVMDesktop} from './links/pulsevmDesktop'
 import {Storage} from './storage'
 import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions, UIOptions} from './types'
 import {JsonRpc, JsonRpcPulseVM} from '@proton/js'
@@ -101,6 +102,22 @@ const login = async (
     if (!walletType) {
       return {
         error: new Error('Wallet Type Unavailable: No wallet provided'),
+      }
+    }
+
+    // Pulse Edition: the native PulseVM desktop wallet signs over `pulsevm://`
+    // (packed-trx + callback), not ESR — so it bypasses ProtonLink entirely.
+    if (walletType === 'pulsevm') {
+      try {
+        const {session: pulseSession, loginResult: pulseLogin} = await loginPulseVMDesktop({
+          endpoint: loginOptions.linkOptions.endpoints[0],
+          chainId: String(loginOptions.linkOptions.chainId),
+          storage: loginOptions.linkOptions.storage,
+          restoreSession: loginOptions.linkOptions.restoreSession,
+        })
+        return {session: pulseSession as any, link: undefined as any, loginResult: pulseLogin}
+      } catch (e) {
+        return {error: e}
       }
     }
 
