@@ -10,6 +10,7 @@ export const enum ROUTES {
   WEBAUTH_CONNECT = 'webauth-connect',
   WEBAUTH_SIGN = 'webauth-sign',
   WEBAUTH_SIGN_MANUAL = 'webauth-manual-sign',
+  OTHER_WALLETS = 'other-wallets',
   OTHER_ANCHOR_USE = 'other-anchor-use',
   OTHER_ANCHOR_SIGN = 'other-anchor-sign',
   OTHER_ANCHOR_SIGN_MANUAL = 'other-anchor-manual-sign',

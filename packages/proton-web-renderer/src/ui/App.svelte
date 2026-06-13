@@ -17,6 +17,7 @@
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
   import UseAnchorWallet from './views/UseAnchorWallet.svelte'
+  import OtherWallets from './views/OtherWallets.svelte'
   import SignRequest from './views/SignRequest.svelte'
   import RequestWithQRCode from './views/RequestWithQRCode.svelte'
   import type {Unsubscriber} from 'svelte/store'
@@ -64,6 +65,8 @@
             title = 'Pending...'
             hideBackSource = true
             hideLogo = true
+          } else if (current.path === ROUTES.OTHER_WALLETS) {
+            title = 'Other wallets'
           } else if (current.path === ROUTES.OTHER_ANCHOR_USE) {
             title = 'Anchor wallet'
           } else if (current.path === ROUTES.OTHER_ANCHOR_SIGN) {
@@ -193,6 +196,8 @@
         <GenericError name={$error.name} description={$error.description} />
       {:else if $router.path === ROUTES.WEBAUTH_GET}
         <GetWebAuth />
+      {:else if $router.path === ROUTES.OTHER_WALLETS}
+        <OtherWallets />
       {:else if $router.path === ROUTES.OTHER_ANCHOR_USE}
         <UseAnchorWallet />
       {:else if $router.path === ROUTES.WEBAUTH_LOGIN_MOBILE}

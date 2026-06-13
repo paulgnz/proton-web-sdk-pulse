@@ -69,25 +69,12 @@
         </div>
 
         <div class="border-block connect-other">
-          {#if $enabledWallets?.has(SUPPORTED_WALLETS.PULSEVM_DESKTOP)}
+          {#if $enabledWallets?.has(SUPPORTED_WALLETS.ANCHOR) || $enabledWallets?.has(SUPPORTED_WALLETS.PULSEVM_DESKTOP)}
             <Button
               align="center"
               full
               appearance="flat"
-              onclick={() => selectWallet(SUPPORTED_WALLETS.PULSEVM_DESKTOP)}
-            >
-              {#snippet content()}
-                <span>PulseVM Wallet (Desktop)</span>
-                <Icon name="arrow-right" />
-              {/snippet}
-            </Button>
-          {/if}
-          {#if $enabledWallets?.has(SUPPORTED_WALLETS.ANCHOR)}
-            <Button
-              align="center"
-              full
-              appearance="flat"
-              onclick={() => selectWallet(SUPPORTED_WALLETS.ANCHOR)}
+              onclick={() => router.push(ROUTES.OTHER_WALLETS)}
             >
               {#snippet content()}
                 <span>Connect with other wallets</span>
