@@ -31,12 +31,34 @@ export interface PulseDesktopSession {
 const SESSION_KEY = 'pulsevm-desktop-session'
 const here = () => location.origin + location.pathname
 
-export function loginURL(callback: string): string {
-  return `pulsevm://login?callback=${encodeURIComponent(callback)}`
+function newRid(): string {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36)
 }
-export function signURL(p: {chainId: string; packedTrx: string; summary?: string; callback: string}): string {
-  const q = new URLSearchParams({chain_id: p.chainId, packed_trx: p.packedTrx, callback: p.callback})
+
+export function loginURL(p: {callback?: string; relay?: string; rid?: string}): string {
+  const q = new URLSearchParams()
+  if (p.callback) q.set('callback', p.callback)
+  if (p.relay && p.rid) {
+    q.set('relay', p.relay)
+    q.set('rid', p.rid)
+  }
+  return `pulsevm://login?${q.toString()}`
+}
+export function signURL(p: {
+  chainId: string
+  packedTrx: string
+  summary?: string
+  callback?: string
+  relay?: string
+  rid?: string
+}): string {
+  const q = new URLSearchParams({chain_id: p.chainId, packed_trx: p.packedTrx})
   if (p.summary) q.set('summary', p.summary)
+  if (p.callback) q.set('callback', p.callback)
+  if (p.relay && p.rid) {
+    q.set('relay', p.relay)
+    q.set('rid', p.rid)
+  }
   return `pulsevm://sign?${q.toString()}`
 }
 
@@ -78,9 +100,35 @@ function awaitResult(key: string, timeoutMs = 120_000): Promise<Record<string, s
   })
 }
 
+/** Poll the relay for a result keyed by rid (seamless path — no browser tab). */
+function awaitRelay(relay: string, rid: string, timeoutMs = 120_000): Promise<Record<string, string>> {
+  const base = relay.replace(/\/$/, '')
+  const start = Date.now()
+  return new Promise((resolve, reject) => {
+    const poll = setInterval(async () => {
+      try {
+        const r = await fetch(`${base}/result/${rid}`, {cache: 'no-store'})
+        if (r.status === 200) {
+          clearInterval(poll)
+          resolve(await r.json())
+        } else if (Date.now() - start > timeoutMs) {
+          clearInterval(poll)
+          reject(new Error('PulseVM wallet request timed out'))
+        }
+      } catch (e) {
+        if (Date.now() - start > timeoutMs) {
+          clearInterval(poll)
+          reject(e as Error)
+        }
+      }
+    }, 800)
+  })
+}
+
 /**
  * Call once on page load. If this page is the wallet callback (has ?account or
  * ?signature), stash the result for the originating tab and return true.
+ * (Only needed for the browser-callback fallback; the relay path needs no callback.)
  */
 export function handlePulseVMCallback(): boolean {
   const p = new URLSearchParams(location.search)
@@ -222,7 +270,7 @@ async function packTransfer(endpoint: string, action: PulseAction): Promise<stri
 
 function makeSession(
   s: {actor: string; permission: string; publicKey: string},
-  opts: {endpoint: string; chainId: string; storage?: any}
+  opts: {endpoint: string; chainId: string; storage?: any; relay?: string}
 ): PulseDesktopSession {
   return {
     walletType: 'pulsevm',
@@ -240,13 +288,18 @@ function makeSession(
         )
       }
       const packed = await packTransfer(opts.endpoint, actions[0])
-      const rid = Math.random().toString(36).slice(2)
-      const cb = `${here()}?rid=${rid}`
+      const rid = newRid()
       const d = actions[0].data as any
-      triggerScheme(
-        signURL({chainId: opts.chainId, packedTrx: packed, summary: `Transfer ${d.quantity} to ${d.to}`, callback: cb})
-      )
-      const res = await awaitResult('pulse.cb.sign.' + rid)
+      const summary = `Transfer ${d.quantity} to ${d.to}`
+      // Relay path = seamless (no browser tab); else fall back to a browser callback.
+      let res: Record<string, string>
+      if (opts.relay) {
+        triggerScheme(signURL({chainId: opts.chainId, packedTrx: packed, summary, relay: opts.relay, rid}))
+        res = await awaitRelay(opts.relay, rid)
+      } else {
+        triggerScheme(signURL({chainId: opts.chainId, packedTrx: packed, summary, callback: `${here()}?rid=${rid}`}))
+        res = await awaitResult('pulse.cb.sign.' + rid)
+      }
       const out: {transactionId?: string; signature: string; packedTrx: string} = {
         signature: res.signature,
         packedTrx: packed,
@@ -271,18 +324,30 @@ export async function loginPulseVMDesktop(opts: {
   chainId: string
   storage?: any
   restoreSession?: boolean
+  relay?: string
 }): Promise<{session: PulseDesktopSession; loginResult: any}> {
-  // Restore from saved auth if requested.
+  // Restore from saved auth if requested. If there's nothing to restore, return
+  // with no session — do NOT pop a wallet prompt (that caused a spurious second
+  // window on page load).
   if (opts.restoreSession) {
     const raw = localStorage.getItem(SESSION_KEY)
     if (raw) {
       const s = JSON.parse(raw)
       return {session: makeSession(s, opts), loginResult: undefined}
     }
+    return {session: undefined as any, loginResult: undefined}
   }
 
-  triggerScheme(loginURL(here()))
-  const res = await awaitResult('pulse.cb.login')
+  // Relay path = seamless (no browser tab); else fall back to a browser callback.
+  let res: Record<string, string>
+  if (opts.relay) {
+    const rid = newRid()
+    triggerScheme(loginURL({relay: opts.relay, rid}))
+    res = await awaitRelay(opts.relay, rid)
+  } else {
+    triggerScheme(loginURL({callback: here()}))
+    res = await awaitResult('pulse.cb.login')
+  }
   const s = {actor: res.account, permission: res.permission || 'active', publicKey: res.key || ''}
   localStorage.setItem(SESSION_KEY, JSON.stringify(s))
   opts.storage?.write?.('wallet-type', 'pulsevm')

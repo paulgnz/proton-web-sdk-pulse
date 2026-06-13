@@ -114,6 +114,7 @@ const login = async (
           chainId: String(loginOptions.linkOptions.chainId),
           storage: loginOptions.linkOptions.storage,
           restoreSession: loginOptions.linkOptions.restoreSession,
+          relay: loginOptions.linkOptions.pulsevmRelay,
         })
         return {session: pulseSession as any, link: undefined as any, loginResult: pulseLogin}
       } catch (e) {

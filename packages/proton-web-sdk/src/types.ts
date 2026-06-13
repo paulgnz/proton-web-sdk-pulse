@@ -18,6 +18,10 @@ export type LocalLinkOptions = PartialBy<LinkOptions, 'transport' | 'chains' | '
   storagePrefix?: string
   restoreSession?: boolean
   testUrl?: string
+  /** Pulse Edition: relay base URL for the native PulseVM desktop wallet, so it
+   *  returns the result server-to-server (no second browser tab). e.g.
+   *  "https://relay.pulsevm.dev". Omit to use the browser-callback fallback. */
+  pulsevmRelay?: string
 }
 
 export interface ConnectWalletArgs {
