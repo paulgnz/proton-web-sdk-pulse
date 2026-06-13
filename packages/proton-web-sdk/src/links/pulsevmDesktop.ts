@@ -100,6 +100,22 @@ function awaitResult(key: string, timeoutMs = 120_000): Promise<Record<string, s
   })
 }
 
+/** Quick reachability probe so an unreachable relay (DNS not propagated, offline,
+ *  worker down) gracefully falls back to the browser-callback flow rather than
+ *  polling a dead host forever. A 2xx/204 means the relay is up. */
+async function relayReachable(relay: string): Promise<boolean> {
+  const base = relay.replace(/\/$/, '')
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), 3500)
+    const r = await fetch(`${base}/result/__health_probe__`, {cache: 'no-store', signal: ctrl.signal})
+    clearTimeout(t)
+    return r.status === 204 || r.status === 200
+  } catch {
+    return false
+  }
+}
+
 /** Poll the relay for a result keyed by rid (seamless path — no browser tab). */
 function awaitRelay(relay: string, rid: string, timeoutMs = 120_000): Promise<Record<string, string>> {
   const base = relay.replace(/\/$/, '')
@@ -293,7 +309,7 @@ function makeSession(
       const summary = `Transfer ${d.quantity} to ${d.to}`
       // Relay path = seamless (no browser tab); else fall back to a browser callback.
       let res: Record<string, string>
-      if (opts.relay) {
+      if (opts.relay && (await relayReachable(opts.relay))) {
         triggerScheme(signURL({chainId: opts.chainId, packedTrx: packed, summary, relay: opts.relay, rid}))
         res = await awaitRelay(opts.relay, rid)
       } else {
@@ -340,7 +356,7 @@ export async function loginPulseVMDesktop(opts: {
 
   // Relay path = seamless (no browser tab); else fall back to a browser callback.
   let res: Record<string, string>
-  if (opts.relay) {
+  if (opts.relay && (await relayReachable(opts.relay))) {
     const rid = newRid()
     triggerScheme(loginURL({relay: opts.relay, rid}))
     res = await awaitRelay(opts.relay, rid)
